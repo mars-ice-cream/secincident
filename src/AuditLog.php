@@ -195,7 +195,15 @@ class AuditLog extends CommonDBTM
                 'details'                => self::encodeDetails($details),
             ];
 
-            $DB->doQuery("SELECT GET_LOCK('" . self::LOCK . "', 10)");
+            // Verrou global (API GLPI) : les entrées sont chaînées dans l'ordre, sans course
+            $locked   = false;
+            $deadline = microtime(true) + 10;
+            do {
+                $locked = $DB->getLock(self::LOCK);
+                if (!$locked) {
+                    usleep(20000);
+                }
+            } while (!$locked && microtime(true) < $deadline);
             try {
                 $last = $DB->request([
                     'SELECT' => ['hash'],
@@ -208,7 +216,9 @@ class AuditLog extends CommonDBTM
                 $entry['date']      = Session::getCurrentTime();
                 $DB->insert(self::getTable(), $entry);
             } finally {
-                $DB->doQuery("SELECT RELEASE_LOCK('" . self::LOCK . "')");
+                if ($locked) {
+                    $DB->releaseLock(self::LOCK);
+                }
             }
         } catch (Throwable $e) {
             trigger_error('SecIncident audit failure: ' . $e->getMessage(), E_USER_WARNING);

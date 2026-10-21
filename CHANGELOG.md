@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.9.1 — 2026-10-21
+- Journal d'audit : verrou de chaînage via l'API GLPI (`getLock` / `releaseLock`) au lieu de SQL brut (exigence Marketplace).
+- Logo du plugin et fiche catalogue complétée.
+
 ## 1.9.0 — 2026-10-20
 - Multilingue : chaînes source en anglais, traduction française complète (fr_FR, fr_CA, fr_BE), catalogue `locales/secincident.pot` pour ajouter d'autres langues, outil `tools/i18n.py`.
 - Contenu enregistré (journal d'audit, événements automatiques, procédures et catégories par défaut) écrit dans la langue par défaut de l'instance, pour un journal homogène.

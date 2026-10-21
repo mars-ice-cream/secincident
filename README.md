@@ -1,4 +1,4 @@
-# SecIncident — incidents de sécurité pour GLPI 11 (v1.9.0)
+# SecIncident — incidents de sécurité pour GLPI 11 (v1.9.1)
 
 Plugin GLPI (11.0.x) pour déclarer, qualifier et tracer les incidents de sécurité, avec import des exports CSV de votre EDR / XDR. Interface en français et en anglais, ouverte à d'autres langues.
 
