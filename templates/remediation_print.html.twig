@@ -1,0 +1,57 @@
+{#
+ # SecIncident — plan de remédiation imprimable
+ #}
+<div class="secincident-print container py-3">
+   <div class="d-flex align-items-start mb-3 d-print-none">
+      <button type="button" class="btn btn-primary ms-auto" onclick="window.print()"><i class="ti ti-printer me-1"></i>{{ __('Print / save as PDF', 'secincident') }}</button>
+   </div>
+
+   <h1 class="mb-1">{{ __('Remediation plan', 'secincident') }}</h1>
+   <h2 class="h3 text-muted mb-3">{{ incident.fields['reference'] }} — {{ incident.fields['name'] }}</h2>
+
+   <table class="table table-sm table-bordered mb-4">
+      <tbody>
+         <tr><th class="w-25">{{ __('Category', 'secincident') }}</th><td>{{ category }}</td><th class="w-25">{{ __('Severity', 'secincident') }}</th><td>{{ severity }}</td></tr>
+         <tr><th>{{ __('Status', 'secincident') }}</th><td>{{ status }}</td><th>{{ __('Owner', 'secincident') }}</th><td>{{ tech }}</td></tr>
+         <tr><th>{{ __('Detection', 'secincident') }}</th><td>{{ incident.fields['date_detection'] ? incident.fields['date_detection']|formatted_datetime : '—' }}</td><th>{{ __('Progress', 'secincident') }}</th><td>{{ plan.done }} / {{ plan.total }} ({{ plan.percent }} %)</td></tr>
+      </tbody>
+   </table>
+
+   {% for group in plan.by_phase %}
+      <h3 class="h4 mt-4">{{ group.label }} <span class="text-muted small">({{ group.done }}/{{ group.total }})</span></h3>
+      <table class="table table-sm table-bordered secincident-print-table">
+         <thead>
+            <tr>
+               <th style="width: 2.5rem"></th>
+               <th>{{ __('Action', 'secincident') }}</th>
+               <th style="width: 9rem">{{ __('Status', 'secincident') }}</th>
+               <th style="width: 14rem">{{ __('Done on / by', 'secincident') }}</th>
+            </tr>
+         </thead>
+         <tbody>
+            {% for t in group.tasks %}
+               <tr>
+                  <td class="text-center fs-3">{{ t.status == 'done' ? '☑' : (t.status == 'na' ? '⊘' : '☐') }}</td>
+                  <td>
+                     <strong>{{ t.name }}</strong>{% if t.is_mandatory %} <em class="small">({{ __('mandatory', 'secincident') }})</em>{% endif %}
+                     {% if t.instructions %}<div class="small">{{ t.instructions|nl2br }}</div>{% endif %}
+                     {% if t.comment %}<div class="small mt-1"><strong>{{ __('Report:', 'secincident') }}</strong> {{ t.comment }}</div>{% endif %}
+                  </td>
+                  <td>{{ t.status_label }}</td>
+                  <td class="small">{{ t.date_done ? t.date_done|formatted_datetime ~ ' — ' ~ t.users_id_done_name : '' }}</td>
+               </tr>
+            {% endfor %}
+         </tbody>
+      </table>
+   {% endfor %}
+
+   <div class="row mt-5 secincident-signatures">
+      <div class="col-6"><div class="border-top pt-2">{{ __('Incident owner', 'secincident') }}<br><span class="text-muted small">{{ __('Name, date, signature', 'secincident') }}</span></div></div>
+      <div class="col-6"><div class="border-top pt-2">{{ __('Approval (CISO / management)', 'secincident') }}<br><span class="text-muted small">{{ __('Name, date, signature', 'secincident') }}</span></div></div>
+   </div>
+
+   <p class="text-muted small mt-4">
+      {{ __('Issued on %1$s by %2$s.', 'secincident')|format(printed_at|formatted_datetime, printed_by) }}
+      {{ __('SHA-256 fingerprint of the plan at this date:', 'secincident') }} <code class="secincident-hash">{{ fingerprint }}</code>
+   </p>
+</div>

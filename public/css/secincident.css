@@ -1,0 +1,152 @@
+/* SecIncident — styles du plugin */
+
+/* Chronologie */
+.secincident-timeline {
+   position: relative;
+   margin: 0;
+   padding-left: 2.75rem;
+}
+
+.secincident-timeline::before {
+   content: "";
+   position: absolute;
+   left: 1rem;
+   top: .25rem;
+   bottom: .25rem;
+   width: 2px;
+   background: var(--tblr-border-color, #dce1e7);
+}
+
+.secincident-timeline-item {
+   position: relative;
+   margin-bottom: .75rem;
+}
+
+.secincident-timeline-dot {
+   position: absolute;
+   left: -2.6rem;
+   top: .5rem;
+   width: 1.8rem;
+   height: 1.8rem;
+   border-radius: 50%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   box-shadow: 0 0 0 3px var(--tblr-bg-surface, #fff);
+}
+
+.secincident-timeline-card {
+   margin-bottom: 0;
+}
+
+.secincident-pre {
+   white-space: normal;
+   font-size: .875rem;
+}
+
+.secincident-raw {
+   max-height: 22rem;
+   overflow: auto;
+   font-size: .75rem;
+   background: var(--tblr-bg-surface-secondary, #f6f8fb);
+   padding: .5rem;
+   border-radius: 4px;
+}
+
+.secincident-raw-table th {
+   width: 25%;
+   font-weight: 600;
+}
+
+.secincident-filters .btn.active {
+   background: var(--tblr-primary, #206bc4);
+   color: #fff;
+}
+
+.cursor-pointer {
+   cursor: pointer;
+}
+
+details > summary.card-header {
+   list-style: none;
+}
+
+details > summary.card-header::-webkit-details-marker {
+   display: none;
+}
+
+/* Tableau de bord : histogramme mensuel */
+.secincident-months {
+   display: flex;
+   align-items: flex-end;
+   gap: .5rem;
+   height: 11rem;
+}
+
+.secincident-month {
+   flex: 1 1 0;
+   height: 100%;
+   display: flex;
+   flex-direction: column;
+   justify-content: flex-end;
+   align-items: center;
+}
+
+.secincident-month-bar {
+   width: 100%;
+   max-width: 2.5rem;
+   min-height: 2px;
+   border-radius: 3px 3px 0 0;
+}
+
+.secincident-month-label {
+   margin-top: .25rem;
+}
+
+/* Import : étapes */
+.secincident-steps {
+   display: flex;
+   gap: 1rem;
+   list-style: none;
+   padding: 0;
+   color: var(--tblr-secondary, #667382);
+}
+
+.secincident-steps li.active {
+   color: var(--tblr-primary, #206bc4);
+   font-weight: 600;
+}
+
+.secincident-steps li.done {
+   color: var(--tblr-success, #2fb344);
+}
+
+.secincident-preview {
+   max-height: 24rem;
+   overflow: auto;
+}
+
+.secincident-hash {
+   font-size: .75rem;
+   word-break: break-all;
+}
+
+.secincident-task-done {
+   opacity: .7;
+}
+
+@media print {
+   .secincident-print { max-width: 100%; }
+   .secincident-print-table { page-break-inside: auto; }
+   .secincident-print-table tr { page-break-inside: avoid; }
+}
+
+.secincident-command {
+   font-size: .78rem;
+   background: #1e293b;
+   color: #e2e8f0;
+   padding: .4rem .6rem;
+   border-radius: 4px;
+   white-space: pre-wrap;
+   word-break: break-all;
+}

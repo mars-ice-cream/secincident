@@ -1,0 +1,17 @@
+# Dépendances / outils
+vendor/
+node_modules/
+.phpunit.result.cache
+.php-cs-fixer.cache
+
+# Éditeurs / OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Archives de release
+*.zip
+*.tar.gz
+*.tar.bz2

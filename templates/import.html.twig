@@ -1,0 +1,237 @@
+{#
+ # SecIncident — import CSV EDR (3 étapes)
+ #}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+<div class="container-fluid secincident-import">
+   <div class="d-flex align-items-center gap-2 mb-3">
+      <h2 class="mb-0"><i class="ti ti-file-import me-2"></i>{{ __('EDR / XDR CSV import', 'secincident') }}</h2>
+      <ol class="secincident-steps ms-auto mb-0">
+         <li class="{{ step == 'upload' ? 'active' : 'done' }}">1. {{ __('File', 'secincident') }}</li>
+         <li class="{{ step == 'mapping' ? 'active' : (step == 'result' ? 'done' : '') }}">2. {{ __('Columns', 'secincident') }}</li>
+         <li class="{{ step == 'result' ? 'active' : '' }}">3. {{ __('Result', 'secincident') }}</li>
+      </ol>
+   </div>
+
+   {% if error is defined %}
+      <div class="alert alert-danger"><i class="ti ti-alert-triangle me-1"></i>{{ error }}</div>
+   {% endif %}
+
+   {# ------------------------------------------------------------------ #}
+   {% if step == 'upload' %}
+      <div class="card">
+         <div class="card-body">
+            <form method="post" action="{{ form_url }}" enctype="multipart/form-data">
+               <div class="mb-3">
+                  <label class="form-label" for="secincident-csv">{{ __('CSV export (detections, alerts or incidents)', 'secincident') }}</label>
+                  <input type="file" id="secincident-csv" name="csvfile" accept=".csv,.txt,.tsv,text/csv" class="form-control" required>
+                  <div class="form-hint">
+                     {{ __('Separator and encoding detected automatically (UTF-8, Windows-1252). PHP max size:', 'secincident') }} {{ max_upload }}.
+                     {% if saved_mapping %}
+                        <br><i class="ti ti-device-floppy"></i> {{ __('The column mapping remembered from the last import will be reused.', 'secincident') }}
+                     {% endif %}
+                  </div>
+               </div>
+               <button type="submit" name="upload" value="1" class="btn btn-primary">
+                  <i class="ti ti-upload me-1"></i>{{ __('Analyse the file', 'secincident') }}
+               </button>
+               <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+            </form>
+         </div>
+      </div>
+
+      <div class="alert alert-info mt-3">
+         <i class="ti ti-info-circle me-1"></i>
+         {{ __('Each CSV row becomes a timeline event (with its raw data kept as is). Rows are grouped into incidents by detection identifier, by host, or into an existing incident. Re-importing the same file creates no duplicates.', 'secincident') }}
+      </div>
+
+   {# ------------------------------------------------------------------ #}
+   {% elseif step == 'mapping' %}
+      <form method="post" action="{{ form_url }}">
+         {{ fields.hiddenField('token', token) }}
+
+         <div class="row row-cards">
+            <div class="col-12 col-xl-5">
+               <div class="card">
+                  <div class="card-header">
+                     <h3 class="card-title">{{ __('Column mapping', 'secincident') }}</h3>
+                     <span class="ms-auto text-muted small">{{ filename }} · {{ total_rows }} {{ __('row(s)', 'secincident') }}</span>
+                  </div>
+                  {% if truncated %}
+                     <div class="alert alert-warning m-2">{{ __('File truncated: only the first %d rows will be imported.', 'secincident')|format(max_rows) }}</div>
+                  {% endif %}
+                  <div class="table-responsive">
+                     <table class="table table-sm table-vcenter card-table">
+                        <tbody>
+                        {% for target, label in targets %}
+                           <tr class="{{ mapping[target] is defined ? '' : 'text-muted' }}">
+                              <th class="w-50">{{ label }}</th>
+                              <td>
+                                 <select name="mapping[{{ target }}]" class="form-select form-select-sm" aria-label="{{ label }}">
+                                    <option value="">— {{ __('ignore', 'secincident') }} —</option>
+                                    {% for header in headers %}
+                                       <option value="{{ header }}" {{ mapping[target] is defined and mapping[target] == header ? 'selected' : '' }}>{{ header }}</option>
+                                    {% endfor %}
+                                 </select>
+                              </td>
+                           </tr>
+                        {% endfor %}
+                        </tbody>
+                     </table>
+                  </div>
+                  <div class="card-footer text-muted small">
+                     {{ __('Unmapped columns: kept in the raw data of each event.', 'secincident') }}
+                  </div>
+               </div>
+            </div>
+
+            <div class="col-12 col-xl-7">
+               <div class="card mb-3">
+                  <div class="card-header"><h3 class="card-title">{{ __('Import options', 'secincident') }}</h3></div>
+                  <div class="card-body">
+                     <div class="mb-3">
+                        <label class="form-label">{{ __('Grouping into incidents', 'secincident') }}</label>
+                        {% set group_labels = {
+                           'external_id': __('One incident per detection identifier', 'secincident'),
+                           'hostname': __('One incident per host', 'secincident'),
+                           'single': __('A single incident for the whole file', 'secincident'),
+                           'row': __('One incident per row', 'secincident'),
+                        } %}
+                        {% for key, label in group_labels %}
+                           <label class="form-check">
+                              <input class="form-check-input" type="radio" name="group_by" value="{{ key }}" {{ group_by == key ? 'checked' : '' }}>
+                              <span class="form-check-label">{{ label }} <span class="text-muted">({{ groups[key] }})</span></span>
+                           </label>
+                        {% endfor %}
+                     </div>
+
+                     <div class="row">
+                        {{ fields.dropdownField('GlpiPlugin\\Secincident\\Incident', 'target_incident', 0, __('…or add everything to an existing incident', 'secincident'), {
+                           rand: random(),
+                           entity: session('glpiactiveentities'),
+                           displaywith: ['reference'],
+                           helper: __('Takes precedence over the grouping above.', 'secincident'),
+                           full_width: true,
+                        }) }}
+                        {% if multi_entity %}
+                           {{ fields.dropdownField('Entity', 'entities_id', active_entity, __('Entity of the new incidents', 'secincident'), {
+                              rand: random(),
+                              entity: session('glpiactiveentities'),
+                              full_width: true,
+                           }) }}
+                        {% else %}
+                           {{ fields.hiddenField('entities_id', active_entity) }}
+                        {% endif %}
+                        {{ fields.dropdownArrayField('timezone', timezone, {
+                           'UTC': __('UTC (default format of most EDRs)', 'secincident'),
+                           (local_tz): __('Local time', 'secincident') ~ ' (' ~ local_tz ~ ')',
+                        }, __('Time zone of dates without an explicit time zone', 'secincident'), {rand: random(), full_width: true}) }}
+                     </div>
+
+                     <label class="form-check">
+                        <input class="form-check-input" type="checkbox" name="create_iocs" value="1" {{ create_iocs ? 'checked' : '' }}>
+                        <span class="form-check-label">{{ __('Create the indicators (hashes, paths, command lines, remote IPs/domains)', 'secincident') }}</span>
+                     </label>
+                     <label class="form-check">
+                        <input class="form-check-input" type="checkbox" name="link_assets" value="1" {{ link_assets ? 'checked' : '' }}>
+                        <span class="form-check-label">{{ __('Link the computers (hostname) and users (login) found in GLPI', 'secincident') }}</span>
+                     </label>
+                     <label class="form-check">
+                        <input class="form-check-input" type="checkbox" name="remember" value="1" checked>
+                        <span class="form-check-label">{{ __('Remember this mapping for the next imports', 'secincident') }}</span>
+                     </label>
+                  </div>
+               </div>
+
+               <div class="card">
+                  <div class="card-header"><h3 class="card-title">{{ __('Preview (first 5 rows)', 'secincident') }}</h3></div>
+                  <div class="table-responsive secincident-preview">
+                     <table class="table table-sm card-table">
+                        <thead>
+                           <tr>
+                              {% for target, column in mapping %}
+                                 <th class="text-nowrap">{{ targets[target] }}<div class="text-muted fw-normal small">{{ column }}</div></th>
+                              {% endfor %}
+                           </tr>
+                        </thead>
+                        <tbody>
+                           {% for row in preview %}
+                              <tr>
+                                 {% for target, column in mapping %}
+                                    <td class="text-truncate" style="max-width: 18rem" title="{{ row[column] ?? '' }}">{{ row[column] ?? '' }}</td>
+                                 {% endfor %}
+                              </tr>
+                           {% endfor %}
+                        </tbody>
+                     </table>
+                  </div>
+                  <div class="card-footer text-muted small">
+                     {{ __('The preview reflects the automatically proposed mapping; your changes are applied on import.', 'secincident') }}
+                  </div>
+               </div>
+            </div>
+         </div>
+
+         <div class="d-flex gap-2 mt-3">
+            <a href="{{ form_url }}" class="btn btn-outline-secondary">{{ __('Cancel', 'secincident') }}</a>
+            <button type="submit" name="import" value="1" class="btn btn-primary ms-auto">
+               <i class="ti ti-database-import me-1"></i>{{ __('Import', 'secincident') }}
+            </button>
+         </div>
+         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+      </form>
+
+   {# ------------------------------------------------------------------ #}
+   {% elseif step == 'result' %}
+      <div class="row row-cards mb-3">
+         {% set tiles = [
+            {label: __('Incidents created', 'secincident'), value: stats.created|length, color: 'green', icon: 'ti ti-plus'},
+            {label: __('Incidents completed', 'secincident'), value: stats.updated|length, color: 'blue', icon: 'ti ti-refresh'},
+            {label: __('Events added', 'secincident'), value: stats.events_added, color: 'orange', icon: 'ti ti-timeline-event'},
+            {label: __('Duplicates skipped', 'secincident'), value: stats.events_skipped, color: 'secondary', icon: 'ti ti-copy-off'},
+            {label: __('IOCs added', 'secincident'), value: stats.iocs_added, color: 'red', icon: 'ti ti-fingerprint'},
+            {label: __('Linked items', 'secincident'), value: stats.links_added, color: 'purple', icon: 'ti ti-link'},
+         ] %}
+         {% for tile in tiles %}
+            <div class="col-6 col-md-4 col-xl-2">
+               <div class="card card-sm">
+                  <div class="card-body d-flex align-items-center">
+                     <span class="avatar bg-{{ tile.color }}-lt me-2"><i class="{{ tile.icon }}"></i></span>
+                     <div><div class="h2 mb-0">{{ tile.value }}</div><div class="text-muted small">{{ tile.label }}</div></div>
+                  </div>
+               </div>
+            </div>
+         {% endfor %}
+      </div>
+
+      {% if stats.errors is not empty %}
+         <div class="alert alert-danger">
+            <strong>{{ __('Errors', 'secincident') }} :</strong>
+            <ul class="mb-0">{% for e in stats.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+         </div>
+      {% endif %}
+
+      <div class="card">
+         <div class="card-header">
+            <h3 class="card-title">{{ filename }}</h3>
+            <a href="{{ list_url }}" class="btn btn-sm btn-outline-secondary ms-auto">{{ __('View all incidents', 'secincident') }}</a>
+         </div>
+         <div class="list-group list-group-flush">
+            {% for i in incidents %}
+               <a href="{{ i.url }}" class="list-group-item list-group-item-action d-flex align-items-center gap-2">
+                  <span class="badge {{ i.kind == 'created' ? 'bg-green-lt' : 'bg-blue-lt' }}">{{ i.kind == 'created' ? __('Created', 'secincident') : __('Completed', 'secincident') }}</span>
+                  <strong>{{ i.reference }}</strong>
+                  <span>{{ i.name }}</span>
+                  <span class="badge bg-{{ i.color }}-lt ms-auto">{{ i.severity }}</span>
+               </a>
+            {% else %}
+               <div class="list-group-item text-muted">{{ __('No incident created or modified.', 'secincident') }}</div>
+            {% endfor %}
+         </div>
+      </div>
+
+      <div class="mt-3">
+         <a href="{{ form_url }}" class="btn btn-primary"><i class="ti ti-file-import me-1"></i>{{ __('Import another file', 'secincident') }}</a>
+      </div>
+   {% endif %}
+</div>

@@ -1,0 +1,63 @@
+{#
+ # SecIncident — onglet Indicateurs (IOC)
+ #}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set rand = random() %}
+
+{% if canedit %}
+   <details class="card mb-3" {{ entries is empty ? 'open' : '' }}>
+      <summary class="card-header cursor-pointer">
+         <h3 class="card-title"><i class="ti ti-plus me-2"></i>{{ __('Add indicators', 'secincident') }}</h3>
+      </summary>
+      <div class="card-body">
+         <form method="post" action="{{ form_action }}">
+            {{ fields.hiddenField(fk, incident.getID()) }}
+            <div class="row">
+               {{ fields.dropdownArrayField('ioc_type', 'auto', {'auto': __('Automatic detection', 'secincident')}|merge(types), _n('Type', 'Types', 1), {rand: rand}) }}
+               {{ fields.dropdownArrayField('verdict', 0, verdicts, __('Verdict', 'secincident'), {rand: rand}) }}
+               {{ fields.textareaField('values', '', __('Values (one per line)', 'secincident'), {rand: rand, full_width: true, rows: 4, required: true}) }}
+               {{ fields.textField('comment', '', __('Comments'), {rand: rand, full_width: true}) }}
+            </div>
+            <div class="text-end">
+               <button type="submit" name="add" value="1" class="btn btn-primary">
+                  <i class="ti ti-plus me-1"></i>{{ _x('button', 'Add') }}
+               </button>
+            </div>
+            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+         </form>
+      </div>
+   </details>
+{% endif %}
+
+{{ include('components/datatable.html.twig', {
+   'is_tab': true,
+   'nofilter': true,
+   'nosort': true,
+   'columns': {
+      'type': _n('Type', 'Types', 1),
+      'value': __('Value', 'secincident'),
+      'verdict': __('Verdict', 'secincident'),
+      'source': __('Source', 'secincident'),
+      'first': __('First sighting', 'secincident'),
+      'last': __('Last sighting', 'secincident'),
+      'comment': __('Comments'),
+   },
+   'formatters': {
+      'type': 'raw_html',
+      'value': 'raw_html',
+      'verdict': 'raw_html',
+      'source': 'raw_html',
+      'first': 'datetime',
+      'last': 'datetime',
+   },
+   'entries': entries,
+   'total_number': entries|length,
+   'filtered_number': entries|length,
+   'showmassiveactions': canedit,
+   'massiveactionparams': {
+      'num_displayed': entries|length,
+      'container': 'massGlpiPluginSecincidentIoc' ~ rand,
+      'itemtype': 'GlpiPlugin\\Secincident\\Ioc',
+   },
+}) }}

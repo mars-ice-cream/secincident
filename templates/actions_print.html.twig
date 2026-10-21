@@ -1,0 +1,80 @@
+{#
+ # SecIncident — journal des actions imprimable
+ #}
+<div class="secincident-print container-fluid py-3">
+   <div class="d-flex mb-3 d-print-none">
+      <button type="button" class="btn btn-primary ms-auto" onclick="window.print()"><i class="ti ti-printer me-1"></i>{{ __('Print / save as PDF', 'secincident') }}</button>
+   </div>
+
+   <h1 class="mb-1">{{ __('Action and remediation log', 'secincident') }}</h1>
+   <h2 class="h3 text-muted mb-3">{{ incident.fields['reference'] }} — {{ incident.fields['name'] }}</h2>
+
+   <table class="table table-sm table-bordered mb-3">
+      <tbody>
+         <tr>
+            <th class="w-25">{{ __('Category', 'secincident') }}</th><td>{{ category }}</td>
+            <th class="w-25">{{ __('Severity / status', 'secincident') }}</th><td>{{ severity }} — {{ status }}</td>
+         </tr>
+         <tr>
+            <th>{{ __('Log entries', 'secincident') }}</th>
+            <td>
+               {{ actions|length - remediations }} {{ __('action(s)', 'secincident') }} · {{ remediations }} {{ __('remediation task(s)', 'secincident') }}
+               {% if actions is not empty %}
+                  <span class="text-muted small">({{ __('from', 'secincident') }} {{ (actions|first).date|formatted_datetime }} {{ __('to', 'secincident') }} {{ (actions|last).date|formatted_datetime }})</span>
+               {% endif %}
+            </td>
+            <th>{{ __('Results', 'secincident') }}</th>
+            <td>
+               {% for key, nb in by_result|filter(n => n > 0) %}{{ results[key] ?? key }} : {{ nb }}{% if not loop.last %} · {% endif %}{% endfor %}
+            </td>
+         </tr>
+         <tr>
+            <th>{{ __('Responders', 'secincident') }}</th>
+            <td colspan="3">{% for name, nb in by_user %}{{ name }} ({{ nb }}){% if not loop.last %}, {% endif %}{% endfor %}</td>
+         </tr>
+      </tbody>
+   </table>
+
+   {% if actions is empty %}
+      <p class="text-muted">{{ __('No action logged and no remediation task completed.', 'secincident') }}</p>
+   {% else %}
+      <table class="table table-sm table-bordered secincident-print-table">
+         <thead>
+            <tr>
+               <th style="width: 8rem">{{ __('Date', 'secincident') }}</th>
+               <th style="width: 8rem">{{ __('By', 'secincident') }}</th>
+               <th style="width: 10rem">{{ __('Target / phase', 'secincident') }}</th>
+               <th>{{ __('Action', 'secincident') }}</th>
+               <th style="width: 7rem">{{ __('Result', 'secincident') }}</th>
+            </tr>
+         </thead>
+         <tbody>
+            {% for a in actions %}
+               <tr>
+                  <td class="small">{{ a.date|formatted_datetime }}</td>
+                  <td class="small">{{ a.user_name }}</td>
+                  <td class="small">{{ a.target }}<div class="text-muted">{{ a.tool_label }}</div></td>
+                  <td>
+                     {% if a.kind == 'remediation' %}<span class="badge bg-green-lt me-1">{{ __('Remediation', 'secincident') }}</span>{% else %}<span class="badge bg-blue-lt me-1">{{ __('Action', 'secincident') }}</span>{% endif %}
+                     <strong>{{ a.name }}</strong>
+                     {% if a.instructions is defined and a.instructions %}<div class="small text-muted">{{ a.instructions|nl2br }}</div>{% endif %}
+                     {% if a.command %}<pre class="secincident-command mt-1 mb-1">{{ a.command }}</pre>{% endif %}
+                     {% if a.content %}<div class="small">{{ a.content|nl2br }}</div>{% endif %}
+                     <div class="small text-muted">
+                        {% if a.detection_ref %}{{ __('Detection', 'secincident') }} : {{ a.detection_ref }}{% endif %}
+                        {% if a.task_name %}{% if a.detection_ref %} · {% endif %}{{ __('Task', 'secincident') }} : {{ a.task_name }}{% endif %}
+                     </div>
+                  </td>
+                  <td class="small">{{ a.result_label }}</td>
+               </tr>
+            {% endfor %}
+         </tbody>
+      </table>
+   {% endif %}
+
+   <p class="text-muted small mt-4">
+      {{ __('Issued on %1$s by %2$s.', 'secincident')|format(printed_at|formatted_datetime, printed_by) }}
+      {{ __('Each action and each task is sealed (SHA-256) and recorded in the audit log. Fingerprint of this document:', 'secincident') }}
+      <code class="secincident-hash">{{ fingerprint }}</code>
+   </p>
+</div>

@@ -1,0 +1,153 @@
+{#
+ # SecIncident — onglet Remédiation d'un incident
+ #}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% set rand = random() %}
+
+<div class="secincident-remediation">
+   <div class="d-flex flex-wrap align-items-center gap-3 mb-3">
+      <div class="flex-grow-1" style="min-width: 16rem">
+         <div class="d-flex justify-content-between small mb-1">
+            <strong>{{ __('Plan progress', 'secincident') }}</strong>
+            <span>{{ plan.done }} / {{ plan.total }} ({{ plan.percent }} %)</span>
+         </div>
+         <div class="progress progress-sm">
+            <div class="progress-bar bg-green" style="width: {{ plan.percent }}%" role="progressbar"
+                 aria-valuenow="{{ plan.percent }}" aria-valuemin="0" aria-valuemax="100" aria-label="{{ __('Progress', 'secincident') }}"></div>
+         </div>
+      </div>
+      {% if plan.pending_mandatory > 0 %}
+         <span class="badge bg-orange-lt"><i class="ti ti-lock me-1"></i>{{ plan.pending_mandatory }} {{ __('mandatory step(s) before closure', 'secincident') }}</span>
+      {% elseif plan.total > 0 %}
+         <span class="badge bg-green-lt"><i class="ti ti-check me-1"></i>{{ __('Mandatory steps completed', 'secincident') }}</span>
+      {% endif %}
+      {% if plan.total > 0 %}
+         <a href="{{ print_url }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-secondary"><i class="ti ti-printer me-1"></i>{{ __('Plan — print / PDF', 'secincident') }}</a>
+         <a href="{{ journal_url }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-secondary"><i class="ti ti-file-text me-1"></i>{{ __('Action & remediation log', 'secincident') }}</a>
+      {% endif %}
+   </div>
+
+   {% if canedit %}
+      <div class="row g-3 mb-3">
+         <div class="col-12 col-xl-6">
+            <div class="card h-100">
+               <div class="card-header">
+                  <h3 class="card-title"><i class="ti ti-list-check me-2"></i>{{ __('Apply a playbook', 'secincident') }}</h3>
+                  <a href="{{ playbook_url }}" class="ms-auto small">{{ can_manage ? __('Manage playbooks', 'secincident') : __('View playbooks', 'secincident') }}</a>
+               </div>
+               <div class="card-body">
+                  {% if choices is empty %}
+                     <div class="text-muted">{{ __('No other active playbook available.', 'secincident') }}</div>
+                  {% else %}
+                     <form method="post" action="{{ form_action }}" class="d-flex flex-wrap gap-2 align-items-center">
+                        {{ fields.hiddenField(fk, incident.getID()) }}
+                        <select name="plugin_secincident_playbooks_id" class="form-select" style="max-width: 28rem" aria-label="{{ __('Playbook', 'secincident') }}">
+                           {% for id, label in choices %}
+                              <option value="{{ id }}">{{ label }}</option>
+                           {% endfor %}
+                        </select>
+                        <button type="submit" name="apply_playbook" value="1" class="btn btn-primary"><i class="ti ti-copy me-1"></i>{{ __('Apply', 'secincident') }}</button>
+                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                     </form>
+                     <div class="text-muted small mt-2">{{ __('★ = playbook intended for the incident\'s category. The steps are copied into the plan.', 'secincident') }}{% if can_add_task %} {{ __('You can then adapt them.', 'secincident') }}{% endif %}</div>
+                  {% endif %}
+                  {% if plan.applied is not empty %}
+                     <div class="small mt-2">{{ __('Already applied:', 'secincident') }} {{ plan.applied|join(', ') }}</div>
+                  {% endif %}
+               </div>
+            </div>
+         </div>
+         {% if can_add_task %}
+         <div class="col-12 col-xl-6">
+            <details class="card">
+               <summary class="card-header cursor-pointer">
+                  <h3 class="card-title"><i class="ti ti-plus me-2"></i>{{ __('Add a specific task', 'secincident') }}</h3>
+               </summary>
+               <div class="card-body">
+                  <form method="post" action="{{ form_action }}">
+                     {{ fields.hiddenField(fk, incident.getID()) }}
+                     <div class="row">
+                        {{ fields.dropdownArrayField('phase', 'containment', phases, __('Phase', 'secincident'), {rand: rand}) }}
+                        {{ fields.dropdownYesNo('is_mandatory', 0, __('Mandatory before closure', 'secincident'), {rand: rand}) }}
+                        {{ fields.textField('name', '', __('Action', 'secincident'), {rand: rand, required: true, full_width: true}) }}
+                        {{ fields.textareaField('instructions', '', __('Instructions', 'secincident'), {rand: rand, full_width: true, rows: 2}) }}
+                     </div>
+                     <div class="text-end">
+                        <button type="submit" name="add" value="1" class="btn btn-primary"><i class="ti ti-plus me-1"></i>{{ _x('button', 'Add') }}</button>
+                     </div>
+                     <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                  </form>
+               </div>
+            </details>
+         </div>
+         {% endif %}
+      </div>
+   {% endif %}
+
+   {% if plan.total == 0 %}
+      <div class="alert alert-info">
+         <i class="ti ti-info-circle me-1"></i>{{ __('No remediation plan. Apply a playbook suited to the type of incident or add your own tasks.', 'secincident') }}
+      </div>
+   {% endif %}
+
+   {% for group in plan.by_phase %}
+      <div class="card mb-3">
+         <div class="card-header">
+            <h3 class="card-title"><span class="badge bg-{{ group.color }}-lt me-2">{{ group.done }}/{{ group.total }}</span>{{ group.label }}</h3>
+         </div>
+         <div class="list-group list-group-flush">
+            {% for t in group.tasks %}
+               <div class="list-group-item {{ t.status == 'done' or t.status == 'na' ? 'secincident-task-done' : '' }}">
+                  <div class="row g-2 align-items-start">
+                     <div class="col-12 col-lg-6">
+                        <div class="d-flex align-items-center gap-2">
+                           <span class="badge bg-{{ t.status_color }}-lt">{{ t.status_label }}</span>
+                           <a href="{{ t.url }}" class="fw-bold text-reset">{{ t.name }}</a>
+                           {% if t.is_mandatory %}<span class="badge bg-orange-lt" title="{{ __('Mandatory before closure', 'secincident') }}"><i class="ti ti-lock"></i></span>{% endif %}
+                        </div>
+                        {% if t.instructions %}<div class="text-muted small mt-1">{{ t.instructions|nl2br }}</div>{% endif %}
+                        <div class="text-muted small mt-1">
+                           {% if t.users_id_assign_name %}<i class="ti ti-user"></i> {{ t.users_id_assign_name }}{% endif %}
+                           {% if t.date_done %} · <i class="ti ti-check"></i> {{ t.date_done|formatted_datetime }} {{ __('by', 'secincident') }} {{ t.users_id_done_name }}{% endif %}
+                        </div>
+                     </div>
+                     <div class="col-12 col-lg-6">
+                        {% if canedit %}
+                           <form method="post" action="{{ form_action }}">
+                              {{ fields.hiddenField('id', t.id) }}
+                              <div class="d-flex flex-wrap gap-2">
+                                 <select name="status" class="form-select form-select-sm w-auto" aria-label="{{ __('Status', 'secincident') }}">
+                                    {% for key, label in statuses %}
+                                       <option value="{{ key }}" {{ key == t.status ? 'selected' : '' }}>{{ label }}</option>
+                                    {% endfor %}
+                                 </select>
+                                 <select name="users_id_assign" class="form-select form-select-sm w-auto flex-grow-1" aria-label="{{ __('Assigned to', 'secincident') }}">
+                                    <option value="0">— {{ __('not assigned', 'secincident') }} —</option>
+                                    {% for uid, uname in assignables %}
+                                       <option value="{{ uid }}" {{ uid == t.users_id_assign ? 'selected' : '' }}>{{ uname }}</option>
+                                    {% endfor %}
+                                    {% if t.users_id_assign > 0 and t.users_id_assign not in assignables|keys %}
+                                       <option value="{{ t.users_id_assign }}" selected>{{ t.users_id_assign_name }}</option>
+                                    {% endif %}
+                                 </select>
+                              </div>
+                              <div class="input-group input-group-sm mt-2">
+                                 <input type="text" name="comment" value="{{ t.comment }}" class="form-control"
+                                        placeholder="{{ __('Report (what was done, findings…)', 'secincident') }}" aria-label="{{ __('Report', 'secincident') }}">
+                                 <button type="submit" name="update" value="1" class="btn btn-primary">
+                                    <i class="ti ti-device-floppy me-1"></i>{{ _x('button', 'Save') }}
+                                 </button>
+                              </div>
+                              <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                           </form>
+                        {% elseif t.comment %}
+                           <div class="small">{{ t.comment }}</div>
+                        {% endif %}
+                     </div>
+                  </div>
+               </div>
+            {% endfor %}
+         </div>
+      </div>
+   {% endfor %}
+</div>

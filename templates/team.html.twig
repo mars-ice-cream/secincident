@@ -1,0 +1,104 @@
+{#
+ # SecIncident — équipe d'intervention d'un incident
+ #}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% set rand = random() %}
+
+<div class="secincident-team">
+   <div class="card mb-3">
+      <div class="card-header">
+         <h3 class="card-title"><i class="ti ti-steering-wheel me-2"></i>{{ __('Leads', 'secincident') }}</h3>
+         <span class="ms-auto text-muted small">{{ __('Can be changed in the incident\'s main tab.', 'secincident') }}</span>
+      </div>
+      <div class="card-body d-flex flex-wrap gap-4">
+         {% for p in pilots %}
+            <div><div class="text-muted small">{{ p.label }}</div><strong>{{ p.name }}</strong></div>
+         {% endfor %}
+      </div>
+   </div>
+
+   {% if canmanage %}
+      <div class="card mb-3">
+         <div class="card-body">
+            <form method="post" action="{{ form_action }}" class="d-flex flex-wrap gap-2 align-items-end">
+               {{ fields.hiddenField(fk, incident.getID()) }}
+               <div style="min-width: 18rem">
+                  {{ fields.dropdownField('User', 'users_id', 0, __('Add a technician', 'secincident'), {
+                     rand: rand, right: 'own_ticket', used: used, entity: incident.fields['entities_id'],
+                     entity_sons: true, field_class: '', is_horizontal: false, mb: '',
+                  }) }}
+               </div>
+               <div>
+                  <label class="form-label" for="team-role-{{ rand }}">{{ __('Role', 'secincident') }}</label>
+                  <select id="team-role-{{ rand }}" name="role" class="form-select">
+                     {% for key, label in roles %}
+                        <option value="{{ key }}">{{ label }}</option>
+                     {% endfor %}
+                  </select>
+               </div>
+               <button type="submit" name="add" value="1" class="btn btn-primary"><i class="ti ti-user-plus me-1"></i>{{ _x('button', 'Add') }}</button>
+               <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+            </form>
+            <div class="text-muted small mt-2">
+               {{ __('Contributors see the incident and can act (timeline, IOCs, evidence, remediation tasks). Observers have read-only access. Every action remains logged under each person\'s name.', 'secincident') }}
+            </div>
+         </div>
+      </div>
+   {% endif %}
+
+   <div class="card">
+      <div class="card-header">
+         <h3 class="card-title"><i class="ti ti-users-group me-2"></i>{{ __('Response team', 'secincident') }}</h3>
+      </div>
+      <div class="table-responsive">
+         <table class="table table-vcenter card-table table-sm">
+            <thead>
+               <tr>
+                  <th>{{ __('Member', 'secincident') }}</th>
+                  <th>{{ __('Role', 'secincident') }}</th>
+                  <th>{{ __('Open tasks', 'secincident') }}</th>
+                  <th>{{ __('Added', 'secincident') }}</th>
+                  {% if canmanage %}<th></th>{% endif %}
+               </tr>
+            </thead>
+            <tbody>
+               {% for m in members %}
+                  <tr>
+                     <td><strong>{{ m.name }}</strong></td>
+                     <td>
+                        {% if canmanage %}
+                           <form method="post" action="{{ form_action }}" class="d-flex gap-1">
+                              {{ fields.hiddenField('id', m.id) }}
+                              <select name="role" class="form-select form-select-sm w-auto" aria-label="{{ __('Role', 'secincident') }}">
+                                 {% for key, label in roles %}
+                                    <option value="{{ key }}" {{ key == m.role ? 'selected' : '' }}>{{ label }}</option>
+                                 {% endfor %}
+                              </select>
+                              <button type="submit" name="update" value="1" class="btn btn-sm btn-outline-primary" title="{{ _x('button', 'Save') }}"><i class="ti ti-device-floppy"></i></button>
+                              <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                           </form>
+                        {% else %}
+                           <span class="badge {{ m.role == 'observer' ? 'bg-secondary-lt' : 'bg-blue-lt' }}">{{ m.role_label }}</span>
+                        {% endif %}
+                     </td>
+                     <td>{{ m.open_tasks }}</td>
+                     <td class="small text-muted">{{ m.date_added|formatted_datetime }}{% if m.added_by %} · {{ m.added_by }}{% endif %}</td>
+                     {% if canmanage %}
+                        <td class="text-end">
+                           <form method="post" action="{{ form_action }}"
+                                 onsubmit="return confirm('{{ __('Remove this person from the team? They will lose access to the incident (unless they have access another way).', 'secincident')|e('js') }}');">
+                              {{ fields.hiddenField('id', m.id) }}
+                              <button type="submit" name="purge" value="1" class="btn btn-sm btn-outline-danger"><i class="ti ti-user-minus me-1"></i>{{ __('Remove', 'secincident') }}</button>
+                              <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                           </form>
+                        </td>
+                     {% endif %}
+                  </tr>
+               {% else %}
+                  <tr><td colspan="5" class="text-muted">{{ __('No other member yet.', 'secincident') }}</td></tr>
+               {% endfor %}
+            </tbody>
+         </table>
+      </div>
+   </div>
+</div>

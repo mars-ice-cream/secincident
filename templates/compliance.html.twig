@@ -1,0 +1,116 @@
+{#
+ # SecIncident — onglet RGPD / NIS2
+ #}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set field_options = {'rand': random(), 'readonly': not canedit} %}
+{% set state_labels = {
+   'done': __('Done on time', 'secincident'),
+   'late': __('Done late', 'secincident'),
+   'overdue': __('Overdue', 'secincident'),
+   'pending': __('To do', 'secincident'),
+   'unknown': __('Awareness date missing', 'secincident'),
+} %}
+{% set state_colors = {'done': 'green', 'late': 'orange', 'overdue': 'red', 'pending': 'yellow', 'unknown': 'secondary'} %}
+
+<div class="secincident-compliance">
+   {% if deadlines is not empty %}
+      <div class="card mb-3">
+         <div class="card-header">
+            <h3 class="card-title"><i class="ti ti-alarm me-2"></i>{{ __('Regulatory deadlines', 'secincident') }}</h3>
+         </div>
+         <div class="table-responsive">
+            <table class="table table-vcenter card-table">
+               <thead>
+                  <tr>
+                     <th>{{ __('Obligation', 'secincident') }}</th>
+                     <th>{{ __('Deadline', 'secincident') }}</th>
+                     <th>{{ __('Done on', 'secincident') }}</th>
+                     <th>{{ __('State', 'secincident') }}</th>
+                  </tr>
+               </thead>
+               <tbody>
+               {% for d in deadlines %}
+                  <tr>
+                     <td>
+                        <strong>{{ d.label }}</strong>
+                        <div class="text-muted small">{{ d.hint }}</div>
+                     </td>
+                     <td>{{ d.due ? d.due|formatted_datetime : '—' }}</td>
+                     <td>{{ d.done ? d.done|formatted_datetime : '—' }}</td>
+                     <td>
+                        <span class="badge bg-{{ state_colors[d.state] }}-lt">{{ state_labels[d.state] }}</span>
+                        {% if d.state == 'pending' and d.remaining is not null %}
+                           <span class="text-muted small ms-1">{{ d.remaining }} h</span>
+                        {% endif %}
+                     </td>
+                  </tr>
+               {% endfor %}
+               </tbody>
+            </table>
+         </div>
+      </div>
+   {% else %}
+      <div class="alert alert-info">
+         <i class="ti ti-info-circle me-1"></i>
+         {{ __('No notification obligation is triggered for now. Fill in the sections below if personal data is involved or if the entity is subject to NIS2.', 'secincident') }}
+      </div>
+   {% endif %}
+
+   <form method="post" action="{{ item.getFormURL() }}" data-track-changes="true">
+      {{ fields.hiddenField('id', item.getID()) }}
+
+      <div class="card mb-3">
+         <div class="card-header">
+            <h3 class="card-title"><i class="ti ti-user-shield me-2"></i>{{ __('Personal data breach (GDPR)', 'secincident') }}</h3>
+         </div>
+         <div class="card-body row">
+            {{ fields.dropdownYesNo('is_personal_data', item.fields['is_personal_data'], __('Personal data is involved', 'secincident'), field_options) }}
+            {{ fields.dropdownArrayField('gdpr_risk', item.fields['gdpr_risk'], risks, __('Risk to rights and freedoms', 'secincident'), field_options) }}
+            {{ fields.datetimeField('date_awareness', item.fields['date_awareness'], __('Awareness', 'secincident'), field_options|merge({
+               helper: __('Starting point of the regulatory deadlines', 'secincident'),
+            })) }}
+            {{ fields.numberField('persons_affected', item.fields['persons_affected'], __('Approximate number of people affected', 'secincident'), field_options|merge({min: 0})) }}
+            {{ fields.textareaField('personal_data_categories', item.fields['personal_data_categories'], __('Categories of data and of people affected', 'secincident'), field_options|merge({full_width: true, rows: 3})) }}
+            {{ fields.textareaField('gdpr_justification', item.fields['gdpr_justification'], __('Risk analysis / justification (breach register)', 'secincident'), field_options|merge({
+               full_width: true,
+               rows: 4,
+               helper: __('Must be documented even without notification: every breach must be recorded in the internal register (GDPR art. 33.5).', 'secincident'),
+            })) }}
+            {{ fields.datetimeField('cnil_notified_date', item.fields['cnil_notified_date'], __('CNIL notified on', 'secincident'), field_options) }}
+            {{ fields.textField('cnil_reference', item.fields['cnil_reference'], __('CNIL notification reference', 'secincident'), field_options) }}
+            {{ fields.datetimeField('persons_informed_date', item.fields['persons_informed_date'], __('People affected informed on', 'secincident'), field_options) }}
+         </div>
+      </div>
+
+      <div class="card mb-3">
+         <div class="card-header">
+            <h3 class="card-title"><i class="ti ti-building-community me-2"></i>{{ __('NIS2 directive (ANSSI)', 'secincident') }}</h3>
+         </div>
+         <div class="card-body row">
+            {{ fields.dropdownYesNo('is_nis2', item.fields['is_nis2'], __('Entity subject to NIS2', 'secincident'), field_options) }}
+            {{ fields.dropdownYesNo('is_significant', item.fields['is_significant'], __('Significant incident', 'secincident'), field_options|merge({
+               helper: __('Severe disruption of services or significant financial losses / damage to third parties.', 'secincident'),
+            })) }}
+            {{ fields.datetimeField('anssi_warning_date', item.fields['anssi_warning_date'], __('Early warning sent on (24 h)', 'secincident'), field_options) }}
+            {{ fields.datetimeField('anssi_notification_date', item.fields['anssi_notification_date'], __('Incident notification sent on (72 h)', 'secincident'), field_options) }}
+            {{ fields.datetimeField('anssi_final_report_date', item.fields['anssi_final_report_date'], __('Final report submitted on (1 month)', 'secincident'), field_options) }}
+            {{ fields.textField('anssi_reference', item.fields['anssi_reference'], __('ANSSI / CERT-FR reference', 'secincident'), field_options) }}
+         </div>
+      </div>
+
+      {% if canedit %}
+         <div class="text-center mb-3">
+            <button type="submit" name="update" value="1" class="btn btn-primary">
+               <i class="ti ti-device-floppy me-1"></i>{{ _x('button', 'Save') }}
+            </button>
+         </div>
+      {% endif %}
+      <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+   </form>
+
+   <p class="text-muted small">
+      <i class="ti ti-info-circle"></i>
+      {{ __('Indicative deadlines from the GDPR (art. 33 and 34) and the NIS2 directive (art. 23). Check the national transposition and the current ANSSI / CNIL guidance.', 'secincident') }}
+   </p>
+</div>

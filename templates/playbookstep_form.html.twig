@@ -1,0 +1,20 @@
+{#
+ # SecIncident — étape de procédure
+ #}
+{% extends 'generic_show_form.html.twig' %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set no_inventory_footer = true %}
+
+{% block form_fields %}
+   {% set fk = 'plugin_secincident_playbooks_id' %}
+   {{ fields.hiddenField(fk, item.fields[fk]) }}
+   {% if not playbook.isNewItem() %}
+      {{ fields.htmlField('', playbook.getLink(), _n('Remediation playbook', 'Remediation playbooks', 1, 'secincident'), field_options|merge({full_width: true})) }}
+   {% endif %}
+   {{ fields.dropdownArrayField('phase', item.fields['phase'], phases, __('Phase', 'secincident'), field_options) }}
+   {{ fields.numberField('position', item.fields['position'], __('Order', 'secincident'), field_options|merge({min: 0, step: 1})) }}
+   {{ fields.textField('name', item.fields['name'], __('Action', 'secincident'), field_options|merge({required: true, full_width: true})) }}
+   {{ fields.textareaField('instructions', item.fields['instructions'], __('Instructions', 'secincident'), field_options|merge({full_width: true, rows: 5})) }}
+   {{ fields.dropdownYesNo('is_mandatory', item.fields['is_mandatory'], __('Mandatory before closure', 'secincident'), field_options) }}
+{% endblock %}

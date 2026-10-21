@@ -1,0 +1,61 @@
+{#
+ # SecIncident — étapes d'une procédure
+ #}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% set rand = random() %}
+
+{% if canedit %}
+   <details class="card mb-3" {{ steps is empty ? 'open' : '' }}>
+      <summary class="card-header cursor-pointer">
+         <h3 class="card-title"><i class="ti ti-plus me-2"></i>{{ __('Add a step', 'secincident') }}</h3>
+      </summary>
+      <div class="card-body">
+         <form method="post" action="{{ form_action }}">
+            {{ fields.hiddenField(fk, playbook.getID()) }}
+            <div class="row">
+               {{ fields.dropdownArrayField('phase', 'containment', phases, __('Phase', 'secincident'), {rand: rand}) }}
+               {{ fields.numberField('position', next_rank, __('Order', 'secincident'), {rand: rand, min: 0, step: 1}) }}
+               {{ fields.textField('name', '', __('Action', 'secincident'), {rand: rand, required: true, full_width: true}) }}
+               {{ fields.textareaField('instructions', '', __('Instructions', 'secincident'), {rand: rand, full_width: true, rows: 3}) }}
+               {{ fields.dropdownYesNo('is_mandatory', 1, __('Mandatory before closure', 'secincident'), {rand: rand}) }}
+            </div>
+            <div class="text-end">
+               <button type="submit" name="add" value="1" class="btn btn-primary"><i class="ti ti-plus me-1"></i>{{ _x('button', 'Add') }}</button>
+            </div>
+            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+         </form>
+      </div>
+   </details>
+{% endif %}
+
+{% if steps is empty %}
+   <div class="alert alert-info">{{ __('No step.', 'secincident') }}</div>
+{% else %}
+   <div class="card">
+      <div class="table-responsive">
+         <table class="table table-vcenter card-table table-sm">
+            <thead>
+               <tr>
+                  <th>{{ __('Order', 'secincident') }}</th>
+                  <th>{{ __('Phase', 'secincident') }}</th>
+                  <th>{{ __('Action', 'secincident') }}</th>
+                  <th>{{ __('Mandatory', 'secincident') }}</th>
+               </tr>
+            </thead>
+            <tbody>
+               {% for s in steps %}
+                  <tr>
+                     <td class="text-muted">{{ s.position }}</td>
+                     <td><span class="badge bg-{{ s.phase_color }}-lt">{{ s.phase_label }}</span></td>
+                     <td>
+                        <a href="{{ s.url }}" class="fw-bold">{{ s.name }}</a>
+                        {% if s.instructions %}<div class="text-muted small">{{ s.instructions|nl2br }}</div>{% endif %}
+                     </td>
+                     <td>{{ s.is_mandatory ? __('Oui') : __('Non') }}</td>
+                  </tr>
+               {% endfor %}
+            </tbody>
+         </table>
+      </div>
+   </div>
+{% endif %}

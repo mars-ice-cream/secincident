@@ -1,0 +1,121 @@
+{#
+ # SecIncident — onglet Intégrité & preuves
+ #}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set status_labels = {
+   'ok': __('Intact', 'secincident'),
+   'altered': __('Modified outside the application', 'secincident'),
+   'missing': __('Deleted outside the application', 'secincident'),
+   'unsealed': __('Not sealed', 'secincident'),
+} %}
+{% set status_colors = {'ok': 'green', 'altered': 'red', 'missing': 'red', 'unsealed': 'orange'} %}
+{% set s = result.summary %}
+{% set problems = result.items|filter(i => i.status != 'ok') %}
+
+<div class="secincident-integrity">
+   <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+      {% if result.ok %}
+         <span class="badge bg-green-lt fs-5"><i class="ti ti-shield-check me-1"></i>{{ __('No anomaly', 'secincident') }}</span>
+      {% else %}
+         <span class="badge bg-red text-white fs-5"><i class="ti ti-alert-octagon me-1"></i>{{ __('Anomalies detected', 'secincident') }}</span>
+      {% endif %}
+      <span class="text-muted small">
+         {{ s.ok }} {{ __('intact record(s)', 'secincident') }}
+         {% if s.altered %} · <span class="text-danger">{{ s.altered }} {{ __('modified', 'secincident') }}</span>{% endif %}
+         {% if s.missing %} · <span class="text-danger">{{ s.missing }} {{ __('deleted', 'secincident') }}</span>{% endif %}
+         {% if s.unsealed %} · <span class="text-warning">{{ s.unsealed }} {{ __('not sealed', 'secincident') }}</span>{% endif %}
+         · {{ result.evidences|length }} {{ __('evidence item(s)', 'secincident') }}
+      </span>
+      {% if can_check %}
+         <form method="post" action="{{ form_url }}" class="ms-auto">
+            {{ fields.hiddenField('id', item.getID()) }}
+            <button type="submit" name="verify_integrity" value="1" class="btn btn-primary btn-sm">
+               <i class="ti ti-shield-search me-1"></i>{{ __('Verify now (including files)', 'secincident') }}
+            </button>
+            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+         </form>
+      {% endif %}
+   </div>
+
+   <div class="card mb-3">
+      <div class="card-header">
+         <h3 class="card-title"><i class="ti ti-paperclip me-2"></i>{{ __('Evidence register', 'secincident') }}</h3>
+         <span class="ms-auto text-muted small">{{ __('Every document added in the Documents tab is registered automatically with its SHA-256.', 'secincident') }}</span>
+      </div>
+      <div class="table-responsive">
+         <table class="table table-sm table-vcenter card-table">
+            <thead>
+               <tr>
+                  <th>{{ __('File', 'secincident') }}</th>
+                  <th>{{ __('Size', 'secincident') }}</th>
+                  <th>{{ __('Reference SHA-256', 'secincident') }}</th>
+                  <th>{{ __('Added', 'secincident') }}</th>
+                  <th>{{ __('Last check', 'secincident') }}</th>
+               </tr>
+            </thead>
+            <tbody>
+               {% for e in result.evidences %}
+                  <tr class="{{ e.check_color == 'red' ? 'table-danger' : '' }}">
+                     <td>
+                        <a href="{{ path('/front/document.form.php?id=' ~ e.documents_id) }}">{{ e.filename }}</a>
+                        <div class="text-muted small">{{ e.mime }}</div>
+                     </td>
+                     <td class="text-nowrap small">{{ (e.filesize / 1024)|round(1) }} Ko</td>
+                     <td>
+                        <code class="secincident-hash user-select-all">{{ e.sha256 ?: '—' }}</code>
+                        {% if e.check == 'modified' and e.last_sha256 %}
+                           <div class="small text-danger">{{ __('current:', 'secincident') }} <code class="secincident-hash">{{ e.last_sha256 }}</code></div>
+                        {% endif %}
+                     </td>
+                     <td class="small text-nowrap">{{ e.date_added|formatted_datetime }}<div class="text-muted">{{ e.user_name }}</div></td>
+                     <td class="small">
+                        <span class="badge bg-{{ e.check_color }}-lt">{{ e.check_label }}</span>
+                        <div class="text-muted">{{ e.date_last_check ? e.date_last_check|formatted_datetime : '' }}</div>
+                     </td>
+                  </tr>
+               {% else %}
+                  <tr><td colspan="5" class="text-muted">{{ __('No evidence attached. Add your files (screenshots, logs, EDR exports…) in the Documents tab.', 'secincident') }}</td></tr>
+               {% endfor %}
+            </tbody>
+         </table>
+      </div>
+   </div>
+
+   <div class="card">
+      <div class="card-header">
+         <h3 class="card-title"><i class="ti ti-database me-2"></i>{{ __('Data integrity', 'secincident') }}</h3>
+         <span class="ms-auto text-muted small">{{ __('Form, timeline, IOCs and links: fingerprint recomputed at each display and compared with the audit log.', 'secincident') }}</span>
+      </div>
+      {% if problems is not empty %}
+         <div class="table-responsive">
+            <table class="table table-sm card-table">
+               <thead><tr><th>{{ __('Item', 'secincident') }}</th><th>{{ __('State', 'secincident') }}</th><th>{{ __('Expected fingerprint', 'secincident') }}</th></tr></thead>
+               <tbody>
+                  {% for i in problems %}
+                     <tr class="{{ status_colors[i.status] == 'red' ? 'table-danger' : '' }}">
+                        <td>{{ i.label }}<div class="text-muted small">{{ i.itemtype|split('\\')|last }} #{{ i.id }}</div></td>
+                        <td><span class="badge bg-{{ status_colors[i.status] }}-lt">{{ status_labels[i.status] }}</span></td>
+                        <td><code class="secincident-hash">{{ i.anchor ?? i.stored ?? '—' }}</code></td>
+                     </tr>
+                  {% endfor %}
+               </tbody>
+            </table>
+         </div>
+      {% endif %}
+      <details class="card-body pt-2">
+         <summary class="text-muted small cursor-pointer">{{ __('Details of the %d records', 'secincident')|format(result.items|length) }}</summary>
+         <table class="table table-sm mt-2 mb-0">
+            <tbody>
+               {% for i in result.items %}
+                  <tr>
+                     <td class="small">{{ i.label }}</td>
+                     <td><span class="badge bg-{{ status_colors[i.status] }}-lt">{{ status_labels[i.status] }}</span></td>
+                     <td><code class="secincident-hash small">{{ i.current ?? i.anchor }}</code></td>
+                  </tr>
+               {% endfor %}
+            </tbody>
+         </table>
+      </details>
+   </div>
+</div>

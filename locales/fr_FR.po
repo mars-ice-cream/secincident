@@ -1,0 +1,3078 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: secincident\n"
+"Report-Msgid-Bugs-To: https://github.com/mars-ice-cream/secincident/issues\n"
+"POT-Creation-Date: 2026-10-20 22:44+0200\n"
+"PO-Revision-Date: 2026-10-20 22:44+0200\n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: front/actions.print.php:101
+#, php-format
+msgid "Action log %s"
+msgstr "Journal des actions %s"
+
+#: front/actions.print.php:15 front/actions.print.php:19
+msgid "printing the action log"
+msgstr "impression du journal des actions"
+
+#: front/actions.print.php:74
+msgid "Mandatory step"
+msgstr "Étape obligatoire"
+
+#: front/actions.print.php:95
+msgid "action log"
+msgstr "journal des actions"
+
+#: front/category.form.php:13
+msgid "incident category"
+msgstr "catégorie d'incident"
+
+#: front/category.form.php:19
+msgid "category creation"
+msgstr "création de catégorie"
+
+#: front/category.form.php:26
+msgid "category update"
+msgstr "modification de catégorie"
+
+#: front/category.form.php:30
+msgid "category deletion"
+msgstr "suppression de catégorie"
+
+#: front/category.php:12 front/category.php:13
+msgid "incident categories"
+msgstr "catégories d'incident"
+
+#: front/dashboard.php:15
+msgid "dashboard"
+msgstr "tableau de bord"
+
+#: front/dashboard.php:27 templates/dashboard.html.twig:35
+msgid "Security dashboard"
+msgstr "Tableau de bord sécurité"
+
+#: front/import.php:114
+msgid "File expired: please upload it again."
+msgstr "Fichier expiré : merci de le déposer à nouveau."
+
+#: front/import.php:126
+msgid "No column has been mapped."
+msgstr "Aucune colonne n'a été associée."
+
+#: front/import.php:169
+#, php-format
+msgid "Imported EDR export — %s"
+msgstr "Export EDR importé — %s"
+
+#: front/import.php:54
+msgid "No file received (check the maximum size allowed by PHP)."
+msgstr "Aucun fichier reçu (vérifiez la taille maximale autorisée par PHP)."
+
+#: front/import.php:58
+msgid "The file must be in CSV format."
+msgstr "Le fichier doit être au format CSV."
+
+#: front/import.php:61
+msgid "File too large."
+msgstr "Fichier trop volumineux."
+
+#: front/import.php:67
+msgid "Unable to save the temporary file."
+msgstr "Impossible d'enregistrer le fichier temporaire."
+
+#: front/incident.form.php:12
+msgid "incident form"
+msgstr "fiche incident"
+
+#: front/incident.form.php:41
+msgid "integrity check"
+msgstr "vérification d'intégrité"
+
+#: front/incident.form.php:44
+msgid "intact"
+msgstr "intègre"
+
+#: front/incident.form.php:44
+msgid "anomalies"
+msgstr "anomalies"
+
+#: front/incident.form.php:55
+msgid "Check completed: data and evidence are intact."
+msgstr "Vérification terminée : données et preuves intègres."
+
+#: front/incident.form.php:56
+msgid "Check completed: anomalies detected, see the Integrity & evidence tab."
+msgstr "Vérification terminée : anomalies détectées, voir l'onglet Intégrité & preuves."
+
+#: front/incident.form.php:62
+msgid "linked ticket creation"
+msgstr "création de ticket lié"
+
+#: front/incident.form.php:64
+msgid "linked ticket creation (ticket right)"
+msgstr "création de ticket lié (droit ticket)"
+
+#: front/incident.form.php:70
+#, php-format
+msgid "Ticket %d created and linked to the incident"
+msgstr "Ticket %d créé et lié à l'incident"
+
+#: front/incident.php:12
+msgid "incident list"
+msgstr "liste des incidents"
+
+#: front/incident_item.form.php:15
+msgid "item linking"
+msgstr "liaison d'éléments"
+
+#: front/incident_item.form.php:22
+msgid "Select an item to link"
+msgstr "Sélectionnez un élément à lier"
+
+#: front/incident_item.form.php:38
+msgid "unlinking"
+msgstr "déliaison"
+
+#: front/ioc.form.php:12
+msgid "indicator (IOC)"
+msgstr "indicateur (IOC)"
+
+#: front/ioc.form.php:27
+msgid "IOC addition"
+msgstr "ajout d'IOC"
+
+#: front/ioc.form.php:34
+#, php-format
+msgid "%1$d indicator(s) added out of %2$d"
+msgstr "%1$d indicateur(s) ajouté(s) sur %2$d"
+
+#: front/ioc.form.php:39
+msgid "IOC update"
+msgstr "modification d'IOC"
+
+#: front/ioc.form.php:43
+msgid "IOC deletion"
+msgstr "suppression d'IOC"
+
+#: front/ioc.form.php:51
+msgid "IOC consultation"
+msgstr "consultation d'IOC"
+
+#: front/playbook.form.php:12
+msgid "remediation playbook"
+msgstr "procédure de remédiation"
+
+#: front/playbook.form.php:18
+msgid "playbook creation"
+msgstr "création de procédure"
+
+#: front/playbook.form.php:25
+msgid "playbook update"
+msgstr "modification de procédure"
+
+#: front/playbook.form.php:29
+msgid "playbook moved to trash"
+msgstr "procédure à la corbeille"
+
+#: front/playbook.form.php:33
+msgid "playbook restoration"
+msgstr "restauration de procédure"
+
+#: front/playbook.form.php:37
+msgid "playbook deletion"
+msgstr "suppression de procédure"
+
+#: front/playbook.php:12 front/playbook.php:13
+msgid "remediation playbooks"
+msgstr "procédures de remédiation"
+
+#: front/playbookstep.form.php:13
+msgid "playbook step"
+msgstr "étape de procédure"
+
+#: front/playbookstep.form.php:20
+msgid "playbook step addition"
+msgstr "ajout d'étape de procédure"
+
+#: front/playbookstep.form.php:24
+msgid "playbook step update"
+msgstr "modification d'étape de procédure"
+
+#: front/playbookstep.form.php:28
+msgid "playbook step deletion"
+msgstr "suppression d'étape de procédure"
+
+#: front/remediation.print.php:13 front/remediation.print.php:17
+msgid "printing the remediation plan"
+msgstr "impression du plan de remédiation"
+
+#: front/remediation.print.php:28 front/remediationtask.form.php:13
+msgid "remediation plan"
+msgstr "plan de remédiation"
+
+#: front/remediation.print.php:34
+#, php-format
+msgid "Remediation plan %s"
+msgstr "Plan de remédiation %s"
+
+#: front/remediationtask.form.php:24
+msgid "Playbook not found"
+msgstr "Procédure introuvable"
+
+#: front/remediationtask.form.php:30
+#, php-format
+msgid "%d task(s) added to the remediation plan"
+msgstr "%d tâche(s) ajoutée(s) au plan de remédiation"
+
+#: front/remediationtask.form.php:35
+msgid "remediation task addition"
+msgstr "ajout de tâche de remédiation"
+
+#: front/remediationtask.form.php:39
+msgid "remediation task update"
+msgstr "mise à jour de tâche de remédiation"
+
+#: front/remediationtask.form.php:43
+msgid "remediation task deletion"
+msgstr "suppression de tâche de remédiation"
+
+#: front/remediationtask.form.php:51
+msgid "remediation task consultation"
+msgstr "consultation de tâche de remédiation"
+
+#: front/teammember.form.php:13
+msgid "response team"
+msgstr "équipe d'intervention"
+
+#: front/teammember.form.php:19
+msgid "addition to the team"
+msgstr "ajout à l'équipe"
+
+#: front/teammember.form.php:23
+msgid "team role change"
+msgstr "changement de rôle dans l'équipe"
+
+#: front/teammember.form.php:27
+msgid "removal from the team"
+msgstr "retrait de l'équipe"
+
+#: front/timelineevent.form.php:12
+msgid "timeline event"
+msgstr "événement de chronologie"
+
+#: front/timelineevent.form.php:19
+msgid "event addition"
+msgstr "ajout d'événement"
+
+#: front/timelineevent.form.php:23
+msgid "event update"
+msgstr "modification d'événement"
+
+#: front/timelineevent.form.php:27
+msgid "event deletion"
+msgstr "suppression d'événement"
+
+#: front/timelineevent.form.php:35
+msgid "event consultation"
+msgstr "consultation d'événement"
+
+#: hook.php:305
+msgid "Integrity check before migration"
+msgstr "Vérification d'intégrité avant migration"
+
+#: hook.php:319
+msgid "global, before schema migration (1.5.0)"
+msgstr "globale, avant migration du schéma (1.5.0)"
+
+#: hook.php:45 hook.php:117 hook.php:149 hook.php:178 hook.php:196 hook.php:219 hook.php:244 hook.php:264 hook.php:345 hook.php:377 hook.php:411
+#, php-format
+msgid "Creating table %s"
+msgstr "Création de la table %s"
+
+#: hook.php:504
+#, php-format
+msgid "%d remediation playbooks installed"
+msgstr "%d procédures de remédiation installées"
+
+#: hook.php:509
+#, php-format
+msgid "%d incident categories installed"
+msgstr "%d catégories d'incident installées"
+
+#: hook.php:524
+msgid "migration 1.5.0: new fingerprint format, prior check logged"
+msgstr "migration 1.5.0 : nouveau format d'empreinte, vérification préalable tracée"
+
+#: hook.php:547
+msgid "Renaming former vendor keys to generic EDR"
+msgstr "Renommage des anciennes clés éditeur en EDR générique"
+
+#: hook.php:567
+msgid "affected incidents, before renaming EDR keys (1.8.0)"
+msgstr "incidents concernés, avant renommage des clés EDR (1.8.0)"
+
+#: hook.php:585
+msgid "migration 1.8.0: keys “crowdstrike” / “falcon_rtr” renamed to “edr” / “edr_console”"
+msgstr "migration 1.8.0 : clés « crowdstrike » / « falcon_rtr » renommées en « edr » / « edr_console »"
+
+#: hook.php:611
+msgid "plugin update"
+msgstr "mise à jour du plugin"
+
+#: hook.php:611
+msgid "plugin installation / audit activation"
+msgstr "installation du plugin / activation de l'audit"
+
+#: hook.php:643
+msgid "plugin uninstallation (data deleted, log kept)"
+msgstr "désinstallation du plugin (données supprimées, journal conservé)"
+
+#: src/AuditLog.php:100
+msgid "Permanent deletion"
+msgstr "Suppression définitive"
+
+#: src/AuditLog.php:101
+msgid "Link"
+msgstr "Liaison"
+
+#: src/AuditLog.php:102
+msgid "Unlink"
+msgstr "Déliaison"
+
+#: src/AuditLog.php:103 templates/dashboard.html.twig:45
+msgid "CSV import"
+msgstr "Import CSV"
+
+#: src/AuditLog.php:104
+msgid "File upload"
+msgstr "Dépôt de fichier"
+
+#: src/AuditLog.php:105
+msgid "Ticket creation"
+msgstr "Création de ticket"
+
+#: src/AuditLog.php:106
+msgid "Access denied"
+msgstr "Accès refusé"
+
+#: src/AuditLog.php:107
+msgid "Rights change"
+msgstr "Changement de droits"
+
+#: src/AuditLog.php:108
+msgid "Log consultation"
+msgstr "Consultation du journal"
+
+#: src/AuditLog.php:109
+msgid "Log export"
+msgstr "Export du journal"
+
+#: src/AuditLog.php:110
+msgid "Log verification"
+msgstr "Vérification du journal"
+
+#: src/AuditLog.php:111
+msgid "Integrity check"
+msgstr "Vérification d'intégrité"
+
+#: src/AuditLog.php:112
+msgid "Fingerprint anchoring"
+msgstr "Ancrage d'empreintes"
+
+#: src/AuditLog.php:113
+msgid "Evidence added"
+msgstr "Ajout de preuve"
+
+#: src/AuditLog.php:114
+msgid "Playbook applied"
+msgstr "Application de procédure"
+
+#: src/AuditLog.php:115
+msgid "Added to the team"
+msgstr "Ajout à l'équipe"
+
+#: src/AuditLog.php:116
+msgid "Removed from the team"
+msgstr "Retrait de l'équipe"
+
+#: src/AuditLog.php:117
+msgid "Print"
+msgstr "Impression"
+
+#: src/AuditLog.php:118
+msgid "Evidence removed"
+msgstr "Retrait de preuve"
+
+#: src/AuditLog.php:119
+msgid "Evidence file replaced"
+msgstr "Fichier de preuve remplacé"
+
+#: src/AuditLog.php:243
+msgid "grouped writes"
+msgstr "écritures groupées"
+
+#: src/AuditLog.php:336
+msgid "page access"
+msgstr "accès page"
+
+#: src/AuditLog.php:365
+msgid "scope: all incidents"
+msgstr "périmètre : tous les incidents"
+
+#: src/AuditLog.php:369
+#, php-format
+msgid "scope: own incidents (%s)"
+msgstr "périmètre : ses incidents (%s)"
+
+#: src/AuditLog.php:370
+msgid "scope: outside own incidents"
+msgstr "périmètre : hors de ses incidents"
+
+#: src/AuditLog.php:374
+msgid "no plugin right"
+msgstr "aucun droit plugin"
+
+#: src/AuditLog.php:379
+msgid "impersonated identity"
+msgstr "identité empruntée"
+
+#: src/AuditLog.php:382
+#, php-format
+msgid "interface %s"
+msgstr "interface %s"
+
+#: src/AuditLog.php:396
+msgid "read (own incidents)"
+msgstr "lecture (ses incidents)"
+
+#: src/AuditLog.php:397
+msgid "all incidents"
+msgstr "tous les incidents"
+
+#: src/AuditLog.php:398 src/AuditLog.php:412 front/incident.form.php:18
+msgid "creation"
+msgstr "création"
+
+#: src/AuditLog.php:399 src/AuditLog.php:413
+msgid "update"
+msgstr "modification"
+
+#: src/AuditLog.php:400
+msgid "trash"
+msgstr "corbeille"
+
+#: src/AuditLog.php:401 src/AuditLog.php:415 front/incident.form.php:37
+msgid "permanent deletion"
+msgstr "suppression définitive"
+
+#: src/AuditLog.php:402 front/audit.php:15
+msgid "audit log"
+msgstr "journal d'audit"
+
+#: src/AuditLog.php:403
+msgid "playbook management"
+msgstr "gestion des procédures"
+
+#: src/AuditLog.php:404
+msgid "category management"
+msgstr "gestion des catégories"
+
+#: src/AuditLog.php:411
+msgid "read"
+msgstr "lecture"
+
+#: src/AuditLog.php:414 front/incident.form.php:29
+msgid "move to trash"
+msgstr "mise à la corbeille"
+
+#: src/AuditLog.php:416
+#, php-format
+msgid "right %d"
+msgstr "droit %d"
+
+#: src/AuditLog.php:424 src/TeamMember.php:109
+msgid "owner"
+msgstr "responsable"
+
+#: src/AuditLog.php:425
+msgid "author"
+msgstr "rédacteur"
+
+#: src/AuditLog.php:426
+msgid "assigned group"
+msgstr "groupe en charge"
+
+#: src/AuditLog.php:427
+msgid "contributor"
+msgstr "intervenant"
+
+#: src/AuditLog.php:428
+msgid "observer"
+msgstr "observateur"
+
+#: src/AuditLog.php:538
+msgid "broken chain (row deleted or inserted)"
+msgstr "chaînage rompu (ligne supprimée ou insérée)"
+
+#: src/AuditLog.php:541
+msgid "content modified"
+msgstr "contenu modifié"
+
+#: src/AuditLog.php:56 src/Incident.php:79 src/Incident.php:431 front/audit.php:120 templates/audit.html.twig:8
+msgid "Audit log"
+msgstr "Journal d'audit"
+
+#: src/AuditLog.php:93
+msgid "Consultation"
+msgstr "Consultation"
+
+#: src/AuditLog.php:94
+msgid "List / search"
+msgstr "Liste / recherche"
+
+#: src/AuditLog.php:95 src/Incident.php:427
+msgid "Dashboard"
+msgstr "Tableau de bord"
+
+#: src/AuditLog.php:96
+msgid "Creation"
+msgstr "Création"
+
+#: src/AuditLog.php:97
+msgid "Update"
+msgstr "Modification"
+
+#: src/AuditLog.php:98
+msgid "Moved to trash"
+msgstr "Mise à la corbeille"
+
+#: src/AuditLog.php:99
+msgid "Restoration"
+msgstr "Restauration"
+
+#: src/Category.php:103
+msgid "Code (internal identifier, cannot be changed)"
+msgstr "Code (identifiant interne, non modifiable)"
+
+#: src/Category.php:124
+msgid "Code"
+msgstr "Code"
+
+#: src/Category.php:149 src/Category.php:175
+msgid "The category name is required"
+msgstr "Le nom de la catégorie est obligatoire"
+
+#: src/Category.php:194
+#, php-format
+msgid "A category “%s” already exists."
+msgstr "Une catégorie « %s » existe déjà."
+
+#: src/Category.php:242
+msgid "The “Other” category is the fallback and cannot be deleted."
+msgstr "La catégorie « Autre » sert de repli et ne peut pas être supprimée."
+
+#: src/Category.php:248
+#, php-format
+msgid "Category used by %d incident(s) or playbook(s): it cannot be deleted. Rename it instead."
+msgstr "Catégorie utilisée par %d incident(s) ou procédure(s) : suppression impossible. Renommez-la plutôt."
+
+#: src/Category.php:252
+msgid "category in use"
+msgstr "catégorie utilisée"
+
+#: src/Category.php:303 src/Playbook.php:374
+msgid "Malware"
+msgstr "Logiciel malveillant"
+
+#: src/Category.php:304 src/Playbook.php:324
+msgid "Ransomware"
+msgstr "Rançongiciel"
+
+#: src/Category.php:305
+msgid "Phishing / social engineering"
+msgstr "Hameçonnage / ingénierie sociale"
+
+#: src/Category.php:306 src/Playbook.php:360
+msgid "Account compromise"
+msgstr "Compromission de compte"
+
+#: src/Category.php:307
+msgid "Intrusion / unauthorized access"
+msgstr "Intrusion / accès non autorisé"
+
+#: src/Category.php:308
+msgid "Vulnerability exploitation"
+msgstr "Exploitation de vulnérabilité"
+
+#: src/Category.php:309
+msgid "Data leak / exfiltration"
+msgstr "Fuite / exfiltration de données"
+
+#: src/Category.php:310
+msgid "Denial of service"
+msgstr "Déni de service"
+
+#: src/Category.php:311
+msgid "Fraud (CEO fraud, fake bank details…)"
+msgstr "Fraude (FOVI, faux RIB…)"
+
+#: src/Category.php:312
+msgid "Insider malice or internal error"
+msgstr "Malveillance ou erreur interne"
+
+#: src/Category.php:313
+msgid "Loss or theft of equipment"
+msgstr "Perte ou vol de matériel"
+
+#: src/Category.php:314
+msgid "Security policy violation"
+msgstr "Violation de politique de sécurité"
+
+#: src/Category.php:315 src/Incident.php:337 src/Ioc.php:64 src/TimelineEvent.php:111
+msgid "Other"
+msgstr "Autre"
+
+#: src/Category.php:39
+msgid "Incident category"
+msgid_plural "Incident categories"
+msgstr[0] "Catégorie d'incident"
+msgstr[1] "Catégories d'incident"
+
+#: src/CsvImporter.php:135
+msgid "Unreadable file"
+msgstr "Fichier illisible"
+
+#: src/CsvImporter.php:138
+#, php-format
+msgid "File too large (max %d MB)"
+msgstr "Fichier trop volumineux (max %d Mo)"
+
+#: src/CsvImporter.php:162
+msgid "No header found in the file"
+msgstr "Aucun en-tête trouvé dans le fichier"
+
+#: src/CsvImporter.php:49
+msgid "Detection identifier (grouping)"
+msgstr "Identifiant de détection (regroupement)"
+
+#: src/CsvImporter.php:50
+msgid "Timestamp"
+msgstr "Horodatage"
+
+#: src/CsvImporter.php:500 front/import.php:19
+msgid "import of a CSV file"
+msgstr "import CSV"
+
+#: src/CsvImporter.php:51
+msgid "Detection name"
+msgstr "Nom de la détection"
+
+#: src/CsvImporter.php:52 src/Incident.php:1158 templates/incident_form.html.twig:74 templates/incident_form.html.twig:75
+msgid "Description"
+msgstr "Description"
+
+#: src/CsvImporter.php:525
+msgid "import into existing incident"
+msgstr "import vers incident existant"
+
+#: src/CsvImporter.php:526
+msgid "Target incident not found or not editable"
+msgstr "Incident cible introuvable ou non modifiable"
+
+#: src/CsvImporter.php:53 src/Incident.php:1071 src/Incident_Item.php:319 templates/dashboard.html.twig:137 templates/incident_form.html.twig:23 templates/incident_form.html.twig:57 templates/remediation_print.html.twig:14
+msgid "Severity"
+msgstr "Gravité"
+
+#: src/CsvImporter.php:54
+msgid "MITRE tactic"
+msgstr "Tactique MITRE"
+
+#: src/CsvImporter.php:545
+msgid "import into another technician's incident"
+msgstr "import vers incident d'un autre technicien"
+
+#: src/CsvImporter.php:546
+msgid "Detection already attached to an incident you cannot access"
+msgstr "Détection déjà rattachée à un incident auquel vous n'avez pas accès"
+
+#: src/CsvImporter.php:55
+msgid "MITRE technique"
+msgstr "Technique MITRE"
+
+#: src/CsvImporter.php:56
+msgid "Objective"
+msgstr "Objectif"
+
+#: src/CsvImporter.php:57
+msgid "Status in the EDR"
+msgstr "Statut dans l'EDR"
+
+#: src/CsvImporter.php:58
+msgid "Action / disposition"
+msgstr "Action / disposition"
+
+#: src/CsvImporter.php:589
+#, php-format
+msgid "Incident created by EDR CSV import (%d row(s))."
+msgstr "Incident créé par import CSV EDR (%d ligne(s))."
+
+#: src/CsvImporter.php:59
+msgid "Hostname"
+msgstr "Nom d'hôte"
+
+#: src/CsvImporter.php:598
+msgid "Open in the EDR console"
+msgstr "Ouvrir dans la console EDR"
+
+#: src/CsvImporter.php:60
+msgid "User"
+msgstr "Utilisateur"
+
+#: src/CsvImporter.php:61
+msgid "Host local IP"
+msgstr "IP locale de l'hôte"
+
+#: src/CsvImporter.php:618
+msgid "Unable to create the incident"
+msgstr "Impossible de créer l'incident"
+
+#: src/CsvImporter.php:62
+msgid "Host public IP"
+msgstr "IP publique de l'hôte"
+
+#: src/CsvImporter.php:63 src/Ioc.php:59
+msgid "File name"
+msgstr "Nom de fichier"
+
+#: src/CsvImporter.php:64 src/Ioc.php:58
+msgid "File path"
+msgstr "Chemin de fichier"
+
+#: src/CsvImporter.php:646 src/CsvImporter.php:561
+msgid "EDR detection"
+msgstr "Détection EDR"
+
+#: src/CsvImporter.php:65 src/Ioc.php:60
+msgid "Command line"
+msgstr "Ligne de commande"
+
+#: src/CsvImporter.php:66
+msgid "Parent command line"
+msgstr "Ligne de commande parente"
+
+#: src/CsvImporter.php:69
+msgid "Remote IP (IOC)"
+msgstr "IP distante (IOC)"
+
+#: src/CsvImporter.php:70
+msgid "Domain (IOC)"
+msgstr "Domaine (IOC)"
+
+#: src/CsvImporter.php:71
+msgid "URL (IOC)"
+msgstr "URL (IOC)"
+
+#: src/CsvImporter.php:72
+msgid "Generic IOC value"
+msgstr "Valeur IOC générique"
+
+#: src/CsvImporter.php:73
+msgid "Link to the EDR console"
+msgstr "Lien vers la console EDR"
+
+#: src/Dashboard.php:25
+msgid "Last 30 days"
+msgstr "30 derniers jours"
+
+#: src/Dashboard.php:26
+msgid "Last 3 months"
+msgstr "3 derniers mois"
+
+#: src/Dashboard.php:27
+msgid "Last 12 months"
+msgstr "12 derniers mois"
+
+#: src/Dashboard.php:28
+msgid "Since the beginning"
+msgstr "Depuis le début"
+
+#: src/Evidence.php:170
+msgid "document removed from the incident"
+msgstr "document retiré de l'incident"
+
+#: src/Evidence.php:178
+msgid "document deleted from GLPI"
+msgstr "document supprimé de GLPI"
+
+#: src/Evidence.php:215
+msgid "new version of the file"
+msgstr "nouvelle version du fichier"
+
+#: src/Evidence.php:366
+msgid "initial registration (document already attached)"
+msgstr "inscription initiale (document déjà joint)"
+
+#: src/Evidence.php:39
+msgid "Evidence"
+msgid_plural "Evidence"
+msgstr[0] "Preuve"
+msgstr[1] "Preuves"
+
+#: src/Evidence.php:66 templates/integrity.html.twig:7
+msgid "Intact"
+msgstr "Intègre"
+
+#: src/Evidence.php:67
+msgid "File modified"
+msgstr "Fichier modifié"
+
+#: src/Evidence.php:68
+msgid "File not found"
+msgstr "Fichier introuvable"
+
+#: src/Evidence.php:69
+msgid "File replaced in GLPI"
+msgstr "Fichier remplacé dans GLPI"
+
+#: src/Evidence.php:70
+msgid "Reference fingerprint altered"
+msgstr "Empreinte de référence altérée"
+
+#: src/Evidence.php:71
+msgid "Never checked"
+msgstr "Jamais vérifié"
+
+#: src/Evidence.php:72
+msgid "Removed from the incident"
+msgstr "Retiré de l'incident"
+
+#: src/Incident.php:1015
+#, php-format
+msgid "Ticket %d created and linked"
+msgstr "Ticket %d créé et lié"
+
+#: src/Incident.php:1044 src/Incident_Item.php:317 templates/dashboard.html.twig:136 templates/incident_form.html.twig:53
+msgid "Title"
+msgstr "Titre"
+
+#: src/Incident.php:1053 src/Incident_Item.php:316 templates/dashboard.html.twig:135
+msgid "Reference"
+msgstr "Référence"
+
+#: src/Incident.php:1062 src/Incident_Item.php:318 templates/dashboard.html.twig:138 templates/incident_form.html.twig:56 templates/remediation.html.twig:119 templates/remediation_print.html.twig:15 templates/remediation_print.html.twig:27 templates/remediationtask_form.html.twig:20
+msgid "Status"
+msgstr "Statut"
+
+#: src/Incident.php:1080 src/Incident_Item.php:320 src/Playbook.php:246 templates/actions_print.html.twig:15 templates/incident_form.html.twig:55 templates/remediation_print.html.twig:14
+msgid "Category"
+msgstr "Catégorie"
+
+#: src/Incident.php:1089 src/Incident_Item.php:321
+msgid "Detection date"
+msgstr "Date de détection"
+
+#: src/Incident.php:1098 src/TeamMember.php:214 templates/incident_form.html.twig:60 templates/remediation_print.html.twig:15
+msgid "Owner"
+msgstr "Responsable"
+
+#: src/Incident.php:1108 src/TeamMember.php:221 templates/incident_form.html.twig:64
+msgid "Assigned group"
+msgstr "Groupe en charge"
+
+#: src/Incident.php:1117 templates/event_form.html.twig:37 templates/incident_form.html.twig:58 templates/iocs.html.twig:41
+msgid "Source"
+msgstr "Source"
+
+#: src/Incident.php:1126 templates/incident_form.html.twig:83
+msgid "MITRE ATT&CK tactic"
+msgstr "Tactique MITRE ATT&CK"
+
+#: src/Incident.php:1134 templates/incident_form.html.twig:89
+msgid "MITRE ATT&CK technique"
+msgstr "Technique MITRE ATT&CK"
+
+#: src/Incident.php:1142
+msgid "Closure date"
+msgstr "Date de clôture"
+
+#: src/Incident.php:1150
+msgid "External identifier"
+msgstr "Identifiant externe"
+
+#: src/Incident.php:1167
+msgid "Awareness date"
+msgstr "Date de prise de connaissance"
+
+#: src/Incident.php:1175
+msgid "Containment date"
+msgstr "Date de confinement"
+
+#: src/Incident.php:1184 src/TeamMember.php:218
+msgid "Author"
+msgstr "Rédacteur"
+
+#: src/Incident.php:1209
+msgid "Confidentiality impact"
+msgstr "Impact confidentialité"
+
+#: src/Incident.php:1210
+msgid "Integrity impact"
+msgstr "Impact intégrité"
+
+#: src/Incident.php:1211
+msgid "Availability impact"
+msgstr "Impact disponibilité"
+
+#: src/Incident.php:1234
+msgid "Personal data involved"
+msgstr "Données personnelles concernées"
+
+#: src/Incident.php:1251
+msgid "CNIL notification date"
+msgstr "Date de notification CNIL"
+
+#: src/Incident.php:1259
+msgid "Number of people affected"
+msgstr "Nombre de personnes concernées"
+
+#: src/Incident.php:1267 templates/compliance.html.twig:91
+msgid "Entity subject to NIS2"
+msgstr "Entité soumise à NIS2"
+
+#: src/Incident.php:1275
+msgid "Significant incident (NIS2)"
+msgstr "Incident important (NIS2)"
+
+#: src/Incident.php:1283
+msgid "ANSSI notification date"
+msgstr "Date de notification ANSSI"
+
+#: src/Incident.php:170
+msgid "read outside scope"
+msgstr "lecture hors périmètre"
+
+#: src/Incident.php:257 templates/event_form.html.twig:14 templates/ioc_form.html.twig:14 templates/remediationtask_form.html.twig:13
+msgid "Security incident"
+msgid_plural "Security incidents"
+msgstr[0] "Incident de sécurité"
+msgstr[1] "Incidents de sécurité"
+
+#: src/Incident.php:267 src/Profile.php:25 src/Profile.php:61 setup.php:83
+msgid "Security incidents"
+msgstr "Incidents de sécurité"
+
+#: src/Incident.php:294
+msgid "Informational"
+msgstr "Informatif"
+
+#: src/Incident.php:295 src/Incident.php:320
+msgid "Low"
+msgstr "Faible"
+
+#: src/Incident.php:296
+msgid "Medium"
+msgstr "Moyenne"
+
+#: src/Incident.php:297
+msgid "High"
+msgstr "Élevée"
+
+#: src/Incident.php:298 src/Incident.php:323
+msgid "Critical"
+msgstr "Critique"
+
+#: src/Incident.php:306
+msgid "New"
+msgstr "Nouveau"
+
+#: src/Incident.php:307
+msgid "Qualification / analysis"
+msgstr "Qualification / analyse"
+
+#: src/Incident.php:308 src/Playbook.php:89 src/TimelineEvent.php:51 templates/incident_form.html.twig:135
+msgid "Containment"
+msgstr "Confinement"
+
+#: src/Incident.php:309 src/Playbook.php:92 src/TimelineEvent.php:52 templates/incident_form.html.twig:136
+msgid "Eradication"
+msgstr "Éradication"
+
+#: src/Incident.php:310 src/Playbook.php:93 src/TimelineEvent.php:53 templates/incident_form.html.twig:137
+msgid "Recovery"
+msgstr "Remise en service"
+
+#: src/Incident.php:311
+msgid "Closed"
+msgstr "Clos"
+
+#: src/Incident.php:319
+msgid "None"
+msgstr "Aucun"
+
+#: src/Incident.php:321
+msgid "Moderate"
+msgstr "Moyen"
+
+#: src/Incident.php:322
+msgid "Severe"
+msgstr "Fort"
+
+#: src/Incident.php:331
+msgid "Manual entry"
+msgstr "Saisie manuelle"
+
+#: src/Incident.php:332
+msgid "EDR / XDR (import)"
+msgstr "EDR / XDR (import)"
+
+#: src/Incident.php:333
+msgid "User report"
+msgstr "Signalement utilisateur"
+
+#: src/Incident.php:334
+msgid "SIEM / monitoring"
+msgstr "SIEM / supervision"
+
+#: src/Incident.php:335 src/TimelineEvent.php:107
+msgid "Antivirus / other security tool"
+msgstr "Antivirus / autre outil de sécurité"
+
+#: src/Incident.php:336
+msgid "Third party (provider, CERT…)"
+msgstr "Tiers (prestataire, CERT…)"
+
+#: src/Incident.php:345
+msgid "No risk to individuals"
+msgstr "Pas de risque pour les personnes"
+
+#: src/Incident.php:346 src/Incident.php:1242
+msgid "Risk to individuals"
+msgstr "Risque pour les personnes"
+
+#: src/Incident.php:347
+msgid "High risk to individuals"
+msgstr "Risque élevé pour les personnes"
+
+#: src/Incident.php:419 front/import.php:42
+msgid "EDR CSV import"
+msgstr "Import CSV EDR"
+
+#: src/Incident.php:423
+msgid "Playbooks"
+msgstr "Procédures"
+
+#: src/Incident.php:425
+msgid "Categories"
+msgstr "Catégories"
+
+#: src/Incident.php:463
+msgid "Integrity & evidence"
+msgstr "Intégrité & preuves"
+
+#: src/Incident.php:512
+msgid "(free text, not in the reference list)"
+msgstr "(saisie libre, hors référentiel)"
+
+#: src/Incident.php:549
+msgid "read GDPR / NIS2 tab"
+msgstr "lecture onglet RGPD / NIS2"
+
+#: src/Incident.php:552 src/Incident.php:457 src/Incident.php:1227
+msgid "GDPR / NIS2"
+msgstr "RGPD / NIS2"
+
+#: src/Incident.php:568
+msgid "read integrity tab"
+msgstr "lecture onglet intégrité"
+
+#: src/Incident.php:571
+msgid "integrity & evidence"
+msgstr "intégrité & preuves"
+
+#: src/Incident.php:640
+msgid "CNIL notification"
+msgstr "Notification CNIL"
+
+#: src/Incident.php:643
+msgid "72 h after awareness (GDPR art. 33)"
+msgstr "72 h après la prise de connaissance (RGPD art. 33)"
+
+#: src/Incident.php:648
+msgid "Informing the people affected"
+msgstr "Information des personnes concernées"
+
+#: src/Incident.php:651
+msgid "Without undue delay (GDPR art. 34)"
+msgstr "Dans les meilleurs délais (RGPD art. 34)"
+
+#: src/Incident.php:658
+msgid "ANSSI early warning"
+msgstr "Alerte précoce ANSSI"
+
+#: src/Incident.php:661
+msgid "24 h after awareness (NIS2 art. 23)"
+msgstr "24 h après la prise de connaissance (NIS2 art. 23)"
+
+#: src/Incident.php:665
+msgid "ANSSI incident notification"
+msgstr "Notification d'incident ANSSI"
+
+#: src/Incident.php:668
+msgid "72 h after awareness (NIS2 art. 23)"
+msgstr "72 h après la prise de connaissance (NIS2 art. 23)"
+
+#: src/Incident.php:672
+msgid "ANSSI final report"
+msgstr "Rapport final ANSSI"
+
+#: src/Incident.php:675
+msgid "1 month after notification (NIS2 art. 23)"
+msgstr "1 mois après la notification (NIS2 art. 23)"
+
+#: src/Incident.php:73
+msgid "View own incidents"
+msgstr "Voir ses incidents"
+
+#: src/Incident.php:74
+msgid "View and manage all incidents"
+msgstr "Voir et gérer tous les incidents"
+
+#: src/Incident.php:741
+#, php-format
+msgid "Cannot close: %d mandatory step(s) of the remediation plan are still to do (or to mark as “not applicable”)."
+msgstr "Clôture impossible : %d étape(s) obligatoire(s) du plan de remédiation restent à faire (ou à marquer « non applicable »)."
+
+#: src/Incident.php:747
+msgid "closure with pending mandatory steps"
+msgstr "clôture avec étapes obligatoires en attente"
+
+#: src/Incident.php:773
+msgid "Invalid status"
+msgstr "Statut invalide"
+
+#: src/Incident.php:80 templates/remediation.html.twig:36
+msgid "Manage playbooks"
+msgstr "Gérer les procédures"
+
+#: src/Incident.php:81
+msgid "Manage categories"
+msgstr "Gérer les catégories"
+
+#: src/Incident.php:860
+msgid "Incident created"
+msgstr "Création de l'incident"
+
+#: src/Incident.php:914
+#, php-format
+msgid "Status: %1$s → %2$s"
+msgstr "Statut : %1$s → %2$s"
+
+#: src/Incident.php:922
+msgid "CNIL notification made"
+msgstr "Notification CNIL effectuée"
+
+#: src/Incident.php:923
+msgid "People affected informed"
+msgstr "Personnes concernées informées"
+
+#: src/Incident.php:924
+msgid "ANSSI early warning sent"
+msgstr "Alerte précoce ANSSI envoyée"
+
+#: src/Incident.php:925
+msgid "ANSSI notification sent"
+msgstr "Notification ANSSI envoyée"
+
+#: src/Incident.php:926
+msgid "ANSSI final report submitted"
+msgstr "Rapport final ANSSI transmis"
+
+#: src/Incident.php:978
+msgid "Ticket created from the security incident"
+msgstr "Ticket créé depuis l'incident de sécurité"
+
+#: src/Incident_Item.php:110
+msgid "read linked items"
+msgstr "lecture éléments liés"
+
+#: src/Incident_Item.php:113
+msgid "linked items"
+msgstr "éléments liés"
+
+#: src/Incident_Item.php:182
+msgid "Create a ticket linked to this incident"
+msgstr "Créer un ticket lié à cet incident"
+
+#: src/Incident_Item.php:254
+msgid "linked security incidents"
+msgstr "incidents de sécurité liés"
+
+#: src/Incident_Item.php:305
+msgid "Report a security incident"
+msgstr "Déclarer un incident de sécurité"
+
+#: src/Incident_Item.php:50
+msgid "Linked item"
+msgid_plural "Linked items"
+msgstr[0] "Élément lié"
+msgstr[1] "Éléments liés"
+
+#: src/Integrity.php:262 src/RemediationTask.php:119 templates/actions_print.html.twig:58
+msgid "Remediation"
+msgstr "Remédiation"
+
+#: src/Integrity.php:263
+msgid "Team"
+msgstr "Équipe"
+
+#: src/Integrity.php:315
+msgid "initial sealing"
+msgstr "scellement initial"
+
+#: src/Ioc.php:147
+msgid "read IOCs"
+msgstr "lecture IOC"
+
+#: src/Ioc.php:227
+msgid "The indicator value is required"
+msgstr "La valeur de l'indicateur est obligatoire"
+
+#: src/Ioc.php:269
+msgid "This indicator already exists for this incident"
+msgstr "Cet indicateur existe déjà pour cet incident"
+
+#: src/Ioc.php:293 templates/ioc_form.html.twig:19 templates/iocs.html.twig:39
+msgid "Value"
+msgstr "Valeur"
+
+#: src/Ioc.php:38
+msgid "Indicator (IOC)"
+msgid_plural "Indicators (IOC)"
+msgstr[0] "Indicateur (IOC)"
+msgstr[1] "Indicateurs (IOC)"
+
+#: src/Ioc.php:53
+msgid "IPv4 address"
+msgstr "Adresse IPv4"
+
+#: src/Ioc.php:54
+msgid "IPv6 address"
+msgstr "Adresse IPv6"
+
+#: src/Ioc.php:55
+msgid "Domain"
+msgstr "Domaine"
+
+#: src/Ioc.php:57
+msgid "E-mail address"
+msgstr "Adresse e-mail"
+
+#: src/Ioc.php:61
+msgid "Process"
+msgstr "Processus"
+
+#: src/Ioc.php:62
+msgid "Registry key"
+msgstr "Clé de registre"
+
+#: src/Ioc.php:63
+msgid "Account"
+msgstr "Compte"
+
+#: src/Ioc.php:72
+msgid "Not assessed"
+msgstr "Non qualifié"
+
+#: src/Ioc.php:73
+msgid "Malicious"
+msgstr "Malveillant"
+
+#: src/Ioc.php:74
+msgid "Suspicious"
+msgstr "Suspect"
+
+#: src/Ioc.php:75
+msgid "Legitimate / false positive"
+msgstr "Légitime / faux positif"
+
+#: src/MitreAttack.php:37
+msgid "Reconnaissance"
+msgstr "Reconnaissance"
+
+#: src/MitreAttack.php:37
+msgid "Resource Development"
+msgstr "Développement de ressources"
+
+#: src/MitreAttack.php:37
+msgid "Initial Access"
+msgstr "Accès initial"
+
+#: src/MitreAttack.php:38
+msgid "Execution"
+msgstr "Exécution"
+
+#: src/MitreAttack.php:38
+msgid "Persistence"
+msgstr "Persistance"
+
+#: src/MitreAttack.php:38
+msgid "Privilege Escalation"
+msgstr "Élévation de privilèges"
+
+#: src/MitreAttack.php:39
+msgid "Stealth"
+msgstr "Furtivité"
+
+#: src/MitreAttack.php:39
+msgid "Defense Impairment"
+msgstr "Neutralisation des défenses"
+
+#: src/MitreAttack.php:39
+msgid "Credential Access"
+msgstr "Accès aux identifiants"
+
+#: src/MitreAttack.php:40
+msgid "Discovery"
+msgstr "Découverte"
+
+#: src/MitreAttack.php:40
+msgid "Lateral Movement"
+msgstr "Mouvement latéral"
+
+#: src/MitreAttack.php:40
+msgid "Collection"
+msgstr "Collecte"
+
+#: src/MitreAttack.php:41
+msgid "Command and Control"
+msgstr "Commande et contrôle"
+
+#: src/MitreAttack.php:41
+msgid "Exfiltration"
+msgstr "Exfiltration"
+
+#: src/MitreAttack.php:41
+msgid "Impact"
+msgstr "Impact"
+
+#: src/Playbook.php:130
+msgid "playbook"
+msgstr "procédure"
+
+#: src/Playbook.php:135 src/Playbook.php:297 src/Playbook.php:310
+msgid "All categories"
+msgstr "Toutes catégories"
+
+#: src/Playbook.php:200
+#, php-format
+msgid "%d step"
+msgid_plural "%d steps"
+msgstr[0] "%d étape"
+msgstr[1] "%d étapes"
+
+#: src/Playbook.php:30 templates/playbookstep_form.html.twig:13
+msgid "Remediation playbook"
+msgid_plural "Remediation playbooks"
+msgstr[0] "Procédure de remédiation"
+msgstr[1] "Procédures de remédiation"
+
+#: src/Playbook.php:326
+msgid "Data encryption, ransom note, deletion of shadow copies."
+msgstr "Chiffrement de données, note de rançon, suppression des clichés instantanés."
+
+#: src/Playbook.php:328
+msgid "Isolate the affected workstations and servers"
+msgstr "Isoler les postes et serveurs touchés"
+
+#: src/Playbook.php:328
+msgid "Isolate from the network (network containment from the EDR console, or cable/Wi-Fi cut). Do NOT shut the machines down: memory may hold keys and traces."
+msgstr "Isoler du réseau (confinement réseau depuis la console EDR, ou câble/Wi-Fi coupé). Ne PAS éteindre les machines : la mémoire peut contenir des clés et des traces."
+
+#: src/Playbook.php:329
+msgid "Cut remote access"
+msgstr "Couper les accès distants"
+
+#: src/Playbook.php:329
+msgid "Suspend VPN, exposed RDP, provider access and network shares while the scope is being assessed."
+msgstr "Suspendre VPN, RDP exposés, accès prestataires et partages réseau le temps de qualifier le périmètre."
+
+#: src/Playbook.php:330
+msgid "Disable the compromised accounts"
+msgstr "Désactiver les comptes compromis"
+
+#: src/Playbook.php:330
+msgid "Disable the accounts used by the attacker and revoke their sessions and tokens."
+msgstr "Désactiver les comptes utilisés par l'attaquant et révoquer leurs sessions et jetons."
+
+#: src/Playbook.php:331 src/Playbook.php:393
+msgid "Preserve the evidence"
+msgstr "Préserver les preuves"
+
+#: src/Playbook.php:331
+msgid "Export EDR detections, Windows/firewall/proxy logs, memory capture if possible. Attach the files to the incident (Documents tab): their SHA-256 is recorded."
+msgstr "Exporter les détections EDR, journaux Windows/pare-feu/proxy, capture mémoire si possible. Joindre les fichiers à l'incident (onglet Documents) : leur SHA-256 est enregistré."
+
+#: src/Playbook.php:332
+msgid "Determine the scope"
+msgstr "Déterminer le périmètre"
+
+#: src/Playbook.php:332
+msgid "Search for the same hash / command line across the whole fleet (EDR console), list the affected hosts and accounts and link the computers to the incident."
+msgstr "Rechercher le même hash / la même ligne de commande sur tout le parc (console EDR), lister les hôtes et comptes touchés et lier les ordinateurs à l'incident."
+
+#: src/Playbook.php:333
+msgid "Check the state of the backups"
+msgstr "Vérifier l'état des sauvegardes"
+
+#: src/Playbook.php:333
+msgid "Confirm that a clean backup — offline or immutable, prior to the compromise — exists and can be restored."
+msgstr "Confirmer qu'une sauvegarde saine, hors ligne ou immuable, antérieure à la compromission existe et est restaurable."
+
+#: src/Playbook.php:334 src/Playbook.php:369
+msgid "Assess GDPR / NIS2 obligations"
+msgstr "Évaluer les obligations RGPD / NIS2"
+
+#: src/Playbook.php:334
+msgid "Fill in the GDPR / NIS2 tab (72 h CNIL, 24 h / 72 h ANSSI where applicable)."
+msgstr "Renseigner l'onglet RGPD / NIS2 (72 h CNIL, 24 h / 72 h ANSSI le cas échéant)."
+
+#: src/Playbook.php:335
+msgid "File a complaint and inform"
+msgstr "Déposer plainte et informer"
+
+#: src/Playbook.php:335
+msgid "Complaint (police, online), cyber insurer, management. Resources: cybermalveillance.gouv.fr. Do not pay the ransom without legal advice."
+msgstr "Plainte (police, gendarmerie ou en ligne), assureur cyber, direction. Ressources : cybermalveillance.gouv.fr. Ne pas payer la rançon sans avis juridique."
+
+#: src/Playbook.php:336
+msgid "Identify and close the initial vector"
+msgstr "Identifier et fermer le vecteur initial"
+
+#: src/Playbook.php:336
+msgid "Phishing, exposed RDP, unpatched vulnerability, provider account… Fix it before any return to service."
+msgstr "Hameçonnage, RDP exposé, vulnérabilité non corrigée, compte prestataire… Corriger avant toute remise en service."
+
+#: src/Playbook.php:337
+msgid "Remove persistence"
+msgstr "Supprimer la persistance"
+
+#: src/Playbook.php:337
+msgid "Scheduled tasks, services, Run keys, modified GPOs, accounts added by the attacker."
+msgstr "Tâches planifiées, services, clés Run, GPO modifiées, comptes ajoutés par l'attaquant."
+
+#: src/Playbook.php:338
+msgid "Reset passwords"
+msgstr "Réinitialiser les mots de passe"
+
+#: src/Playbook.php:338
+msgid "All privileged accounts, service accounts, and the krbtgt account twice if Active Directory is affected."
+msgstr "Tous les comptes à privilèges, comptes de service, et deux fois le compte krbtgt si l'Active Directory est touché."
+
+#: src/Playbook.php:339
+msgid "Restore from a clean backup"
+msgstr "Restaurer depuis une sauvegarde saine"
+
+#: src/Playbook.php:339
+msgid "Reinstall or restore the systems, check for the absence of indicators (incident IOCs) before reconnecting."
+msgstr "Réinstaller ou restaurer les systèmes, vérifier l'absence d'indicateurs (IOC de l'incident) avant reconnexion."
+
+#: src/Playbook.php:340
+msgid "Return to service under monitoring"
+msgstr "Remettre en service sous surveillance"
+
+#: src/Playbook.php:340
+msgid "Reconnect step by step, with reinforced EDR monitoring for at least 2 weeks."
+msgstr "Reconnecter par étapes, surveillance EDR renforcée pendant au moins 2 semaines."
+
+#: src/Playbook.php:341 src/Playbook.php:370 src/Playbook.php:397 templates/incident_form.html.twig:141
+msgid "Lessons learned"
+msgstr "Retour d'expérience"
+
+#: src/Playbook.php:341
+msgid "Root cause and corrective actions in the incident form, update this playbook if needed."
+msgstr "Cause racine et actions correctives dans la fiche incident, mise à jour de cette procédure si besoin."
+
+#: src/Playbook.php:345
+msgid "Phishing"
+msgstr "Hameçonnage"
+
+#: src/Playbook.php:347
+msgid "Fraudulent e-mail received, link clicked or credentials entered."
+msgstr "Courriel frauduleux reçu, lien cliqué ou identifiants saisis."
+
+#: src/Playbook.php:349
+msgid "Retrieve the original message"
+msgstr "Récupérer le message d'origine"
+
+#: src/Playbook.php:349
+msgid "Obtain the full e-mail (.eml with headers) and attach it to the incident."
+msgstr "Obtenir le courriel complet (.eml avec en-têtes) et le joindre à l'incident."
+
+#: src/Playbook.php:350
+msgid "Block the sender, links and domains"
+msgstr "Bloquer l'expéditeur, les liens et les domaines"
+
+#: src/Playbook.php:350
+msgid "Mail gateway, proxy / DNS filtering, firewall. Add the URLs and domains as IOCs."
+msgstr "Messagerie, proxy / DNS filtrant, pare-feu. Ajouter les URL et domaines en IOC."
+
+#: src/Playbook.php:351
+msgid "Purge the message from other mailboxes"
+msgstr "Purger le message des autres boîtes"
+
+#: src/Playbook.php:351
+msgid "Find and delete the same message for all recipients."
+msgstr "Rechercher et supprimer le même message chez tous les destinataires."
+
+#: src/Playbook.php:352
+msgid "Identify the users who clicked or entered credentials"
+msgstr "Identifier les utilisateurs ayant cliqué ou saisi des identifiants"
+
+#: src/Playbook.php:352
+msgid "Proxy / mail logs, talks with the recipients. Link the users involved."
+msgstr "Journaux proxy / messagerie, échanges avec les destinataires. Lier les utilisateurs concernés."
+
+#: src/Playbook.php:353
+msgid "Reset the exposed credentials"
+msgstr "Réinitialiser les identifiants exposés"
+
+#: src/Playbook.php:353
+msgid "Change passwords, revoke sessions, check mailbox forwarding and access rules."
+msgstr "Changer les mots de passe, révoquer les sessions, vérifier les règles de transfert et d'accès à la boîte."
+
+#: src/Playbook.php:354
+msgid "Analyse the workstations involved"
+msgstr "Analyser les postes concernés"
+
+#: src/Playbook.php:354
+msgid "Full EDR scan if an attachment was opened."
+msgstr "Scan EDR complet si une pièce jointe a été ouverte."
+
+#: src/Playbook.php:355
+msgid "Assess GDPR obligations"
+msgstr "Évaluer les obligations RGPD"
+
+#: src/Playbook.php:355
+msgid "If personal data may have been exposed, fill in the GDPR / NIS2 tab."
+msgstr "Si des données personnelles ont pu être exposées, renseigner l'onglet RGPD / NIS2."
+
+#: src/Playbook.php:356
+msgid "Raise awareness"
+msgstr "Sensibiliser"
+
+#: src/Playbook.php:356
+msgid "Feedback to the users involved, reminder of the signs of phishing."
+msgstr "Retour aux utilisateurs concernés, rappel des signes d'un hameçonnage."
+
+#: src/Playbook.php:362
+msgid "Illegitimate sign-in, credential theft, privilege escalation."
+msgstr "Connexion illégitime, vol d'identifiants, élévation de privilèges."
+
+#: src/Playbook.php:364
+msgid "Block the account and revoke sessions"
+msgstr "Bloquer le compte et révoquer les sessions"
+
+#: src/Playbook.php:364
+msgid "Disable or reset the account, revoke tokens and active sessions (mail, VPN, cloud)."
+msgstr "Désactiver ou réinitialiser le compte, révoquer jetons et sessions actives (messagerie, VPN, cloud)."
+
+#: src/Playbook.php:365
+msgid "Trace the account's activity"
+msgstr "Retracer l'activité du compte"
+
+#: src/Playbook.php:365
+msgid "Sign-ins (dates, IP, country), actions performed, data viewed or exported. Attach the logs."
+msgstr "Connexions (dates, IP, pays), actions réalisées, données consultées ou exportées. Joindre les journaux."
+
+#: src/Playbook.php:366
+msgid "Search for other affected accounts"
+msgstr "Rechercher d'autres comptes touchés"
+
+#: src/Playbook.php:366
+msgid "Same source IP, same technique (LSASS dump, brute force…)."
+msgstr "Même IP source, même technique (vidage LSASS, force brute…)."
+
+#: src/Playbook.php:367
+msgid "Remove the access added by the attacker"
+msgstr "Supprimer les accès ajoutés par l'attaquant"
+
+#: src/Playbook.php:367
+msgid "Mailbox rules, authorized applications, API keys, added MFA methods, created accounts."
+msgstr "Règles de messagerie, applications autorisées, clés API, MFA ajoutés, comptes créés."
+
+#: src/Playbook.php:368
+msgid "Re-enable with MFA"
+msgstr "Réactiver avec MFA"
+
+#: src/Playbook.php:368
+msgid "New strong password, multi-factor authentication required."
+msgstr "Nouveau mot de passe robuste, authentification multifacteur obligatoire."
+
+#: src/Playbook.php:369
+msgid "Depending on the data reachable from the account."
+msgstr "Selon les données accessibles depuis le compte."
+
+#: src/Playbook.php:370
+msgid "Cause (password reuse, phishing, no MFA…) and corrective actions."
+msgstr "Cause (réutilisation de mot de passe, hameçonnage, absence de MFA…) et actions correctives."
+
+#: src/Playbook.php:376
+msgid "EDR / antivirus detection of a malicious file or behaviour."
+msgstr "Détection EDR / antivirus d'un fichier ou d'un comportement malveillant."
+
+#: src/Playbook.php:378
+msgid "Isolate the workstation"
+msgstr "Isoler le poste"
+
+#: src/Playbook.php:378
+msgid "Network containment through the EDR if execution is confirmed."
+msgstr "Confinement réseau via l'EDR si l'exécution est confirmée."
+
+#: src/Playbook.php:379
+msgid "Qualify the detection"
+msgstr "Qualifier la détection"
+
+#: src/Playbook.php:379
+msgid "True or false positive, file executed or only blocked, parent process, user."
+msgstr "Vrai ou faux positif, fichier exécuté ou seulement bloqué, processus parent, utilisateur."
+
+#: src/Playbook.php:380
+msgid "Search for the same indicator across the fleet"
+msgstr "Rechercher le même indicateur sur le parc"
+
+#: src/Playbook.php:380
+msgid "Hash, file name, command line: add as an IOC and search in the EDR console."
+msgstr "Hash, nom de fichier, ligne de commande : ajouter en IOC et chercher dans la console EDR."
+
+#: src/Playbook.php:381
+msgid "Clean or reinstall"
+msgstr "Nettoyer ou réinstaller"
+
+#: src/Playbook.php:381
+msgid "Removal by the EDR and persistence check, or reinstallation if in doubt."
+msgstr "Suppression par l'EDR et vérification de la persistance, ou réinstallation si doute."
+
+#: src/Playbook.php:382
+msgid "Lift the isolation"
+msgstr "Lever l'isolement"
+
+#: src/Playbook.php:382
+msgid "After verification, reconnect and monitor."
+msgstr "Après vérification, reconnecter et surveiller."
+
+#: src/Playbook.php:383
+msgid "Identify the origin"
+msgstr "Identifier l'origine"
+
+#: src/Playbook.php:383
+msgid "Download, USB key, attachment… and preventive actions."
+msgstr "Téléchargement, clé USB, pièce jointe… et actions préventives."
+
+#: src/Playbook.php:387
+msgid "Data leak"
+msgstr "Fuite de données"
+
+#: src/Playbook.php:389
+msgid "Exfiltration, sent by mistake, public share, lost media."
+msgstr "Exfiltration, envoi par erreur, partage public, perte de support."
+
+#: src/Playbook.php:391
+msgid "Stop the leak"
+msgstr "Stopper la fuite"
+
+#: src/Playbook.php:391
+msgid "Remove the public share, block the exfiltration channel, ask the unauthorized recipient to delete the data."
+msgstr "Retirer le partage public, bloquer le canal d'exfiltration, demander la suppression au destinataire non autorisé."
+
+#: src/Playbook.php:392
+msgid "Identify the data and the people affected"
+msgstr "Identifier les données et les personnes concernées"
+
+#: src/Playbook.php:392
+msgid "Type of data, volume, number of people: to be entered in the GDPR / NIS2 tab."
+msgstr "Nature des données, volume, nombre de personnes : à reporter dans l'onglet RGPD / NIS2."
+
+#: src/Playbook.php:393
+msgid "Access logs, copies of the exchanges, screenshots. Attach them to the incident."
+msgstr "Journaux d'accès, copies des échanges, captures. Joindre à l'incident."
+
+#: src/Playbook.php:394
+msgid "CNIL notification within 72 h if there is a risk"
+msgstr "Notification CNIL sous 72 h si risque"
+
+#: src/Playbook.php:394
+msgid "Document the risk analysis in all cases (breach register)."
+msgstr "Documenter l'analyse de risque dans tous les cas (registre des violations)."
+
+#: src/Playbook.php:395
+msgid "Inform the people if the risk is high"
+msgstr "Informer les personnes si risque élevé"
+
+#: src/Playbook.php:395
+msgid "Clear message: nature of the breach, consequences, measures taken, contact."
+msgstr "Message clair : nature de la violation, conséquences, mesures prises, contact."
+
+#: src/Playbook.php:396
+msgid "Fix the cause"
+msgstr "Corriger la cause"
+
+#: src/Playbook.php:396
+msgid "Access rights, configuration, media encryption, sending procedure."
+msgstr "Droits d'accès, configuration, chiffrement des supports, procédure d'envoi."
+
+#: src/Playbook.php:397
+msgid "Update the procedures and raise awareness."
+msgstr "Mettre à jour les procédures et sensibiliser."
+
+#: src/Playbook.php:90 src/TimelineEvent.php:50
+msgid "Analysis / investigation"
+msgstr "Analyse / investigation"
+
+#: src/Playbook.php:91
+msgid "Notification / communication"
+msgstr "Notification / communication"
+
+#: src/Playbook.php:94
+msgid "Post-incident / lessons learned"
+msgstr "Après incident / retour d'expérience"
+
+#: src/PlaybookStep.php:30
+msgid "Step"
+msgid_plural "Steps"
+msgstr[0] "Étape"
+msgstr[1] "Étapes"
+
+#: src/Profile.php:75
+msgid "Read: view incidents. Create: report an incident and import an EDR CSV. Update: qualify, complete the timeline, the IOCs and the GDPR/NIS2 section."
+msgstr "Lecture : consulter les incidents. Création : déclarer un incident et importer un CSV d'EDR. Modification : qualifier, compléter la chronologie, les IOC et le volet RGPD/NIS2."
+
+#: src/RemediationTask.php:208
+msgid "read remediation plan"
+msgstr "lecture plan de remédiation"
+
+#: src/RemediationTask.php:211
+msgid "remediation"
+msgstr "remédiation"
+
+#: src/RemediationTask.php:244
+msgid "remediation task"
+msgstr "tâche de remédiation"
+
+#: src/RemediationTask.php:275
+msgid "This playbook is already applied to the incident."
+msgstr "Cette procédure est déjà appliquée à l'incident."
+
+#: src/RemediationTask.php:311
+#, php-format
+msgid "Playbook applied: %s"
+msgstr "Procédure appliquée : %s"
+
+#: src/RemediationTask.php:316 front/remediationtask.form.php:21
+msgid "playbook application"
+msgstr "application de procédure"
+
+#: src/RemediationTask.php:362
+msgid "change to the definition of a remediation task"
+msgstr "modification de la définition d'une tâche de remédiation"
+
+#: src/RemediationTask.php:366
+msgid "Only profiles allowed to manage playbooks can change the definition of a task (action, instructions, phase, mandatory flag, order). Status, assignment and report have been saved."
+msgstr "Seuls les profils autorisés à gérer les procédures peuvent modifier la définition d'une tâche (action, instructions, phase, caractère obligatoire, ordre). Statut, assignation et compte rendu ont été enregistrés."
+
+#: src/RemediationTask.php:415
+#, php-format
+msgid "%s has been added to the team as a contributor."
+msgstr "%s a été ajouté(e) à l'équipe comme intervenant."
+
+#: src/RemediationTask.php:421
+msgid "A task can only be assigned to a contributor of the team. Ask the owner to add them."
+msgstr "Une tâche ne peut être confiée qu'à un membre intervenant de l'équipe. Demandez au responsable de l'ajouter."
+
+#: src/RemediationTask.php:465
+#, php-format
+msgid "Remediation — %1$s: %2$s"
+msgstr "Remédiation — %1$s : %2$s"
+
+#: src/RemediationTask.php:474
+msgid "remediation follow-up"
+msgstr "suivi de remédiation"
+
+#: src/RemediationTask.php:68
+msgid "Remediation task"
+msgid_plural "Remediation"
+msgstr[0] "Tâche de remédiation"
+msgstr[1] "Remédiation"
+
+#: src/RemediationTask.php:80 templates/compliance.html.twig:11
+msgid "To do"
+msgstr "À faire"
+
+#: src/RemediationTask.php:81
+msgid "In progress"
+msgstr "En cours"
+
+#: src/RemediationTask.php:82
+msgid "Done"
+msgstr "Fait"
+
+#: src/RemediationTask.php:83
+msgid "Not applicable"
+msgstr "Non applicable"
+
+#: src/TeamMember.php:202
+msgid "read team"
+msgstr "lecture équipe"
+
+#: src/TeamMember.php:205 src/TeamMember.php:340
+msgid "team"
+msgstr "équipe"
+
+#: src/TeamMember.php:270
+msgid "Select a user"
+msgstr "Sélectionnez un utilisateur"
+
+#: src/TeamMember.php:274
+msgid "This person is already part of the team"
+msgstr "Cette personne fait déjà partie de l'équipe"
+
+#: src/TeamMember.php:300
+#, php-format
+msgid "%1$s added to the team (%2$s)"
+msgstr "%1$s ajouté(e) à l'équipe (%2$s)"
+
+#: src/TeamMember.php:312
+#, php-format
+msgid "%1$s: role changed (%2$s)"
+msgstr "%1$s : rôle modifié (%2$s)"
+
+#: src/TeamMember.php:324
+#, php-format
+msgid "%s removed from the team"
+msgstr "%s retiré(e) de l'équipe"
+
+#: src/TeamMember.php:50
+msgid "Team member"
+msgid_plural "Team"
+msgstr[0] "Membre de l'équipe"
+msgstr[1] "Équipe"
+
+#: src/TeamMember.php:62
+msgid "Contributor (can act)"
+msgstr "Intervenant (peut agir)"
+
+#: src/TeamMember.php:63
+msgid "Observer (read only)"
+msgstr "Observateur (lecture seule)"
+
+#: src/TimelineEvent.php:101
+msgid "Command prompt / script"
+msgstr "Invite de commandes / script"
+
+#: src/TimelineEvent.php:102
+msgid "Active Directory"
+msgstr "Active Directory"
+
+#: src/TimelineEvent.php:103
+msgid "Microsoft 365 / Entra ID"
+msgstr "Microsoft 365 / Entra ID"
+
+#: src/TimelineEvent.php:104
+msgid "Firewall / network"
+msgstr "Pare-feu / réseau"
+
+#: src/TimelineEvent.php:105
+msgid "Backup / restore"
+msgstr "Sauvegarde / restauration"
+
+#: src/TimelineEvent.php:106
+msgid "Mail"
+msgstr "Messagerie"
+
+#: src/TimelineEvent.php:108
+msgid "Analysis tool (forensics)"
+msgstr "Outil d'analyse (forensic)"
+
+#: src/TimelineEvent.php:109
+msgid "On-site physical intervention"
+msgstr "Intervention physique sur site"
+
+#: src/TimelineEvent.php:110
+msgid "Phone call"
+msgstr "Échange téléphonique"
+
+#: src/TimelineEvent.php:119
+msgid "Successful"
+msgstr "Réussie"
+
+#: src/TimelineEvent.php:120
+msgid "Partial"
+msgstr "Partielle"
+
+#: src/TimelineEvent.php:121
+msgid "Failed"
+msgstr "Échec"
+
+#: src/TimelineEvent.php:122
+msgid "To be checked"
+msgstr "À vérifier"
+
+#: src/TimelineEvent.php:165
+msgid "Timeline"
+msgstr "Chronologie"
+
+#: src/TimelineEvent.php:186
+msgid "read timeline"
+msgstr "lecture chronologie"
+
+#: src/TimelineEvent.php:257
+msgid "event"
+msgstr "événement"
+
+#: src/TimelineEvent.php:348
+msgid "Action: specify the target (workstation, server, account…)."
+msgstr "Action : précisez la cible (poste, serveur, compte…)."
+
+#: src/TimelineEvent.php:36
+msgid "Event"
+msgid_plural "Timeline"
+msgstr[0] "Événement"
+msgstr[1] "Chronologie"
+
+#: src/TimelineEvent.php:381 templates/event_form.html.twig:19 templates/timeline.html.twig:60
+msgid "Label"
+msgstr "Libellé"
+
+#: src/TimelineEvent.php:395 templates/event_form.html.twig:20 templates/timeline.html.twig:61
+msgid "Host"
+msgstr "Hôte"
+
+#: src/TimelineEvent.php:402 templates/event_form.html.twig:21 templates/timeline.html.twig:62
+msgid "User involved"
+msgstr "Utilisateur concerné"
+
+#: src/TimelineEvent.php:409 templates/event_form.html.twig:22 templates/timeline.html.twig:63
+msgid "Detail"
+msgstr "Détail"
+
+#: src/TimelineEvent.php:48
+msgid "Detection / alert"
+msgstr "Détection / alerte"
+
+#: src/TimelineEvent.php:49 templates/event_form.html.twig:25
+msgid "Investigation / response action"
+msgstr "Action d'investigation / intervention"
+
+#: src/TimelineEvent.php:54
+msgid "Communication"
+msgstr "Communication"
+
+#: src/TimelineEvent.php:55
+msgid "Regulatory notification"
+msgstr "Notification réglementaire"
+
+#: src/TimelineEvent.php:56
+msgid "Status change"
+msgstr "Changement de statut"
+
+#: src/TimelineEvent.php:57 templates/incident_form.html.twig:138
+msgid "Closure"
+msgstr "Clôture"
+
+#: src/TimelineEvent.php:58
+msgid "Note"
+msgstr "Note"
+
+#: src/TimelineEvent.php:99
+msgid "EDR / XDR console (remote response)"
+msgstr "Console EDR / XDR (réponse à distance)"
+
+#: templates/actions_print.html.twig:16
+msgid "Severity / status"
+msgstr "Gravité / statut"
+
+#: templates/actions_print.html.twig:19
+msgid "Log entries"
+msgstr "Entrées du journal"
+
+#: templates/actions_print.html.twig:21
+msgid "action(s)"
+msgstr "action(s)"
+
+#: templates/actions_print.html.twig:21
+msgid "remediation task(s)"
+msgstr "tâche(s) de remédiation"
+
+#: templates/actions_print.html.twig:23
+msgid "from"
+msgstr "du"
+
+#: templates/actions_print.html.twig:23
+msgid "to"
+msgstr "au"
+
+#: templates/actions_print.html.twig:26
+msgid "Results"
+msgstr "Résultats"
+
+#: templates/actions_print.html.twig:32
+msgid "Responders"
+msgstr "Intervenants"
+
+#: templates/actions_print.html.twig:39
+msgid "No action logged and no remediation task completed."
+msgstr "Aucune action consignée ni tâche de remédiation réalisée."
+
+#: templates/actions_print.html.twig:44
+msgid "Date"
+msgstr "Date"
+
+#: templates/actions_print.html.twig:45
+msgid "By"
+msgstr "Par"
+
+#: templates/actions_print.html.twig:46
+msgid "Target / phase"
+msgstr "Cible / phase"
+
+#: templates/actions_print.html.twig:47 templates/actions_print.html.twig:58 templates/audit.html.twig:72 templates/playbook_steps.html.twig:18 templates/playbook_steps.html.twig:41 templates/playbookstep_form.html.twig:17 templates/remediation.html.twig:72 templates/remediation_print.html.twig:26 templates/remediationtask_form.html.twig:22 templates/remediationtask_form.html.twig:25
+msgid "Action"
+msgstr "Action"
+
+#: templates/actions_print.html.twig:48 templates/audit.html.twig:81 templates/event_form.html.twig:28 templates/import.html.twig:12 templates/timeline.html.twig:27
+msgid "Result"
+msgstr "Résultat"
+
+#: templates/actions_print.html.twig:6 templates/remediation_print.html.twig:6
+msgid "Print / save as PDF"
+msgstr "Imprimer / enregistrer en PDF"
+
+#: templates/actions_print.html.twig:64 templates/incident_form.html.twig:131 templates/remediation_print.html.twig:16
+msgid "Detection"
+msgstr "Détection"
+
+#: templates/actions_print.html.twig:65
+msgid "Task"
+msgstr "Tâche"
+
+#: templates/actions_print.html.twig:76 templates/remediation_print.html.twig:54
+#, php-format
+msgid "Issued on %1$s by %2$s."
+msgstr "Édité le %1$s par %2$s."
+
+#: templates/actions_print.html.twig:77
+msgid "Each action and each task is sealed (SHA-256) and recorded in the audit log. Fingerprint of this document:"
+msgstr "Chaque action et chaque tâche est scellée (SHA-256) et tracée dans le journal d'audit. Empreinte de ce document :"
+
+#: templates/actions_print.html.twig:9
+msgid "Action and remediation log"
+msgstr "Journal des actions et de la remédiation"
+
+#: templates/audit.html.twig:11
+msgid "Verify the log"
+msgstr "Vérifier le journal"
+
+#: templates/audit.html.twig:110
+msgid "Date (UTC)"
+msgstr "Date (UTC)"
+
+#: templates/audit.html.twig:111
+msgid "Who"
+msgstr "Qui"
+
+#: templates/audit.html.twig:112
+msgid "Privilege"
+msgstr "Privilège"
+
+#: templates/audit.html.twig:113
+msgid "What"
+msgstr "Quoi"
+
+#: templates/audit.html.twig:114
+msgid "On what"
+msgstr "Sur quoi"
+
+#: templates/audit.html.twig:116
+msgid "Details"
+msgstr "Détails"
+
+#: templates/audit.html.twig:12
+msgid "Verify everything (log, data, evidence)"
+msgstr "Tout vérifier (journal, données, preuves)"
+
+#: templates/audit.html.twig:127
+msgid "via"
+msgstr "via"
+
+#: templates/audit.html.twig:13
+msgid "Export (CSV)"
+msgstr "Exporter (CSV)"
+
+#: templates/audit.html.twig:148
+msgid "view"
+msgstr "voir"
+
+#: templates/audit.html.twig:155
+msgid "No entry"
+msgstr "Aucune entrée"
+
+#: templates/audit.html.twig:173
+msgid "Each entry is chained to the previous one by a SHA-256 fingerprint: any direct change or deletion in the database is detected by “Verify integrity”. No interface allows the log to be modified."
+msgstr "Chaque entrée est chaînée à la précédente par une empreinte SHA-256 : toute modification ou suppression directe en base est détectée par « Vérifier l'intégrité ». Aucune interface ne permet de modifier le journal."
+
+#: templates/audit.html.twig:21
+#, php-format
+msgid "Log intact: %d entry(ies) verified, no change or deletion detected."
+msgstr "Journal intègre : %d entrée(s) vérifiée(s), aucune modification ni suppression détectée."
+
+#: templates/audit.html.twig:26
+msgid "Tampering detected"
+msgstr "Altération détectée"
+
+#: templates/audit.html.twig:27
+msgid "entry #"
+msgstr "entrée n°"
+
+#: templates/audit.html.twig:28
+msgid "Earlier entries remain reliable."
+msgstr "Les entrées antérieures restent fiables."
+
+#: templates/audit.html.twig:37
+#, php-format
+msgid "Data and evidence intact for the %d incident(s) checked."
+msgstr "Données et preuves intègres pour les %d incident(s) vérifié(s)."
+
+#: templates/audit.html.twig:41
+#, php-format
+msgid "Anomalies on %d incident(s):"
+msgstr "Anomalies sur %d incident(s) :"
+
+#: templates/audit.html.twig:45 templates/audit.html.twig:141
+msgid "Incident"
+msgstr "Incident"
+
+#: templates/audit.html.twig:46 templates/integrity.html.twig:25
+msgid "modified"
+msgstr "modifié(s)"
+
+#: templates/audit.html.twig:47 templates/integrity.html.twig:26
+msgid "deleted"
+msgstr "supprimé(s)"
+
+#: templates/audit.html.twig:48
+msgid "evidence item(s) with anomalies"
+msgstr "preuve(s) en anomalie"
+
+#: templates/audit.html.twig:59
+msgid "From"
+msgstr "Du"
+
+#: templates/audit.html.twig:63
+msgid "To"
+msgstr "Au"
+
+#: templates/audit.html.twig:85 templates/audit.html.twig:136
+msgid "Denied"
+msgstr "Refusé"
+
+#: templates/audit.html.twig:86 templates/audit.html.twig:136
+msgid "Error"
+msgstr "Erreur"
+
+#: templates/audit.html.twig:9
+msgid "entry(ies)"
+msgstr "entrée(s)"
+
+#: templates/audit.html.twig:90
+msgid "Incident #"
+msgstr "Incident n°"
+
+#: templates/audit.html.twig:99
+msgid "Reset"
+msgstr "Réinitialiser"
+
+#: templates/compliance.html.twig:10 templates/dashboard.html.twig:170
+msgid "Overdue"
+msgstr "En retard"
+
+#: templates/compliance.html.twig:114
+msgid "Indicative deadlines from the GDPR (art. 33 and 34) and the NIS2 directive (art. 23). Check the national transposition and the current ANSSI / CNIL guidance."
+msgstr "Délais indicatifs issus du RGPD (art. 33 et 34) et de la directive NIS2 (art. 23). Vérifiez les modalités de transposition et les guides ANSSI / CNIL en vigueur."
+
+#: templates/compliance.html.twig:12 templates/dashboard.html.twig:174
+msgid "Awareness date missing"
+msgstr "Date de prise de connaissance manquante"
+
+#: templates/compliance.html.twig:20
+msgid "Regulatory deadlines"
+msgstr "Échéances réglementaires"
+
+#: templates/compliance.html.twig:26
+msgid "Obligation"
+msgstr "Obligation"
+
+#: templates/compliance.html.twig:27
+msgid "Deadline"
+msgstr "Échéance"
+
+#: templates/compliance.html.twig:28
+msgid "Done on"
+msgstr "Réalisé le"
+
+#: templates/compliance.html.twig:29 templates/integrity.html.twig:93
+msgid "State"
+msgstr "État"
+
+#: templates/compliance.html.twig:56
+msgid "No notification obligation is triggered for now. Fill in the sections below if personal data is involved or if the entity is subject to NIS2."
+msgstr "Aucune obligation de notification n'est déclenchée pour l'instant. Renseignez les sections ci-dessous si des données personnelles sont concernées ou si l'entité est soumise à NIS2."
+
+#: templates/compliance.html.twig:65
+msgid "Personal data breach (GDPR)"
+msgstr "Violation de données personnelles (RGPD)"
+
+#: templates/compliance.html.twig:68
+msgid "Personal data is involved"
+msgstr "Des données personnelles sont concernées"
+
+#: templates/compliance.html.twig:69
+msgid "Risk to rights and freedoms"
+msgstr "Risque pour les droits et libertés"
+
+#: templates/compliance.html.twig:70 templates/incident_form.html.twig:132
+msgid "Awareness"
+msgstr "Prise de connaissance"
+
+#: templates/compliance.html.twig:71
+msgid "Starting point of the regulatory deadlines"
+msgstr "Point de départ des délais réglementaires"
+
+#: templates/compliance.html.twig:73
+msgid "Approximate number of people affected"
+msgstr "Nombre (approx.) de personnes concernées"
+
+#: templates/compliance.html.twig:74
+msgid "Categories of data and of people affected"
+msgstr "Catégories de données et de personnes concernées"
+
+#: templates/compliance.html.twig:75
+msgid "Risk analysis / justification (breach register)"
+msgstr "Analyse du risque / justification (registre des violations)"
+
+#: templates/compliance.html.twig:78
+msgid "Must be documented even without notification: every breach must be recorded in the internal register (GDPR art. 33.5)."
+msgstr "À documenter même sans notification : toute violation doit figurer au registre interne (RGPD art. 33.5)."
+
+#: templates/compliance.html.twig:8
+msgid "Done on time"
+msgstr "Fait dans les délais"
+
+#: templates/compliance.html.twig:80
+msgid "CNIL notified on"
+msgstr "Notification CNIL effectuée le"
+
+#: templates/compliance.html.twig:81
+msgid "CNIL notification reference"
+msgstr "Référence de la notification CNIL"
+
+#: templates/compliance.html.twig:82
+msgid "People affected informed on"
+msgstr "Personnes concernées informées le"
+
+#: templates/compliance.html.twig:88
+msgid "NIS2 directive (ANSSI)"
+msgstr "Directive NIS2 (ANSSI)"
+
+#: templates/compliance.html.twig:9
+msgid "Done late"
+msgstr "Fait hors délai"
+
+#: templates/compliance.html.twig:92
+msgid "Significant incident"
+msgstr "Incident important"
+
+#: templates/compliance.html.twig:93
+msgid "Severe disruption of services or significant financial losses / damage to third parties."
+msgstr "Perturbation grave des services ou pertes financières / préjudices importants pour des tiers."
+
+#: templates/compliance.html.twig:95
+msgid "Early warning sent on (24 h)"
+msgstr "Alerte précoce envoyée le (24 h)"
+
+#: templates/compliance.html.twig:96
+msgid "Incident notification sent on (72 h)"
+msgstr "Notification d'incident envoyée le (72 h)"
+
+#: templates/compliance.html.twig:97
+msgid "Final report submitted on (1 month)"
+msgstr "Rapport final transmis le (1 mois)"
+
+#: templates/compliance.html.twig:98
+msgid "ANSSI / CERT-FR reference"
+msgstr "Référence ANSSI / CERT-FR"
+
+#: templates/dashboard.html.twig:100
+msgid "By source"
+msgstr "Par source"
+
+#: templates/dashboard.html.twig:104
+msgid "MITRE ATT&CK tactics"
+msgstr "Tactiques MITRE ATT&CK"
+
+#: templates/dashboard.html.twig:105
+msgid "Most frequent MITRE ATT&CK techniques"
+msgstr "Techniques MITRE ATT&CK les plus fréquentes"
+
+#: templates/dashboard.html.twig:110
+msgid "Incidents detected per month (12 months)"
+msgstr "Incidents détectés par mois (12 mois)"
+
+#: templates/dashboard.html.twig:13
+msgid "No data for the period"
+msgstr "Aucune donnée sur la période"
+
+#: templates/dashboard.html.twig:139
+msgid "Age"
+msgstr "Âge"
+
+#: templates/dashboard.html.twig:152
+msgid "No open incident"
+msgstr "Aucun incident ouvert"
+
+#: templates/dashboard.html.twig:162
+msgid "Regulatory notifications to follow up"
+msgstr "Notifications réglementaires à suivre"
+
+#: templates/dashboard.html.twig:179
+msgid "deadline"
+msgstr "échéance"
+
+#: templates/dashboard.html.twig:183
+msgid "Nothing to report"
+msgstr "Rien à signaler"
+
+#: templates/dashboard.html.twig:37
+msgid "Period"
+msgstr "Période"
+
+#: templates/dashboard.html.twig:44
+msgid "New incident"
+msgstr "Déclarer"
+
+#: templates/dashboard.html.twig:52 templates/dashboard.html.twig:129
+msgid "Open incidents"
+msgstr "Incidents ouverts"
+
+#: templates/dashboard.html.twig:53
+msgid "Open with high / critical severity"
+msgstr "Ouverts gravité élevée / critique"
+
+#: templates/dashboard.html.twig:54
+msgid "Detected in the period"
+msgstr "Détectés sur la période"
+
+#: templates/dashboard.html.twig:55
+msgid "Closed in the period"
+msgstr "Clos sur la période"
+
+#: templates/dashboard.html.twig:56
+msgid "Overdue notifications"
+msgstr "Notifications en retard"
+
+#: templates/dashboard.html.twig:57
+msgid "With personal data"
+msgstr "Avec données personnelles"
+
+#: templates/dashboard.html.twig:58
+msgid "Mean time to contain"
+msgstr "Délai moyen de confinement"
+
+#: templates/dashboard.html.twig:59
+msgid "Mean time to close"
+msgstr "Délai moyen de clôture"
+
+#: templates/dashboard.html.twig:79
+msgid "My remediation tasks"
+msgstr "Mes tâches de remédiation"
+
+#: templates/dashboard.html.twig:88 templates/playbook_steps.html.twig:20 templates/playbookstep_form.html.twig:19 templates/remediation.html.twig:71 templates/remediation.html.twig:106 templates/remediationtask_form.html.twig:30 templates/remediationtask_form.html.twig:33
+msgid "Mandatory before closure"
+msgstr "Obligatoire avant clôture"
+
+#: templates/dashboard.html.twig:97
+msgid "By status"
+msgstr "Par statut"
+
+#: templates/dashboard.html.twig:98
+msgid "By severity"
+msgstr "Par gravité"
+
+#: templates/dashboard.html.twig:99
+msgid "By category"
+msgstr "Par catégorie"
+
+#: templates/event_form.html.twig:26 templates/timeline.html.twig:25
+msgid "Target (workstation, server, account…)"
+msgstr "Cible (poste, serveur, compte…)"
+
+#: templates/event_form.html.twig:27 templates/timeline.html.twig:26
+msgid "Tool / means"
+msgstr "Outil / moyen"
+
+#: templates/event_form.html.twig:29 templates/timeline.html.twig:33
+msgid "EDR detection ref."
+msgstr "Réf. détection EDR"
+
+#: templates/event_form.html.twig:30 templates/timeline.html.twig:30
+msgid "Exact command / change"
+msgstr "Commande / manipulation exacte"
+
+#: templates/event_form.html.twig:32 templates/timeline.html.twig:35
+msgid "For the remediation task"
+msgstr "Pour la tâche de remédiation"
+
+#: templates/event_form.html.twig:42
+msgid "Imported raw data (read-only)"
+msgstr "Données brutes importées (non modifiables)"
+
+#: templates/import.html.twig:10 templates/integrity.html.twig:50
+msgid "File"
+msgstr "Fichier"
+
+#: templates/import.html.twig:109
+msgid "…or add everything to an existing incident"
+msgstr "…ou tout ajouter à un incident existant"
+
+#: templates/import.html.twig:11
+msgid "Columns"
+msgstr "Colonnes"
+
+#: templates/import.html.twig:113
+msgid "Takes precedence over the grouping above."
+msgstr "Prioritaire sur le regroupement ci-dessus."
+
+#: templates/import.html.twig:117
+msgid "Entity of the new incidents"
+msgstr "Entité des nouveaux incidents"
+
+#: templates/import.html.twig:126
+msgid "UTC (default format of most EDRs)"
+msgstr "UTC (format par défaut de la plupart des EDR)"
+
+#: templates/import.html.twig:127
+msgid "Local time"
+msgstr "Heure locale"
+
+#: templates/import.html.twig:128
+msgid "Time zone of dates without an explicit time zone"
+msgstr "Fuseau des dates sans fuseau explicite"
+
+#: templates/import.html.twig:133
+msgid "Create the indicators (hashes, paths, command lines, remote IPs/domains)"
+msgstr "Créer les indicateurs (hash, chemins, lignes de commande, IP/domaines distants)"
+
+#: templates/import.html.twig:137
+msgid "Link the computers (hostname) and users (login) found in GLPI"
+msgstr "Lier les ordinateurs (nom d'hôte) et utilisateurs (identifiant) trouvés dans GLPI"
+
+#: templates/import.html.twig:141
+msgid "Remember this mapping for the next imports"
+msgstr "Mémoriser ce mapping pour les prochains imports"
+
+#: templates/import.html.twig:147
+msgid "Preview (first 5 rows)"
+msgstr "Aperçu (5 premières lignes)"
+
+#: templates/import.html.twig:169
+msgid "The preview reflects the automatically proposed mapping; your changes are applied on import."
+msgstr "L'aperçu reflète le mapping proposé automatiquement ; vos modifications sont appliquées à l'import."
+
+#: templates/import.html.twig:176
+msgid "Cancel"
+msgstr "Annuler"
+
+#: templates/import.html.twig:178
+msgid "Import"
+msgstr "Importer"
+
+#: templates/import.html.twig:188
+msgid "Incidents created"
+msgstr "Incidents créés"
+
+#: templates/import.html.twig:189
+msgid "Incidents completed"
+msgstr "Incidents complétés"
+
+#: templates/import.html.twig:190
+msgid "Events added"
+msgstr "Événements ajoutés"
+
+#: templates/import.html.twig:191
+msgid "Duplicates skipped"
+msgstr "Doublons ignorés"
+
+#: templates/import.html.twig:192
+msgid "IOCs added"
+msgstr "IOC ajoutés"
+
+#: templates/import.html.twig:193
+msgid "Linked items"
+msgstr "Éléments liés"
+
+#: templates/import.html.twig:209
+msgid "Errors"
+msgstr "Erreurs"
+
+#: templates/import.html.twig:217
+msgid "View all incidents"
+msgstr "Voir tous les incidents"
+
+#: templates/import.html.twig:222
+msgid "Created"
+msgstr "Créé"
+
+#: templates/import.html.twig:222
+msgid "Completed"
+msgstr "Complété"
+
+#: templates/import.html.twig:228
+msgid "No incident created or modified."
+msgstr "Aucun incident créé ou modifié."
+
+#: templates/import.html.twig:234
+msgid "Import another file"
+msgstr "Importer un autre fichier"
+
+#: templates/import.html.twig:26
+msgid "CSV export (detections, alerts or incidents)"
+msgstr "Export CSV (détections, alertes ou incidents)"
+
+#: templates/import.html.twig:29
+msgid "Separator and encoding detected automatically (UTF-8, Windows-1252). PHP max size:"
+msgstr "Séparateur et encodage détectés automatiquement (UTF-8, Windows-1252). Taille max PHP :"
+
+#: templates/import.html.twig:31
+msgid "The column mapping remembered from the last import will be reused."
+msgstr "Le mapping de colonnes mémorisé lors du dernier import sera repris."
+
+#: templates/import.html.twig:36
+msgid "Analyse the file"
+msgstr "Analyser le fichier"
+
+#: templates/import.html.twig:45
+msgid "Each CSV row becomes a timeline event (with its raw data kept as is). Rows are grouped into incidents by detection identifier, by host, or into an existing incident. Re-importing the same file creates no duplicates."
+msgstr "Chaque ligne du CSV devient un événement de chronologie (avec ses données brutes conservées telles quelles). Les lignes sont regroupées en incidents selon l'identifiant de détection, l'hôte, ou dans un incident existant. Un ré-import du même fichier ne crée pas de doublons."
+
+#: templates/import.html.twig:57
+msgid "Column mapping"
+msgstr "Correspondance des colonnes"
+
+#: templates/import.html.twig:58
+msgid "row(s)"
+msgstr "ligne(s)"
+
+#: templates/import.html.twig:61
+#, php-format
+msgid "File truncated: only the first %d rows will be imported."
+msgstr "Fichier tronqué : seules les %d premières lignes seront importées."
+
+#: templates/import.html.twig:71
+msgid "ignore"
+msgstr "ignorer"
+
+#: templates/import.html.twig:8
+msgid "EDR / XDR CSV import"
+msgstr "Import CSV EDR / XDR"
+
+#: templates/import.html.twig:83
+msgid "Unmapped columns: kept in the raw data of each event."
+msgstr "Colonnes non associées : conservées dans les données brutes de chaque événement."
+
+#: templates/import.html.twig:90
+msgid "Import options"
+msgstr "Options d'import"
+
+#: templates/import.html.twig:93
+msgid "Grouping into incidents"
+msgstr "Regroupement en incidents"
+
+#: templates/import.html.twig:95
+msgid "One incident per detection identifier"
+msgstr "Un incident par identifiant de détection"
+
+#: templates/import.html.twig:96
+msgid "One incident per host"
+msgstr "Un incident par hôte"
+
+#: templates/import.html.twig:97
+msgid "A single incident for the whole file"
+msgstr "Un seul incident pour tout le fichier"
+
+#: templates/import.html.twig:98
+msgid "One incident per row"
+msgstr "Un incident par ligne"
+
+#: templates/incident_form.html.twig:128
+msgid "External identifier (EDR, SIEM…)"
+msgstr "Identifiant externe (EDR, SIEM…)"
+
+#: templates/incident_form.html.twig:130
+msgid "Phases and timestamps"
+msgstr "Phases et horodatage"
+
+#: templates/incident_form.html.twig:133
+msgid "Starting point of the CNIL (72 h) and ANSSI (24 h / 72 h) deadlines"
+msgstr "Point de départ des délais CNIL (72 h) et ANSSI (24 h / 72 h)"
+
+#: templates/incident_form.html.twig:142
+msgid "Root cause"
+msgstr "Cause racine"
+
+#: templates/incident_form.html.twig:143
+msgid "Lessons learned / corrective actions"
+msgstr "Enseignements / actions correctives"
+
+#: templates/incident_form.html.twig:150
+msgid "Create a GLPI ticket linked to this incident?"
+msgstr "Créer un ticket GLPI lié à cet incident ?"
+
+#: templates/incident_form.html.twig:151
+msgid "Create a linked ticket"
+msgstr "Créer un ticket lié"
+
+#: templates/incident_form.html.twig:29
+msgid "event(s)"
+msgstr "événement(s)"
+
+#: templates/incident_form.html.twig:31
+msgid "linked item(s)"
+msgstr "élément(s) lié(s)"
+
+#: templates/incident_form.html.twig:40
+msgid "deadline passed since"
+msgstr "échéance dépassée depuis le"
+
+#: templates/incident_form.html.twig:42
+msgid "to be done before"
+msgstr "à faire avant le"
+
+#: templates/incident_form.html.twig:43
+msgid "remaining"
+msgstr "restantes"
+
+#: templates/incident_form.html.twig:45
+msgid "see the GDPR / NIS2 tab"
+msgstr "voir l'onglet RGPD / NIS2"
+
+#: templates/incident_form.html.twig:51
+msgid "Qualification"
+msgstr "Qualification"
+
+#: templates/incident_form.html.twig:69
+msgid "Impact (CIA)"
+msgstr "Impact (DIC)"
+
+#: templates/incident_form.html.twig:70
+msgid "Availability"
+msgstr "Disponibilité"
+
+#: templates/incident_form.html.twig:71
+msgid "Integrity"
+msgstr "Intégrité"
+
+#: templates/incident_form.html.twig:72
+msgid "Confidentiality"
+msgstr "Confidentialité"
+
+#: templates/incident_form.html.twig:87
+msgid "The attacker's goal at this stage."
+msgstr "Le but de l'attaquant à cette étape."
+
+#: templates/incident_form.html.twig:93
+msgid "Type an identifier (T1566) or a keyword (phishing). The list is filtered by the selected tactic."
+msgstr "Tapez un identifiant (T1566) ou un mot-clé (phishing). Liste filtrée selon la tactique choisie."
+
+#: templates/integrity.html.twig:10
+msgid "Not sealed"
+msgstr "Non scellé"
+
+#: templates/integrity.html.twig:107
+#, php-format
+msgid "Details of the %d records"
+msgstr "Détail des %d enregistrements"
+
+#: templates/integrity.html.twig:19
+msgid "No anomaly"
+msgstr "Aucune anomalie"
+
+#: templates/integrity.html.twig:21
+msgid "Anomalies detected"
+msgstr "Anomalies détectées"
+
+#: templates/integrity.html.twig:24
+msgid "intact record(s)"
+msgstr "enregistrement(s) intègre(s)"
+
+#: templates/integrity.html.twig:27
+msgid "not sealed"
+msgstr "non scellé(s)"
+
+#: templates/integrity.html.twig:28
+msgid "evidence item(s)"
+msgstr "preuve(s)"
+
+#: templates/integrity.html.twig:34
+msgid "Verify now (including files)"
+msgstr "Vérifier maintenant (fichiers compris)"
+
+#: templates/integrity.html.twig:43
+msgid "Evidence register"
+msgstr "Registre des preuves"
+
+#: templates/integrity.html.twig:44
+msgid "Every document added in the Documents tab is registered automatically with its SHA-256."
+msgstr "Tout document ajouté dans l'onglet Documents est inscrit automatiquement avec son SHA-256."
+
+#: templates/integrity.html.twig:51
+msgid "Size"
+msgstr "Taille"
+
+#: templates/integrity.html.twig:52
+msgid "Reference SHA-256"
+msgstr "SHA-256 de référence"
+
+#: templates/integrity.html.twig:53 templates/team.html.twig:60
+msgid "Added"
+msgstr "Ajouté"
+
+#: templates/integrity.html.twig:54
+msgid "Last check"
+msgstr "Dernier contrôle"
+
+#: templates/integrity.html.twig:68
+msgid "current:"
+msgstr "actuel :"
+
+#: templates/integrity.html.twig:78
+msgid "No evidence attached. Add your files (screenshots, logs, EDR exports…) in the Documents tab."
+msgstr "Aucune preuve jointe. Ajoutez vos fichiers (captures, journaux, exports EDR…) dans l'onglet Documents."
+
+#: templates/integrity.html.twig:8
+msgid "Modified outside the application"
+msgstr "Modifié hors application"
+
+#: templates/integrity.html.twig:87
+msgid "Data integrity"
+msgstr "Intégrité des données"
+
+#: templates/integrity.html.twig:88
+msgid "Form, timeline, IOCs and links: fingerprint recomputed at each display and compared with the audit log."
+msgstr "Fiche, chronologie, IOC et liens : empreinte recalculée à chaque affichage et comparée au journal d'audit."
+
+#: templates/integrity.html.twig:9
+msgid "Deleted outside the application"
+msgstr "Supprimé hors application"
+
+#: templates/integrity.html.twig:93
+msgid "Item"
+msgstr "Élément"
+
+#: templates/integrity.html.twig:93
+msgid "Expected fingerprint"
+msgstr "Empreinte attendue"
+
+#: templates/ioc_form.html.twig:18 templates/iocs.html.twig:18 templates/iocs.html.twig:40
+msgid "Verdict"
+msgstr "Verdict"
+
+#: templates/ioc_form.html.twig:20
+msgid "First seen"
+msgstr "Vu pour la première fois"
+
+#: templates/ioc_form.html.twig:21
+msgid "Last seen"
+msgstr "Vu pour la dernière fois"
+
+#: templates/ioc_form.html.twig:26
+msgid "Search on:"
+msgstr "Rechercher sur :"
+
+#: templates/ioc_form.html.twig:38
+msgid "Warning: never submit a confidential file or data to a public service."
+msgstr "Attention : ne soumettez jamais de fichier ou de donnée confidentielle à un service public."
+
+#: templates/iocs.html.twig:11
+msgid "Add indicators"
+msgstr "Ajouter des indicateurs"
+
+#: templates/iocs.html.twig:17
+msgid "Automatic detection"
+msgstr "Détection automatique"
+
+#: templates/iocs.html.twig:19
+msgid "Values (one per line)"
+msgstr "Valeurs (une par ligne)"
+
+#: templates/iocs.html.twig:42
+msgid "First sighting"
+msgstr "Première vue"
+
+#: templates/iocs.html.twig:43
+msgid "Last sighting"
+msgstr "Dernière vue"
+
+#: templates/playbook_form.html.twig:12
+msgid "The playbook will be offered first for incidents in this category."
+msgstr "La procédure sera proposée en premier pour les incidents de cette catégorie."
+
+#: templates/playbook_form.html.twig:17
+msgid "Steps are entered after saving, in the Steps tab."
+msgstr "Les étapes se saisissent après l'enregistrement, dans l'onglet Étapes."
+
+#: templates/playbook_steps.html.twig:10
+msgid "Add a step"
+msgstr "Ajouter une étape"
+
+#: templates/playbook_steps.html.twig:16 templates/playbook_steps.html.twig:40 templates/playbookstep_form.html.twig:15 templates/remediation.html.twig:70 templates/remediationtask_form.html.twig:16 templates/remediationtask_form.html.twig:18
+msgid "Phase"
+msgstr "Phase"
+
+#: templates/playbook_steps.html.twig:17 templates/playbook_steps.html.twig:39 templates/playbookstep_form.html.twig:16 templates/remediationtask_form.html.twig:31
+msgid "Order"
+msgstr "Ordre"
+
+#: templates/playbook_steps.html.twig:19 templates/playbookstep_form.html.twig:18 templates/remediation.html.twig:73 templates/remediationtask_form.html.twig:23 templates/remediationtask_form.html.twig:26
+msgid "Instructions"
+msgstr "Instructions"
+
+#: templates/playbook_steps.html.twig:32
+msgid "No step."
+msgstr "Aucune étape."
+
+#: templates/playbook_steps.html.twig:42
+msgid "Mandatory"
+msgstr "Obligatoire"
+
+#: templates/remediation.html.twig:11
+msgid "Plan progress"
+msgstr "Avancement du plan"
+
+#: templates/remediation.html.twig:111
+msgid "by"
+msgstr "par"
+
+#: templates/remediation.html.twig:124 templates/remediationtask_form.html.twig:28
+msgid "Assigned to"
+msgstr "Assignée à"
+
+#: templates/remediation.html.twig:125
+msgid "not assigned"
+msgstr "non assignée"
+
+#: templates/remediation.html.twig:136
+msgid "Report (what was done, findings…)"
+msgstr "Compte rendu (ce qui a été fait, constat…)"
+
+#: templates/remediation.html.twig:136 templates/remediationtask_form.html.twig:35
+msgid "Report"
+msgstr "Compte rendu"
+
+#: templates/remediation.html.twig:16 templates/remediation_print.html.twig:16
+msgid "Progress"
+msgstr "Avancement"
+
+#: templates/remediation.html.twig:20
+msgid "mandatory step(s) before closure"
+msgstr "étape(s) obligatoire(s) avant clôture"
+
+#: templates/remediation.html.twig:22
+msgid "Mandatory steps completed"
+msgstr "Étapes obligatoires terminées"
+
+#: templates/remediation.html.twig:25
+msgid "Plan — print / PDF"
+msgstr "Plan — imprimer / PDF"
+
+#: templates/remediation.html.twig:26
+msgid "Action & remediation log"
+msgstr "Journal des actions et remédiation"
+
+#: templates/remediation.html.twig:35
+msgid "Apply a playbook"
+msgstr "Appliquer une procédure"
+
+#: templates/remediation.html.twig:36
+msgid "View playbooks"
+msgstr "Voir les procédures"
+
+#: templates/remediation.html.twig:40
+msgid "No other active playbook available."
+msgstr "Aucune autre procédure active disponible."
+
+#: templates/remediation.html.twig:44
+msgid "Playbook"
+msgstr "Procédure"
+
+#: templates/remediation.html.twig:49
+msgid "Apply"
+msgstr "Appliquer"
+
+#: templates/remediation.html.twig:52
+msgid "★ = playbook intended for the incident's category. The steps are copied into the plan."
+msgstr "★ = procédure prévue pour la catégorie de l'incident. Les étapes sont copiées dans le plan."
+
+#: templates/remediation.html.twig:52
+msgid "You can then adapt them."
+msgstr "Vous pouvez ensuite les adapter."
+
+#: templates/remediation.html.twig:55
+msgid "Already applied:"
+msgstr "Déjà appliquée(s) :"
+
+#: templates/remediation.html.twig:64
+msgid "Add a specific task"
+msgstr "Ajouter une tâche spécifique"
+
+#: templates/remediation.html.twig:89
+msgid "No remediation plan. Apply a playbook suited to the type of incident or add your own tasks."
+msgstr "Aucun plan de remédiation. Appliquez une procédure adaptée au type d'incident ou ajoutez vos propres tâches."
+
+#: templates/remediation_print.html.twig:28
+msgid "Done on / by"
+msgstr "Réalisée le / par"
+
+#: templates/remediation_print.html.twig:36
+msgid "mandatory"
+msgstr "obligatoire"
+
+#: templates/remediation_print.html.twig:38
+msgid "Report:"
+msgstr "Compte rendu :"
+
+#: templates/remediation_print.html.twig:49
+msgid "Incident owner"
+msgstr "Responsable de l'incident"
+
+#: templates/remediation_print.html.twig:49 templates/remediation_print.html.twig:50
+msgid "Name, date, signature"
+msgstr "Nom, date, signature"
+
+#: templates/remediation_print.html.twig:50
+msgid "Approval (CISO / management)"
+msgstr "Validation (RSSI / direction)"
+
+#: templates/remediation_print.html.twig:55
+msgid "SHA-256 fingerprint of the plan at this date:"
+msgstr "Empreinte SHA-256 du plan à cette date :"
+
+#: templates/remediation_print.html.twig:9
+msgid "Remediation plan"
+msgstr "Plan de remédiation"
+
+#: templates/remediationtask_form.html.twig:37 templates/timeline.html.twig:24
+msgid "Performed on"
+msgstr "Réalisée le"
+
+#: templates/team.html.twig:10
+msgid "Leads"
+msgstr "Pilotage"
+
+#: templates/team.html.twig:11
+msgid "Can be changed in the incident's main tab."
+msgstr "Modifiables dans l'onglet principal de l'incident."
+
+#: templates/team.html.twig:26
+msgid "Add a technician"
+msgstr "Ajouter un technicien"
+
+#: templates/team.html.twig:32 templates/team.html.twig:58 templates/team.html.twig:72
+msgid "Role"
+msgstr "Rôle"
+
+#: templates/team.html.twig:43
+msgid "Contributors see the incident and can act (timeline, IOCs, evidence, remediation tasks). Observers have read-only access. Every action remains logged under each person's name."
+msgstr "Les intervenants voient l'incident et peuvent agir (chronologie, IOC, preuves, tâches de remédiation). Les observateurs ont un accès en lecture seule. Toute action reste tracée au nom de chacun."
+
+#: templates/team.html.twig:51
+msgid "Response team"
+msgstr "Équipe d'intervention"
+
+#: templates/team.html.twig:57
+msgid "Member"
+msgstr "Membre"
+
+#: templates/team.html.twig:59
+msgid "Open tasks"
+msgstr "Tâches en cours"
+
+#: templates/team.html.twig:89
+msgid "Remove this person from the team? They will lose access to the incident (unless they have access another way)."
+msgstr "Retirer cette personne de l'équipe ? Elle perdra l'accès à l'incident (sauf si elle y a accès autrement)."
+
+#: templates/team.html.twig:91
+msgid "Remove"
+msgstr "Retirer"
+
+#: templates/team.html.twig:98
+msgid "No other member yet."
+msgstr "Aucun autre membre pour l'instant."
+
+#: templates/timeline.html.twig:114
+msgid "Automatic"
+msgstr "Automatique"
+
+#: templates/timeline.html.twig:140
+msgid "Imported raw data"
+msgstr "Données brutes importées"
+
+#: templates/timeline.html.twig:16
+msgid "Log an action"
+msgstr "Consigner une action"
+
+#: templates/timeline.html.twig:17
+msgid "Investigation or change made by you (outside the EDR's automatic actions)"
+msgstr "Investigation ou manipulation faite par vous (hors automatismes de l'EDR)"
+
+#: templates/timeline.html.twig:28
+msgid "What was done"
+msgstr "Ce qui a été fait"
+
+#: templates/timeline.html.twig:29
+msgid "E.g.: network isolation of the workstation, account disabled, scheduled task removed…"
+msgstr "Ex. : isolement réseau du poste, désactivation du compte, suppression de la tâche planifiée…"
+
+#: templates/timeline.html.twig:31
+msgid "Copy the command, the menu path or the changed setting: this is what makes it possible to redo or undo the action."
+msgstr "Copiez la commande, le chemin de menu ou le paramètre modifié : c'est ce qui permettra de refaire ou d'annuler l'action."
+
+#: templates/timeline.html.twig:32
+msgid "Findings / output"
+msgstr "Constat / sortie obtenue"
+
+#: templates/timeline.html.twig:39
+msgid "Attach outputs or screenshots in the Documents tab: their SHA-256 is recorded."
+msgstr "Joignez les sorties ou captures dans l'onglet Documents : leur SHA-256 est enregistré."
+
+#: templates/timeline.html.twig:41
+msgid "Log"
+msgstr "Consigner"
+
+#: templates/timeline.html.twig:52
+msgid "Other event (note, communication…)"
+msgstr "Autre événement (note, communication…)"
+
+#: templates/timeline.html.twig:76
+msgid "Action and remediation log — print / PDF"
+msgstr "Journal des actions et remédiation — imprimer / PDF"
+
+#: templates/timeline.html.twig:84
+msgid "No event yet."
+msgstr "Aucun événement pour le moment."
+
+#: templates/timeline.html.twig:88
+msgid "All"
+msgstr "Tous"

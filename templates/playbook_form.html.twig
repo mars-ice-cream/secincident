@@ -1,0 +1,19 @@
+{#
+ # SecIncident — procédure de remédiation type
+ #}
+{% extends 'generic_show_form.html.twig' %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set no_inventory_footer = true %}
+
+{% block form_fields %}
+   {{ fields.textField('name', item.fields['name'], __('Name'), field_options|merge({required: true, full_width: true})) }}
+   {{ fields.dropdownArrayField('category', item.fields['category'], categories, __('Incident category', 'secincident'), field_options|merge({
+      helper: __('The playbook will be offered first for incidents in this category.', 'secincident'),
+   })) }}
+   {{ fields.dropdownYesNo('is_active', item.fields['is_active'], __('Active'), field_options) }}
+   {{ fields.textareaField('description', item.fields['description'], __('Description'), field_options|merge({full_width: true, rows: 3})) }}
+   {% if item.isNewItem() %}
+      <div class="col-12 text-muted small">{{ __('Steps are entered after saving, in the Steps tab.', 'secincident') }}</div>
+   {% endif %}
+{% endblock %}

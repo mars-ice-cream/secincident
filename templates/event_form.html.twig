@@ -1,0 +1,59 @@
+{#
+ # SecIncident — formulaire d'un événement de chronologie
+ #}
+{% extends 'generic_show_form.html.twig' %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set no_inventory_footer = true %}
+
+{% block form_fields %}
+   {% set fk = 'plugin_secincident_incidents_id' %}
+   {{ fields.hiddenField(fk, item.fields[fk]) }}
+
+   {% if not incident.isNewItem() %}
+      {{ fields.htmlField('', incident.getLink(), _n('Security incident', 'Security incidents', 1, 'secincident'), field_options|merge({full_width: true})) }}
+   {% endif %}
+
+   {{ fields.datetimeField('date', item.fields['date'], __('Date'), field_options|merge({required: true})) }}
+   {{ fields.dropdownArrayField('event_type', item.fields['event_type'], types, _n('Type', 'Types', 1), field_options) }}
+   {{ fields.textField('name', item.fields['name'], __('Label', 'secincident'), field_options|merge({required: true, full_width: true})) }}
+   {{ fields.textField('hostname', item.fields['hostname'], __('Host', 'secincident'), field_options) }}
+   {{ fields.textField('username', item.fields['username'], __('User involved', 'secincident'), field_options) }}
+   {{ fields.textareaField('content', item.fields['content'], __('Detail', 'secincident'), field_options|merge({full_width: true, rows: 6})) }}
+
+   {% if item.fields['event_type'] == 'action' or item.isNewItem() %}
+      {{ fields.smallTitle(__('Investigation / response action', 'secincident'), 'ti ti-tool') }}
+      {{ fields.textField('target', item.fields['target'], __('Target (workstation, server, account…)', 'secincident'), field_options) }}
+      {{ fields.dropdownArrayField('tool', item.fields['tool'] ?: 'other', tools, __('Tool / means', 'secincident'), field_options) }}
+      {{ fields.dropdownArrayField('result', item.fields['result'] ?: 'to_check', results, __('Result', 'secincident'), field_options) }}
+      {{ fields.textField('detection_ref', item.fields['detection_ref'], __('EDR detection ref.', 'secincident'), field_options) }}
+      {{ fields.textareaField('command', item.fields['command'], __('Exact command / change', 'secincident'), field_options|merge({full_width: true, rows: 3})) }}
+      {% if tasks is not empty %}
+         {{ fields.dropdownArrayField('plugin_secincident_remediationtasks_id', item.fields['plugin_secincident_remediationtasks_id'] ?: 0, task_choices, __('For the remediation task', 'secincident'), field_options) }}
+      {% endif %}
+   {% endif %}
+
+   {% if not item.isNewItem() %}
+      {{ fields.htmlField('', (item.fields['source'] ~ (item.fields['external_id'] ? ' — ' ~ item.fields['external_id'] : ''))|e, __('Source', 'secincident'), field_options) }}
+   {% endif %}
+
+   {% if raw is not null %}
+      <div class="col-12 mt-3">
+         <h4><i class="ti ti-database me-1"></i>{{ __('Imported raw data (read-only)', 'secincident') }}</h4>
+         <div class="table-responsive">
+            <table class="table table-sm table-striped secincident-raw-table">
+               <tbody>
+                  {% for key, value in raw %}
+                     {% if value is not empty %}
+                        <tr>
+                           <th class="text-nowrap">{{ key }}</th>
+                           <td class="text-break font-monospace">{{ value is iterable ? value|json_encode : value }}</td>
+                        </tr>
+                     {% endif %}
+                  {% endfor %}
+               </tbody>
+            </table>
+         </div>
+      </div>
+   {% endif %}
+{% endblock %}

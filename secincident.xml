@@ -1,0 +1,60 @@
+<root>
+   <name>Incidents de sécurité (SecIncident)</name>
+   <key>secincident</key>
+   <state>stable</state>
+   <description>
+      <short>
+         <fr>Suivi des incidents de sécurité : chronologie, actions d'investigation, preuves scellées SHA-256, journal d'audit, RGPD/NIS2, procédures de remédiation, MITRE ATT&amp;CK, import CSV d'EDR.</fr>
+         <en>Security incident tracking: timeline, investigation actions, SHA-256 sealed evidence, audit trail, GDPR/NIS2 deadlines, remediation playbooks, MITRE ATT&amp;CK, EDR CSV import.</en>
+      </short>
+      <long>
+         <fr>Gère les incidents de sécurité dans GLPI, liés aux postes, utilisateurs et tickets. Chronologie et actions d'investigation structurées, indicateurs de compromission, registre des preuves avec SHA-256, journal d'audit chaîné infalsifiable (qui, quoi, sur quoi, avec quel privilège), cloisonnement par technicien et équipe d'intervention, échéances CNIL (72 h) et ANSSI/NIS2 (24 h / 72 h / 1 mois), procédures de remédiation, tableau de bord, MITRE ATT&amp;CK, import des exports CSV d'EDR / XDR.</fr>
+         <en>Manages security incidents in GLPI, linked to assets, users and tickets. Structured timeline and investigation actions, IOCs, SHA-256 evidence register, tamper-evident hash-chained audit trail (who, what, on what, with which privilege), per-technician isolation and response team, GDPR (72 h) and NIS2 (24 h / 72 h / 1 month) deadlines, remediation playbooks, dashboard, MITRE ATT&amp;CK, EDR / XDR CSV import. Interface in English and French.</en>
+      </long>
+   </description>
+   <homepage>https://github.com/mars-ice-cream/secincident</homepage>
+   <download>https://github.com/mars-ice-cream/secincident/releases</download>
+   <issues>https://github.com/mars-ice-cream/secincident/issues</issues>
+   <readme>https://raw.githubusercontent.com/mars-ice-cream/secincident/main/README.md</readme>
+   <authors>
+      <author>Gerome Le Duff</author>
+   </authors>
+   <versions>
+      <version>
+         <num>1.9.0</num>
+         <compatibility>~11.0.0</compatibility>
+         <download_url>https://github.com/mars-ice-cream/secincident/releases/download/1.9.0/glpi-secincident-1.9.0.tar.bz2</download_url>
+      </version>
+   </versions>
+   <langs>
+      <lang>en_GB</lang>
+      <lang>fr_FR</lang>
+   </langs>
+   <license>GPL v3+</license>
+   <tags>
+      <fr>
+         <tag>sécurité</tag>
+         <tag>incident</tag>
+         <tag>RGPD</tag>
+         <tag>NIS2</tag>
+         <tag>audit</tag>
+         <tag>EDR</tag>
+      </fr>
+      <en>
+         <tag>security</tag>
+         <tag>incident response</tag>
+         <tag>GDPR</tag>
+         <tag>NIS2</tag>
+         <tag>audit</tag>
+         <tag>EDR</tag>
+      </en>
+   </tags>
+   <screenshots>
+      <screenshot>https://raw.githubusercontent.com/mars-ice-cream/secincident/main/misc/screenshots/01_tableau_de_bord.jpg</screenshot>
+      <screenshot>https://raw.githubusercontent.com/mars-ice-cream/secincident/main/misc/screenshots/03_fiche_incident.jpg</screenshot>
+      <screenshot>https://raw.githubusercontent.com/mars-ice-cream/secincident/main/misc/screenshots/17_actions_chronologie.jpg</screenshot>
+      <screenshot>https://raw.githubusercontent.com/mars-ice-cream/secincident/main/misc/screenshots/05_remediation.jpg</screenshot>
+      <screenshot>https://raw.githubusercontent.com/mars-ice-cream/secincident/main/misc/screenshots/08_integrite_preuves.jpg</screenshot>
+      <screenshot>https://raw.githubusercontent.com/mars-ice-cream/secincident/main/misc/screenshots/10_journal_audit.jpg</screenshot>
+   </screenshots>
+</root>

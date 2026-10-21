@@ -1,0 +1,175 @@
+{#
+ # SecIncident — journal d'audit
+ #}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+<div class="container-fluid secincident-audit">
+   <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+      <h2 class="mb-0"><i class="ti ti-file-certificate me-2"></i>{{ __('Audit log', 'secincident') }}</h2>
+      <span class="text-muted">{{ total }} {{ __('entry(ies)', 'secincident') }}</span>
+      <div class="ms-auto d-flex gap-2">
+         <a href="{{ verify_url }}" class="btn btn-sm btn-outline-secondary"><i class="ti ti-shield-check me-1"></i>{{ __('Verify the log', 'secincident') }}</a>
+         <a href="{{ verify_all_url }}" class="btn btn-sm btn-outline-primary"><i class="ti ti-shield-search me-1"></i>{{ __('Verify everything (log, data, evidence)', 'secincident') }}</a>
+         <a href="{{ export_url }}" class="btn btn-sm btn-outline-secondary"><i class="ti ti-download me-1"></i>{{ __('Export (CSV)', 'secincident') }}</a>
+      </div>
+   </div>
+
+   {% if verification is not null %}
+      {% if verification.ok %}
+         <div class="alert alert-success">
+            <i class="ti ti-shield-check me-1"></i>
+            {{ __('Log intact: %d entry(ies) verified, no change or deletion detected.', 'secincident')|format(verification.count) }}
+         </div>
+      {% else %}
+         <div class="alert alert-danger">
+            <i class="ti ti-alert-octagon me-1"></i>
+            <strong>{{ __('Tampering detected', 'secincident') }}</strong> —
+            {{ __('entry #', 'secincident') }}{{ verification.broken_id }} : {{ verification.reason }}.
+            {{ __('Earlier entries remain reliable.', 'secincident') }}
+         </div>
+      {% endif %}
+   {% endif %}
+
+   {% if data_check is not null %}
+      {% if data_check.anomalies is empty %}
+         <div class="alert alert-success">
+            <i class="ti ti-shield-check me-1"></i>
+            {{ __('Data and evidence intact for the %d incident(s) checked.', 'secincident')|format(data_check.incidents) }}
+         </div>
+      {% else %}
+         <div class="alert alert-danger">
+            <strong>{{ __('Anomalies on %d incident(s):', 'secincident')|format(data_check.anomalies|length) }}</strong>
+            <ul class="mb-0">
+               {% for a in data_check.anomalies %}
+                  <li>
+                     <a href="{{ a.url }}">{{ __('Incident', 'secincident') }} #{{ a.incident }}</a> —
+                     {{ a.donnees.altered }} {{ __('modified', 'secincident') }},
+                     {{ a.donnees.missing }} {{ __('deleted', 'secincident') }},
+                     {{ a.preuves }} {{ __('evidence item(s) with anomalies', 'secincident') }}
+                  </li>
+               {% endfor %}
+            </ul>
+         </div>
+      {% endif %}
+   {% endif %}
+
+   <form method="get" action="{{ base_url }}" class="card mb-3">
+      <div class="card-body row g-2 align-items-end">
+         <div class="col-6 col-md-2">
+            <label class="form-label" for="audit-from">{{ __('From', 'secincident') }}</label>
+            <input type="date" id="audit-from" name="date_from" value="{{ filters.date_from }}" class="form-control form-control-sm">
+         </div>
+         <div class="col-6 col-md-2">
+            <label class="form-label" for="audit-to">{{ __('To', 'secincident') }}</label>
+            <input type="date" id="audit-to" name="date_to" value="{{ filters.date_to }}" class="form-control form-control-sm">
+         </div>
+         <div class="col-12 col-md-2">
+            {{ fields.dropdownField('User', 'users_id', filters.users_id, __('User'), {
+               no_label: false, field_class: '', is_horizontal: false, rand: random(), right: 'all', display_emptychoice: true,
+            }) }}
+         </div>
+         <div class="col-6 col-md-2">
+            <label class="form-label" for="audit-action">{{ __('Action', 'secincident') }}</label>
+            <select id="audit-action" name="action" class="form-select form-select-sm">
+               <option value="">—</option>
+               {% for key, label in actions %}
+                  <option value="{{ key }}" {{ filters.action == key ? 'selected' : '' }}>{{ label }}</option>
+               {% endfor %}
+            </select>
+         </div>
+         <div class="col-6 col-md-1">
+            <label class="form-label" for="audit-result">{{ __('Result', 'secincident') }}</label>
+            <select id="audit-result" name="result" class="form-select form-select-sm">
+               <option value="">—</option>
+               <option value="ok" {{ filters.result == 'ok' ? 'selected' : '' }}>OK</option>
+               <option value="denied" {{ filters.result == 'denied' ? 'selected' : '' }}>{{ __('Denied', 'secincident') }}</option>
+               <option value="error" {{ filters.result == 'error' ? 'selected' : '' }}>{{ __('Error', 'secincident') }}</option>
+            </select>
+         </div>
+         <div class="col-6 col-md-1">
+            <label class="form-label" for="audit-incident">{{ __('Incident #', 'secincident') }}</label>
+            <input type="number" min="0" id="audit-incident" name="incidents_id" value="{{ filters.incidents_id ?: '' }}" class="form-control form-control-sm">
+         </div>
+         <div class="col-6 col-md-1">
+            <label class="form-label" for="audit-ip">IP</label>
+            <input type="text" id="audit-ip" name="ip" value="{{ filters.ip }}" class="form-control form-control-sm">
+         </div>
+         <div class="col-12 col-md-1 d-flex gap-1">
+            <button type="submit" class="btn btn-sm btn-primary w-100"><i class="ti ti-filter"></i></button>
+            <a href="{{ base_url }}" class="btn btn-sm btn-outline-secondary" title="{{ __('Reset', 'secincident') }}"><i class="ti ti-x"></i></a>
+         </div>
+      </div>
+   </form>
+
+   <div class="card">
+      <div class="table-responsive">
+         <table class="table table-sm table-vcenter card-table secincident-audit-table">
+            <thead>
+               <tr>
+                  <th>#</th>
+                  <th>{{ __('Date (UTC)', 'secincident') }}</th>
+                  <th>{{ __('Who', 'secincident') }}</th>
+                  <th>{{ __('Privilege', 'secincident') }}</th>
+                  <th>{{ __('What', 'secincident') }}</th>
+                  <th>{{ __('On what', 'secincident') }}</th>
+                  <th>IP</th>
+                  <th>{{ __('Details', 'secincident') }}</th>
+               </tr>
+            </thead>
+            <tbody>
+               {% for row in rows %}
+                  <tr class="{{ row.result == 'denied' ? 'table-danger' : (row.result == 'error' ? 'table-warning' : '') }}">
+                     <td class="text-muted">{{ row.id }}</td>
+                     <td class="text-nowrap font-monospace small">{{ row.date_utc }}</td>
+                     <td>
+                        <strong>{{ row.user_name }}</strong>
+                        {% if row.impersonator %}
+                           <div class="text-danger small"><i class="ti ti-masks-theater"></i> {{ __('via', 'secincident') }} {{ row.impersonator }}</div>
+                        {% endif %}
+                     </td>
+                     <td class="small">
+                        <span class="badge bg-secondary-lt">{{ row.profile_name ?: '—' }}</span>
+                        <div class="text-muted">{{ row.privilege }}</div>
+                     </td>
+                     <td>
+                        <span class="badge {{ row.result == 'denied' ? 'bg-red' : 'bg-blue-lt' }}">{{ row.action_label }}</span>
+                        {% if row.result != 'ok' %}<div class="small text-danger">{{ row.result == 'denied' ? __('Denied', 'secincident') : __('Error', 'secincident') }}</div>{% endif %}
+                     </td>
+                     <td class="small">
+                        {{ row.item_label }}
+                        {% if row.incident_url %}
+                           <div><a href="{{ row.incident_url }}">{{ __('Incident', 'secincident') }} #{{ row.incidents_id }}</a></div>
+                        {% endif %}
+                     </td>
+                     <td class="font-monospace small">{{ row.ip }}</td>
+                     <td class="small">
+                        {% if row.details_pretty %}
+                           <details>
+                              <summary class="cursor-pointer text-muted">{{ __('view', 'secincident') }}</summary>
+                              <pre class="secincident-raw mt-1 mb-0">{{ row.details_pretty }}</pre>
+                           </details>
+                        {% endif %}
+                     </td>
+                  </tr>
+               {% else %}
+                  <tr><td colspan="8" class="text-muted">{{ __('No entry', 'secincident') }}</td></tr>
+               {% endfor %}
+            </tbody>
+         </table>
+      </div>
+      <div class="card-footer d-flex align-items-center">
+         <span class="text-muted small">
+            {{ total > 0 ? (start + 1) ~ '–' ~ min(start + limit, total) ~ ' / ' ~ total : '' }}
+         </span>
+         <div class="ms-auto d-flex gap-2">
+            {% if prev_url %}<a class="btn btn-sm btn-outline-secondary" href="{{ prev_url }}"><i class="ti ti-chevron-left"></i></a>{% endif %}
+            {% if next_url %}<a class="btn btn-sm btn-outline-secondary" href="{{ next_url }}"><i class="ti ti-chevron-right"></i></a>{% endif %}
+         </div>
+      </div>
+   </div>
+
+   <p class="text-muted small mt-2">
+      <i class="ti ti-info-circle"></i>
+      {{ __('Each entry is chained to the previous one by a SHA-256 fingerprint: any direct change or deletion in the database is detected by “Verify integrity”. No interface allows the log to be modified.', 'secincident') }}
+   </p>
+</div>

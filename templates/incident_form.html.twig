@@ -1,0 +1,155 @@
+{#
+ # SecIncident — formulaire principal d'un incident de sécurité
+ #}
+{% extends 'generic_show_form.html.twig' %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% block form_fields %}
+   {% set is_new = item.isNewItem() %}
+
+   {% if params['_link_itemtype'] is defined %}
+      {{ fields.hiddenField('_link_itemtype', params['_link_itemtype']) }}
+      {{ fields.hiddenField('_link_items_id', params['_link_items_id']) }}
+   {% endif %}
+
+   {% if not is_new %}
+      <div class="col-12 mb-3">
+         <div class="secincident-summary d-flex flex-wrap align-items-center gap-2">
+            <span class="badge bg-dark-lt fs-5">{{ item.fields['reference'] }}</span>
+            <span class="badge bg-{{ status_color }}-lt fs-5">
+               {{ statuses[item.fields['status']] ?? '' }}
+            </span>
+            <span class="badge bg-{{ severity_color }}-lt fs-5">
+               {{ __('Severity', 'secincident') }} : {{ severities[item.fields['severity']] ?? '' }}
+            </span>
+            {% if item.fields['source'] == 'edr' %}
+               <span class="badge bg-red text-white"><i class="ti ti-radar-2 me-1"></i>EDR</span>
+            {% endif %}
+            <span class="ms-auto text-muted small">
+               <i class="ti ti-timeline-event"></i> {{ counts.events }} {{ __('event(s)', 'secincident') }}
+               · <i class="ti ti-fingerprint"></i> {{ counts.iocs }} IOC
+               · <i class="ti ti-link"></i> {{ counts.items }} {{ __('linked item(s)', 'secincident') }}
+            </span>
+         </div>
+
+         {% for deadline in deadlines|filter(d => d.state == 'overdue' or (d.state == 'pending' and d.remaining <= 72)) %}
+            <div class="alert alert-{{ deadline.state == 'overdue' ? 'danger' : 'warning' }} mt-2 mb-0 py-2">
+               <i class="ti ti-alarm me-1"></i>
+               <strong>{{ deadline.label }}</strong> —
+               {% if deadline.state == 'overdue' %}
+                  {{ __('deadline passed since', 'secincident') }} {{ deadline.due|formatted_datetime }}
+               {% else %}
+                  {{ __('to be done before', 'secincident') }} {{ deadline.due|formatted_datetime }}
+                  ({{ deadline.remaining }} h {{ __('remaining', 'secincident') }})
+               {% endif %}
+               <span class="text-muted">· {{ __('see the GDPR / NIS2 tab', 'secincident') }}</span>
+            </div>
+         {% endfor %}
+      </div>
+   {% endif %}
+
+   {{ fields.smallTitle(__('Qualification', 'secincident'), 'ti ti-clipboard-check') }}
+
+   {{ fields.textField('name', item.fields['name'], __('Title', 'secincident'), field_options|merge({required: true, full_width: true})) }}
+
+   {{ fields.dropdownArrayField('category', item.fields['category'], categories, __('Category', 'secincident'), field_options) }}
+   {{ fields.dropdownArrayField('status', item.fields['status'], statuses, __('Status', 'secincident'), field_options) }}
+   {{ fields.dropdownArrayField('severity', item.fields['severity'], severities, __('Severity', 'secincident'), field_options) }}
+   {{ fields.dropdownArrayField('source', item.fields['source'], sources, __('Source', 'secincident'), field_options) }}
+
+   {{ fields.dropdownField('User', 'users_id_tech', item.fields['users_id_tech'], __('Owner', 'secincident'), field_options|merge({
+      right: 'own_ticket',
+      entity: item.fields['entities_id'],
+   })) }}
+   {{ fields.dropdownField('Group', 'groups_id_tech', item.fields['groups_id_tech'], __('Assigned group', 'secincident'), field_options|merge({
+      condition: {is_assign: 1},
+      entity: item.fields['entities_id'],
+   })) }}
+
+   {{ fields.smallTitle(__('Impact (CIA)', 'secincident'), 'ti ti-scale') }}
+   {{ fields.dropdownArrayField('impact_availability', item.fields['impact_availability'], impacts, __('Availability', 'secincident'), field_options|merge({field_class: 'col-12 col-sm-4'})) }}
+   {{ fields.dropdownArrayField('impact_integrity', item.fields['impact_integrity'], impacts, __('Integrity', 'secincident'), field_options|merge({field_class: 'col-12 col-sm-4'})) }}
+   {{ fields.dropdownArrayField('impact_confidentiality', item.fields['impact_confidentiality'], impacts, __('Confidentiality', 'secincident'), field_options|merge({field_class: 'col-12 col-sm-4'})) }}
+
+   {{ fields.smallTitle(__('Description', 'secincident'), 'ti ti-file-description') }}
+   {{ fields.textareaField('content', item.fields['content'], __('Description', 'secincident'), field_options|merge({
+      enable_richtext: true,
+      enable_images: false,
+      full_width: true,
+      rows: 8,
+   })) }}
+
+   {% set mitre_rand = random() %}
+   {{ fields.dropdownArrayField('mitre_tactic', item.fields['mitre_tactic'] ?? '', mitre_tactics, __('MITRE ATT&CK tactic', 'secincident'), field_options|merge({
+      rand: mitre_rand,
+      full_width: true,
+      display_emptychoice: true,
+      helper: __('The attacker\'s goal at this stage.', 'secincident'),
+   })) }}
+   {{ fields.dropdownArrayField('mitre_technique', item.fields['mitre_technique'] ?? '', mitre_techniques, __('MITRE ATT&CK technique', 'secincident'), field_options|merge({
+      rand: mitre_rand,
+      full_width: true,
+      display_emptychoice: true,
+      helper: __('Type an identifier (T1566) or a keyword (phishing). The list is filtered by the selected tactic.', 'secincident') ~ ' ATT&CK v' ~ mitre_version,
+   })) }}
+   <script>
+   $(function () {
+      const tactic = $('#dropdown_mitre_tactic{{ mitre_rand }}');
+      const technique = $('#dropdown_mitre_technique{{ mitre_rand }}');
+      if (!tactic.length || !technique.length) {
+         return;
+      }
+      const map = {{ mitre_map|json_encode|raw }};
+      // Options d'origine (déplacées, jamais clonées : Select2 garde ses données sur ces nœuds)
+      const all = technique.find('option').toArray();
+      const empty = (v) => !v || v === '0';
+      const filter = function () {
+         const t = empty(tactic.val()) ? '' : tactic.val();
+         const current = technique.val();
+         technique.children('option').detach();
+         technique.append(all.filter(function (option) {
+            const v = option.value;
+            return !t || empty(v) || v === current || !(v in map) || map[v].includes(t);
+         }));
+         technique.val(current);
+         // Select2 doit relire la sélection : les anciennes <option> n'existent plus
+         technique.trigger('change.select2');
+      };
+      tactic.on('change', filter);
+      technique.on('change', function () {
+         const v = technique.val();
+         if (empty(tactic.val()) && !empty(v) && map[v] && map[v].length === 1) {
+            tactic.val(map[v][0]).trigger('change');
+         }
+      });
+      filter();
+   });
+   </script>
+   {{ fields.textField('external_id', item.fields['external_id'], __('External identifier (EDR, SIEM…)', 'secincident'), field_options) }}
+
+   {{ fields.smallTitle(__('Phases and timestamps', 'secincident'), 'ti ti-clock') }}
+   {{ fields.datetimeField('date_detection', item.fields['date_detection'], __('Detection', 'secincident'), field_options) }}
+   {{ fields.datetimeField('date_awareness', item.fields['date_awareness'], __('Awareness', 'secincident'), field_options|merge({
+      helper: __('Starting point of the CNIL (72 h) and ANSSI (24 h / 72 h) deadlines', 'secincident'),
+   })) }}
+   {{ fields.datetimeField('date_containment', item.fields['date_containment'], __('Containment', 'secincident'), field_options) }}
+   {{ fields.datetimeField('date_eradication', item.fields['date_eradication'], __('Eradication', 'secincident'), field_options) }}
+   {{ fields.datetimeField('date_recovery', item.fields['date_recovery'], __('Recovery', 'secincident'), field_options) }}
+   {{ fields.datetimeField('date_closure', item.fields['date_closure'], __('Closure', 'secincident'), field_options) }}
+
+   {% if not is_new %}
+      {{ fields.smallTitle(__('Lessons learned', 'secincident'), 'ti ti-bulb') }}
+      {{ fields.textareaField('root_cause', item.fields['root_cause'], __('Root cause', 'secincident'), field_options|merge({full_width: true, rows: 3})) }}
+      {{ fields.textareaField('lessons_learned', item.fields['lessons_learned'], __('Lessons learned / corrective actions', 'secincident'), field_options|merge({full_width: true, rows: 3})) }}
+   {% endif %}
+
+   {% if not is_new and can_create_ticket %}
+      <div class="col-12 mt-2">
+         <button type="submit" name="create_ticket" value="1" class="btn btn-outline-secondary"
+                 formnovalidate
+                 onclick="return confirm('{{ __('Create a GLPI ticket linked to this incident?', 'secincident')|e('js') }}');">
+            <i class="ti ti-ticket me-1"></i>{{ __('Create a linked ticket', 'secincident') }}
+         </button>
+      </div>
+   {% endif %}
+{% endblock %}
