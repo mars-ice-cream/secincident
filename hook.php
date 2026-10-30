@@ -8,6 +8,7 @@
  * -------------------------------------------------------------------------
  */
 
+use GlpiPlugin\Secincident\AccessGuard;
 use GlpiPlugin\Secincident\AuditLog;
 use GlpiPlugin\Secincident\I18n;
 use GlpiPlugin\Secincident\Category;
@@ -31,6 +32,8 @@ function plugin_secincident_install(): bool
     global $DB;
 
     $migration = new Migration(PLUGIN_SECINCIDENT_VERSION);
+    // Installation neuve : aucune attribution automatique de droits
+    $fresh_install = !$DB->tableExists(Incident::getTable());
 
     $charset   = DBConnection::getDefaultCharset();
     $collation = DBConnection::getDefaultCollation();
@@ -441,14 +444,35 @@ function plugin_secincident_install(): bool
     }
 
     // ---------------------------------------------------------------------
-    // Droits : accès complet (dont "tous les incidents" et audit) pour les
-    // profils qui administrent la configuration. Les autres profils
-    // (techniciens) sont à paramétrer : par défaut ils n'ont rien.
+    // Droits : AUCUN profil n'a accès par défaut, pas même Super-Admin.
+    // L'accès s'attribue volontairement (Administration > Profils > onglet
+    // « Security incidents »), et chaque attribution est tracée et alertée.
+    // Les profils créés après l'installation reçoivent eux aussi « aucun droit ».
     // ---------------------------------------------------------------------
-    $full_rights = ALLSTANDARDRIGHT | Incident::READALL | Incident::AUDIT | Incident::PLAYBOOK | Incident::CATEGORY;
-    $migration->addRight(Incident::$rightname, $full_rights, ['config' => READ | UPDATE]);
+    $fresh_rights = countElementsInTable('glpi_profilerights', ['name' => Incident::$rightname]) === 0;
+    foreach (
+        $DB->request([
+            'SELECT'    => ['glpi_profiles.id'],
+            'FROM'      => 'glpi_profiles',
+            'LEFT JOIN' => [
+                'glpi_profilerights' => [
+                    'ON' => [
+                        'glpi_profilerights' => 'profiles_id',
+                        'glpi_profiles'      => 'id',
+                        ['AND' => ['glpi_profilerights.name' => Incident::$rightname]],
+                    ],
+                ],
+            ],
+            'WHERE'     => ['glpi_profilerights.id' => null],
+        ]) as $row
+    ) {
+        $DB->insert('glpi_profilerights', ['profiles_id' => (int) $row['id'], 'name' => Incident::$rightname, 'rights' => 0]);
+    }
+    if ($fresh_rights) {
+        $migration->displayMessage(__('No profile has access to the plugin yet: grant it in Administration > Profiles > "Security incidents" tab.', 'secincident'));
+    }
 
-    if (!$audit_existed) {
+    if (!$audit_existed && !$fresh_install) {
         // Mise à jour depuis 1.0.0 : ajoute les nouveaux droits aux profils administrateurs
         foreach (
             $DB->request([
@@ -483,22 +507,24 @@ function plugin_secincident_install(): bool
     $migration->executeMigration();
 
     if ($playbooks_new) {
-        // Nouveauté 1.3.0 : droit de gestion des procédures pour les profils administrateurs
-        foreach (
-            $DB->request([
-                'SELECT' => ['profiles_id'],
-                'FROM'   => 'glpi_profilerights',
-                'WHERE'  => [
-                    'name' => 'config',
-                    new \Glpi\DBAL\QueryExpression('(' . $DB::quoteName('rights') . ' & ' . (READ | UPDATE) . ') = ' . (READ | UPDATE)),
-                ],
-            ]) as $row
-        ) {
-            $DB->update(
-                'glpi_profilerights',
-                ['rights' => new \Glpi\DBAL\QueryExpression($DB::quoteName('rights') . ' | ' . Incident::PLAYBOOK)],
-                ['name' => Incident::$rightname, 'profiles_id' => $row['profiles_id']]
-            );
+        if (!$fresh_install) {
+            // Nouveauté 1.3.0 : droit de gestion des procédures pour les profils administrateurs
+            foreach (
+                $DB->request([
+                    'SELECT' => ['profiles_id'],
+                    'FROM'   => 'glpi_profilerights',
+                    'WHERE'  => [
+                        'name' => 'config',
+                        new \Glpi\DBAL\QueryExpression('(' . $DB::quoteName('rights') . ' & ' . (READ | UPDATE) . ') = ' . (READ | UPDATE)),
+                    ],
+                ]) as $row
+            ) {
+                $DB->update(
+                    'glpi_profilerights',
+                    ['rights' => new \Glpi\DBAL\QueryExpression($DB::quoteName('rights') . ' | ' . Incident::PLAYBOOK)],
+                    ['name' => Incident::$rightname, 'profiles_id' => $row['profiles_id']]
+                );
+            }
         }
         $installed_playbooks = Playbook::installDefaults();
         $migration->displayMessage(sprintf(__('%d remediation playbooks installed', 'secincident'), $installed_playbooks));
@@ -618,6 +644,17 @@ function plugin_secincident_install(): bool
 /**
  * Désinstallation : supprime tables, droits, préférences et configuration.
  */
+/**
+ * Désactivation : tracée et alertée (le journal reste en base).
+ */
+function plugin_secincident_deactivate(): bool
+{
+    AccessGuard::alert('plugin_disable', I18n::instance('SecIncident plugin deactivated'), [
+        'evenement' => I18n::instance('plugin deactivated: security incidents are no longer accessible or logged'),
+    ]);
+    return true;
+}
+
 function plugin_secincident_uninstall(): bool
 {
     /** @var DBmysql $DB */
@@ -640,7 +677,7 @@ function plugin_secincident_uninstall(): bool
     // Le journal d'audit et le registre des preuves sont volontairement CONSERVÉS
     // (valeur probante). Pour les supprimer :
     // DROP TABLE glpi_plugin_secincident_auditlogs, glpi_plugin_secincident_evidences;
-    AuditLog::record('purge', null, ['evenement' => I18n::instance('plugin uninstallation (data deleted, log kept)')]);
+    AccessGuard::alert('plugin_disable', I18n::instance('SecIncident plugin uninstalled'), ['evenement' => I18n::instance('plugin uninstallation (data deleted, log kept)')]);
 
     $itemtypes = [Incident::class, TimelineEvent::class, Ioc::class, Incident_Item::class, RemediationTask::class, TeamMember::class, Playbook::class, PlaybookStep::class, Category::class];
     foreach (['glpi_displaypreferences', 'glpi_documents_items', 'glpi_logs', 'glpi_savedsearches'] as $table) {
@@ -721,6 +758,7 @@ function plugin_secincident_profile_pre_update(Profile $profile): void
         'avant'  => ['valeur' => $old, 'droits' => $labels($old)],
         'apres'  => ['valeur' => $new, 'droits' => $labels($new)],
     ]);
+    AccessGuard::onProfileRightsChange((string) ($target->fields['name'] ?? $profile->getID()), $old, $new);
 }
 
 /**

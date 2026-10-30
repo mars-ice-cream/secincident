@@ -9,12 +9,13 @@
  */
 
 use Glpi\Plugin\Hooks;
+use GlpiPlugin\Secincident\AccessGuard;
 use GlpiPlugin\Secincident\Evidence;
 use GlpiPlugin\Secincident\Incident;
 use GlpiPlugin\Secincident\Incident_Item;
 use GlpiPlugin\Secincident\Profile;
 
-define('PLUGIN_SECINCIDENT_VERSION', '1.9.1');
+define('PLUGIN_SECINCIDENT_VERSION', '1.10.0');
 // Version minimale de GLPI (incluse)
 define('PLUGIN_SECINCIDENT_MIN_GLPI', '11.0.0');
 // Version maximale de GLPI (exclue)
@@ -30,6 +31,11 @@ function plugin_init_secincident(): void
     if (!Plugin::isPluginActive('secincident')) {
         return;
     }
+
+    // Restriction optionnelle au groupe sécurité : appliquée avant tout contrôle de droits
+    AccessGuard::applyGroupRestriction();
+    $PLUGIN_HOOKS[Hooks::CHANGE_PROFILE]['secincident'] = [AccessGuard::class, 'applyGroupRestriction'];
+    $PLUGIN_HOOKS[Hooks::CONFIG_PAGE]['secincident']    = 'front/config.form.php';
 
     // Objet principal : documents attachables, liens possibles, entrées de menu
     Plugin::registerClass(Incident::class, [
@@ -59,8 +65,15 @@ function plugin_init_secincident(): void
     // Registre des preuves : empreinte SHA-256 de tout document joint à un incident
     $purge['Document_Item'] = [Evidence::class, 'onDocumentItemPurge'];
     $purge['Document']      = [Evidence::class, 'onDocumentPurge'];
+    // Ouverture / fermeture d'accès au plugin : tracées (et alertées pour l'ouverture)
+    $purge['Profile_User']  = [AccessGuard::class, 'onProfileUserPurge'];
+    $purge['Group_User']    = [AccessGuard::class, 'onGroupUserPurge'];
     $PLUGIN_HOOKS[Hooks::ITEM_PURGE]['secincident'] = $purge;
-    $PLUGIN_HOOKS[Hooks::ITEM_ADD]['secincident']   = ['Document_Item' => [Evidence::class, 'onDocumentItemAdd']];
+    $PLUGIN_HOOKS[Hooks::ITEM_ADD]['secincident']   = [
+        'Document_Item' => [Evidence::class, 'onDocumentItemAdd'],
+        'Profile_User'  => [AccessGuard::class, 'onProfileUserAdd'],
+        'Group_User'    => [AccessGuard::class, 'onGroupUserAdd'],
+    ];
     $PLUGIN_HOOKS[Hooks::ITEM_UPDATE]['secincident'] = ['Document' => [Evidence::class, 'onDocumentUpdate']];
 
     // Audit des changements de droits du plugin dans les profils

@@ -1,0 +1,42 @@
+{#
+ # SecIncident — configuration de l'accès au plugin
+ #}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+<div class="container-fluid">
+   <h2 class="mb-3"><i class="ti ti-lock-access me-2"></i>{{ __('Access settings', 'secincident') }}</h2>
+
+   <div class="alert alert-info">
+      <p class="mb-2">{{ __('Access to the plugin is granted per profile (Administration > Profiles > "Security incidents" tab). No profile has access after installation, not even Super-Admin.', 'secincident') }}</p>
+      <p class="mb-0">{{ __('A GLPI administrator always keeps the ability to grant themselves access. These settings make sure it can never go unnoticed: every access grant is recorded in the audit log and reported by e-mail.', 'secincident') }}</p>
+   </div>
+
+   {% if not mailing_enabled %}
+      <div class="alert alert-warning">
+         <i class="ti ti-alert-triangle me-1"></i>{{ __('E-mail notifications are disabled in GLPI (Setup > Notifications): alerts are recorded in the audit log but will not be sent.', 'secincident') }}
+      </div>
+   {% endif %}
+
+   <form method="post" action="{{ action }}" class="card">
+      <div class="card-body">
+         <div class="row">
+            {{ fields.dropdownField('Group', 'restrict_groups_id', groups_id, __('Security group', 'secincident'), {
+               full_width: true,
+               display_emptychoice: true,
+               emptylabel: __('No restriction (profile rights only)', 'secincident'),
+               helper: __('If set, only members of this group can use the plugin, even if their profile grants rights. Removing someone from the group cuts off their access immediately.', 'secincident'),
+            }) }}
+            {{ fields.textareaField('alert_emails', alert_emails, __('Alert e-mail addresses', 'secincident'), {
+               full_width: true,
+               rows: 2,
+               helper: __('One or more addresses (CISO, management), separated by commas. Notified when: plugin rights are extended on a profile, a profile with access is assigned to someone, someone is added to the security group, these settings change, the plugin is deactivated.', 'secincident'),
+            }) }}
+         </div>
+      </div>
+      <div class="card-footer d-flex">
+         <a href="{{ profiles_url }}" class="btn btn-outline-secondary"><i class="ti ti-id-badge-2 me-1"></i>{{ __('Manage profiles', 'secincident') }}</a>
+         <button type="submit" name="save" value="1" class="btn btn-primary ms-auto"><i class="ti ti-device-floppy me-1"></i>{{ _x('button', 'Save') }}</button>
+      </div>
+      <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+   </form>
+</div>

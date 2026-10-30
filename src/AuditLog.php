@@ -117,6 +117,10 @@ class AuditLog extends CommonDBTM
             'print'            => __('Print', 'secincident'),
             'evidence_detach'  => __('Evidence removed', 'secincident'),
             'evidence_replaced' => __('Evidence file replaced', 'secincident'),
+            'access_grant'     => __('Access granted', 'secincident'),
+            'access_revoke'    => __('Access removed', 'secincident'),
+            'config_change'    => __('Settings change', 'secincident'),
+            'plugin_disable'   => __('Plugin deactivated', 'secincident'),
         ];
     }
 
@@ -425,6 +429,18 @@ class AuditLog extends CommonDBTM
             PURGE   => I18n::instance('permanent deletion'),
             default => sprintf(I18n::instance('right %d'), $right),
         };
+    }
+
+    /** Droits du plugin en clair (langue de l'instance), pour le journal et les alertes */
+    public static function rightsToLabels(int $rights): string
+    {
+        $labels = [];
+        foreach (self::getRightLabels() as $bit => $label) {
+            if (($rights & $bit) === $bit) {
+                $labels[] = $label;
+            }
+        }
+        return $labels !== [] ? implode(', ', $labels) : I18n::instance('none');
     }
 
     /** Libellé d'un code de rattachement à un incident (Incident::getOwnershipReasons) */

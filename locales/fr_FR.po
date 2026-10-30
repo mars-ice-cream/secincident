@@ -48,6 +48,10 @@ msgstr "suppression de catégorie"
 msgid "incident categories"
 msgstr "catégories d'incident"
 
+#: front/config.form.php:12
+msgid "access settings"
+msgstr "paramètres d'accès"
+
 #: front/dashboard.php:15
 msgid "dashboard"
 msgstr "tableau de bord"
@@ -281,56 +285,122 @@ msgstr "suppression d'événement"
 msgid "event consultation"
 msgstr "consultation d'événement"
 
-#: hook.php:305
+#: hook.php:308
 msgid "Integrity check before migration"
 msgstr "Vérification d'intégrité avant migration"
 
-#: hook.php:319
+#: hook.php:322
 msgid "global, before schema migration (1.5.0)"
 msgstr "globale, avant migration du schéma (1.5.0)"
 
-#: hook.php:45 hook.php:117 hook.php:149 hook.php:178 hook.php:196 hook.php:219 hook.php:244 hook.php:264 hook.php:345 hook.php:377 hook.php:411
+#: hook.php:472
+msgid "No profile has access to the plugin yet: grant it in Administration > Profiles > \"Security incidents\" tab."
+msgstr "Aucun profil n'a encore accès au plugin : attribuez l'accès dans Administration > Profils > onglet « Incidents de sécurité »."
+
+#: hook.php:48 hook.php:120 hook.php:152 hook.php:181 hook.php:199 hook.php:222 hook.php:247 hook.php:267 hook.php:348 hook.php:380 hook.php:414
 #, php-format
 msgid "Creating table %s"
 msgstr "Création de la table %s"
 
-#: hook.php:504
+#: hook.php:530
 #, php-format
 msgid "%d remediation playbooks installed"
 msgstr "%d procédures de remédiation installées"
 
-#: hook.php:509
+#: hook.php:535
 #, php-format
 msgid "%d incident categories installed"
 msgstr "%d catégories d'incident installées"
 
-#: hook.php:524
+#: hook.php:550
 msgid "migration 1.5.0: new fingerprint format, prior check logged"
 msgstr "migration 1.5.0 : nouveau format d'empreinte, vérification préalable tracée"
 
-#: hook.php:547
+#: hook.php:573
 msgid "Renaming former vendor keys to generic EDR"
 msgstr "Renommage des anciennes clés éditeur en EDR générique"
 
-#: hook.php:567
+#: hook.php:593
 msgid "affected incidents, before renaming EDR keys (1.8.0)"
 msgstr "incidents concernés, avant renommage des clés EDR (1.8.0)"
 
-#: hook.php:585
+#: hook.php:611
 msgid "migration 1.8.0: keys “crowdstrike” / “falcon_rtr” renamed to “edr” / “edr_console”"
 msgstr "migration 1.8.0 : clés « crowdstrike » / « falcon_rtr » renommées en « edr » / « edr_console »"
 
-#: hook.php:611
+#: hook.php:637
 msgid "plugin update"
 msgstr "mise à jour du plugin"
 
-#: hook.php:611
+#: hook.php:637
 msgid "plugin installation / audit activation"
 msgstr "installation du plugin / activation de l'audit"
 
-#: hook.php:643
+#: hook.php:652
+msgid "SecIncident plugin deactivated"
+msgstr "Plugin SecIncident désactivé"
+
+#: hook.php:653
+msgid "plugin deactivated: security incidents are no longer accessible or logged"
+msgstr "plugin désactivé : les incidents de sécurité ne sont plus accessibles ni tracés"
+
+#: hook.php:680
+msgid "SecIncident plugin uninstalled"
+msgstr "Plugin SecIncident désinstallé"
+
+#: hook.php:680
 msgid "plugin uninstallation (data deleted, log kept)"
 msgstr "désinstallation du plugin (données supprimées, journal conservé)"
+
+#: src/AccessGuard.php:153
+#, php-format
+msgid "By: %s"
+msgstr "Par : %s"
+
+#: src/AccessGuard.php:154
+#, php-format
+msgid "Date: %s"
+msgstr "Date : %s"
+
+#: src/AccessGuard.php:155
+#, php-format
+msgid "IP address: %s"
+msgstr "Adresse IP : %s"
+
+#: src/AccessGuard.php:162
+msgid "This event is recorded in the SecIncident audit log."
+msgstr "Cet événement est inscrit dans le journal d'audit SecIncident."
+
+#: src/AccessGuard.php:224
+#, php-format
+msgid "Profile with access to security incidents assigned to %s"
+msgstr "Profil donnant accès aux incidents de sécurité attribué à %s"
+
+#: src/AccessGuard.php:255
+#, php-format
+msgid "%s added to the security group"
+msgstr "%s ajouté(e) au groupe sécurité"
+
+#: src/AccessGuard.php:283
+#, php-format
+msgid "Security incident rights extended on profile %s"
+msgstr "Droits sur les incidents de sécurité étendus sur le profil %s"
+
+#: src/AccessGuard.php:313
+msgid "You must be a member of the security group yourself before enabling the restriction."
+msgstr "Vous devez vous-même faire partie du groupe sécurité avant d'activer la restriction."
+
+#: src/AccessGuard.php:328 src/AccessGuard.php:329 src/AuditLog.php:443
+msgid "none"
+msgstr "aucun"
+
+#: src/AccessGuard.php:342
+msgid "SecIncident access settings changed"
+msgstr "Paramètres d'accès SecIncident modifiés"
+
+#: src/AccessGuard.php:346
+msgid "Settings saved"
+msgstr "Paramètres enregistrés"
 
 #: src/AuditLog.php:100
 msgid "Permanent deletion"
@@ -412,120 +482,136 @@ msgstr "Retrait de preuve"
 msgid "Evidence file replaced"
 msgstr "Fichier de preuve remplacé"
 
-#: src/AuditLog.php:243
+#: src/AuditLog.php:120
+msgid "Access granted"
+msgstr "Accès accordé"
+
+#: src/AuditLog.php:121
+msgid "Access removed"
+msgstr "Accès retiré"
+
+#: src/AuditLog.php:122
+msgid "Settings change"
+msgstr "Modification des paramètres"
+
+#: src/AuditLog.php:123
+msgid "Plugin deactivated"
+msgstr "Plugin désactivé"
+
+#: src/AuditLog.php:257
 msgid "grouped writes"
 msgstr "écritures groupées"
 
-#: src/AuditLog.php:336
+#: src/AuditLog.php:350
 msgid "page access"
 msgstr "accès page"
 
-#: src/AuditLog.php:365
+#: src/AuditLog.php:379
 msgid "scope: all incidents"
 msgstr "périmètre : tous les incidents"
 
-#: src/AuditLog.php:369
+#: src/AuditLog.php:383
 #, php-format
 msgid "scope: own incidents (%s)"
 msgstr "périmètre : ses incidents (%s)"
 
-#: src/AuditLog.php:370
+#: src/AuditLog.php:384
 msgid "scope: outside own incidents"
 msgstr "périmètre : hors de ses incidents"
 
-#: src/AuditLog.php:374
+#: src/AuditLog.php:388
 msgid "no plugin right"
 msgstr "aucun droit plugin"
 
-#: src/AuditLog.php:379
+#: src/AuditLog.php:393
 msgid "impersonated identity"
 msgstr "identité empruntée"
 
-#: src/AuditLog.php:382
+#: src/AuditLog.php:396
 #, php-format
 msgid "interface %s"
 msgstr "interface %s"
 
-#: src/AuditLog.php:396
+#: src/AuditLog.php:410
 msgid "read (own incidents)"
 msgstr "lecture (ses incidents)"
 
-#: src/AuditLog.php:397
+#: src/AuditLog.php:411
 msgid "all incidents"
 msgstr "tous les incidents"
 
-#: src/AuditLog.php:398 src/AuditLog.php:412 front/incident.form.php:18
+#: src/AuditLog.php:412 src/AuditLog.php:426 front/incident.form.php:18
 msgid "creation"
 msgstr "création"
 
-#: src/AuditLog.php:399 src/AuditLog.php:413
+#: src/AuditLog.php:413 src/AuditLog.php:427
 msgid "update"
 msgstr "modification"
 
-#: src/AuditLog.php:400
+#: src/AuditLog.php:414
 msgid "trash"
 msgstr "corbeille"
 
-#: src/AuditLog.php:401 src/AuditLog.php:415 front/incident.form.php:37
+#: src/AuditLog.php:415 src/AuditLog.php:429 front/incident.form.php:37
 msgid "permanent deletion"
 msgstr "suppression définitive"
 
-#: src/AuditLog.php:402 front/audit.php:15
+#: src/AuditLog.php:416 front/audit.php:15
 msgid "audit log"
 msgstr "journal d'audit"
 
-#: src/AuditLog.php:403
+#: src/AuditLog.php:417
 msgid "playbook management"
 msgstr "gestion des procédures"
 
-#: src/AuditLog.php:404
+#: src/AuditLog.php:418
 msgid "category management"
 msgstr "gestion des catégories"
 
-#: src/AuditLog.php:411
+#: src/AuditLog.php:425
 msgid "read"
 msgstr "lecture"
 
-#: src/AuditLog.php:414 front/incident.form.php:29
+#: src/AuditLog.php:428 front/incident.form.php:29
 msgid "move to trash"
 msgstr "mise à la corbeille"
 
-#: src/AuditLog.php:416
+#: src/AuditLog.php:430
 #, php-format
 msgid "right %d"
 msgstr "droit %d"
 
-#: src/AuditLog.php:424 src/TeamMember.php:109
+#: src/AuditLog.php:450 src/TeamMember.php:109
 msgid "owner"
 msgstr "responsable"
 
-#: src/AuditLog.php:425
+#: src/AuditLog.php:451
 msgid "author"
 msgstr "rédacteur"
 
-#: src/AuditLog.php:426
+#: src/AuditLog.php:452
 msgid "assigned group"
 msgstr "groupe en charge"
 
-#: src/AuditLog.php:427
+#: src/AuditLog.php:453
 msgid "contributor"
 msgstr "intervenant"
 
-#: src/AuditLog.php:428
+#: src/AuditLog.php:454
 msgid "observer"
 msgstr "observateur"
-
-#: src/AuditLog.php:538
-msgid "broken chain (row deleted or inserted)"
-msgstr "chaînage rompu (ligne supprimée ou insérée)"
-
-#: src/AuditLog.php:541
-msgid "content modified"
-msgstr "contenu modifié"
 
 #: src/AuditLog.php:56 src/Incident.php:79 src/Incident.php:431 front/audit.php:120 templates/audit.html.twig:8
 msgid "Audit log"
 msgstr "Journal d'audit"
+
+#: src/AuditLog.php:564
+msgid "broken chain (row deleted or inserted)"
+msgstr "chaînage rompu (ligne supprimée ou insérée)"
+
+#: src/AuditLog.php:567
+msgid "content modified"
+msgstr "contenu modifié"
 
 #: src/AuditLog.php:93
 msgid "Consultation"
@@ -672,7 +758,7 @@ msgstr "import CSV"
 msgid "Detection name"
 msgstr "Nom de la détection"
 
-#: src/CsvImporter.php:52 src/Incident.php:1158 templates/incident_form.html.twig:74 templates/incident_form.html.twig:75
+#: src/CsvImporter.php:52 src/Incident.php:1160 templates/incident_form.html.twig:74 templates/incident_form.html.twig:75
 msgid "Description"
 msgstr "Description"
 
@@ -684,7 +770,7 @@ msgstr "import vers incident existant"
 msgid "Target incident not found or not editable"
 msgstr "Incident cible introuvable ou non modifiable"
 
-#: src/CsvImporter.php:53 src/Incident.php:1071 src/Incident_Item.php:319 templates/dashboard.html.twig:137 templates/incident_form.html.twig:23 templates/incident_form.html.twig:57 templates/remediation_print.html.twig:14
+#: src/CsvImporter.php:53 src/Incident.php:1073 src/Incident_Item.php:319 templates/dashboard.html.twig:137 templates/incident_form.html.twig:23 templates/incident_form.html.twig:57 templates/remediation_print.html.twig:14
 msgid "Severity"
 msgstr "Gravité"
 
@@ -851,104 +937,104 @@ msgstr "Jamais vérifié"
 msgid "Removed from the incident"
 msgstr "Retiré de l'incident"
 
-#: src/Incident.php:1015
+#: src/Incident.php:1017
 #, php-format
 msgid "Ticket %d created and linked"
 msgstr "Ticket %d créé et lié"
 
-#: src/Incident.php:1044 src/Incident_Item.php:317 templates/dashboard.html.twig:136 templates/incident_form.html.twig:53
+#: src/Incident.php:1046 src/Incident_Item.php:317 templates/dashboard.html.twig:136 templates/incident_form.html.twig:53
 msgid "Title"
 msgstr "Titre"
 
-#: src/Incident.php:1053 src/Incident_Item.php:316 templates/dashboard.html.twig:135
+#: src/Incident.php:1055 src/Incident_Item.php:316 templates/dashboard.html.twig:135
 msgid "Reference"
 msgstr "Référence"
 
-#: src/Incident.php:1062 src/Incident_Item.php:318 templates/dashboard.html.twig:138 templates/incident_form.html.twig:56 templates/remediation.html.twig:119 templates/remediation_print.html.twig:15 templates/remediation_print.html.twig:27 templates/remediationtask_form.html.twig:20
+#: src/Incident.php:1064 src/Incident_Item.php:318 templates/dashboard.html.twig:138 templates/incident_form.html.twig:56 templates/remediation.html.twig:119 templates/remediation_print.html.twig:15 templates/remediation_print.html.twig:27 templates/remediationtask_form.html.twig:20
 msgid "Status"
 msgstr "Statut"
 
-#: src/Incident.php:1080 src/Incident_Item.php:320 src/Playbook.php:246 templates/actions_print.html.twig:15 templates/incident_form.html.twig:55 templates/remediation_print.html.twig:14
+#: src/Incident.php:1082 src/Incident_Item.php:320 src/Playbook.php:246 templates/actions_print.html.twig:15 templates/incident_form.html.twig:55 templates/remediation_print.html.twig:14
 msgid "Category"
 msgstr "Catégorie"
 
-#: src/Incident.php:1089 src/Incident_Item.php:321
+#: src/Incident.php:1091 src/Incident_Item.php:321
 msgid "Detection date"
 msgstr "Date de détection"
 
-#: src/Incident.php:1098 src/TeamMember.php:214 templates/incident_form.html.twig:60 templates/remediation_print.html.twig:15
+#: src/Incident.php:1100 src/TeamMember.php:214 templates/incident_form.html.twig:60 templates/remediation_print.html.twig:15
 msgid "Owner"
 msgstr "Responsable"
 
-#: src/Incident.php:1108 src/TeamMember.php:221 templates/incident_form.html.twig:64
+#: src/Incident.php:1110 src/TeamMember.php:221 templates/incident_form.html.twig:64
 msgid "Assigned group"
 msgstr "Groupe en charge"
 
-#: src/Incident.php:1117 templates/event_form.html.twig:37 templates/incident_form.html.twig:58 templates/iocs.html.twig:41
+#: src/Incident.php:1119 templates/event_form.html.twig:37 templates/incident_form.html.twig:58 templates/iocs.html.twig:41
 msgid "Source"
 msgstr "Source"
 
-#: src/Incident.php:1126 templates/incident_form.html.twig:83
+#: src/Incident.php:1128 templates/incident_form.html.twig:83
 msgid "MITRE ATT&CK tactic"
 msgstr "Tactique MITRE ATT&CK"
 
-#: src/Incident.php:1134 templates/incident_form.html.twig:89
+#: src/Incident.php:1136 templates/incident_form.html.twig:89
 msgid "MITRE ATT&CK technique"
 msgstr "Technique MITRE ATT&CK"
 
-#: src/Incident.php:1142
+#: src/Incident.php:1144
 msgid "Closure date"
 msgstr "Date de clôture"
 
-#: src/Incident.php:1150
+#: src/Incident.php:1152
 msgid "External identifier"
 msgstr "Identifiant externe"
 
-#: src/Incident.php:1167
+#: src/Incident.php:1169
 msgid "Awareness date"
 msgstr "Date de prise de connaissance"
 
-#: src/Incident.php:1175
+#: src/Incident.php:1177
 msgid "Containment date"
 msgstr "Date de confinement"
 
-#: src/Incident.php:1184 src/TeamMember.php:218
+#: src/Incident.php:1186 src/TeamMember.php:218
 msgid "Author"
 msgstr "Rédacteur"
 
-#: src/Incident.php:1209
+#: src/Incident.php:1211
 msgid "Confidentiality impact"
 msgstr "Impact confidentialité"
 
-#: src/Incident.php:1210
+#: src/Incident.php:1212
 msgid "Integrity impact"
 msgstr "Impact intégrité"
 
-#: src/Incident.php:1211
+#: src/Incident.php:1213
 msgid "Availability impact"
 msgstr "Impact disponibilité"
 
-#: src/Incident.php:1234
+#: src/Incident.php:1236
 msgid "Personal data involved"
 msgstr "Données personnelles concernées"
 
-#: src/Incident.php:1251
+#: src/Incident.php:1253
 msgid "CNIL notification date"
 msgstr "Date de notification CNIL"
 
-#: src/Incident.php:1259
+#: src/Incident.php:1261
 msgid "Number of people affected"
 msgstr "Nombre de personnes concernées"
 
-#: src/Incident.php:1267 templates/compliance.html.twig:91
+#: src/Incident.php:1269 templates/compliance.html.twig:91
 msgid "Entity subject to NIS2"
 msgstr "Entité soumise à NIS2"
 
-#: src/Incident.php:1275
+#: src/Incident.php:1277
 msgid "Significant incident (NIS2)"
 msgstr "Incident important (NIS2)"
 
-#: src/Incident.php:1283
+#: src/Incident.php:1285
 msgid "ANSSI notification date"
 msgstr "Date de notification ANSSI"
 
@@ -962,7 +1048,7 @@ msgid_plural "Security incidents"
 msgstr[0] "Incident de sécurité"
 msgstr[1] "Incidents de sécurité"
 
-#: src/Incident.php:267 src/Profile.php:25 src/Profile.php:61 setup.php:83
+#: src/Incident.php:267 src/Profile.php:25 src/Profile.php:61 setup.php:96
 msgid "Security incidents"
 msgstr "Incidents de sécurité"
 
@@ -1050,7 +1136,7 @@ msgstr "Tiers (prestataire, CERT…)"
 msgid "No risk to individuals"
 msgstr "Pas de risque pour les personnes"
 
-#: src/Incident.php:346 src/Incident.php:1242
+#: src/Incident.php:346 src/Incident.php:1244
 msgid "Risk to individuals"
 msgstr "Risque pour les personnes"
 
@@ -1070,67 +1156,71 @@ msgstr "Procédures"
 msgid "Categories"
 msgstr "Catégories"
 
-#: src/Incident.php:463
+#: src/Incident.php:433 front/config.form.php:19 templates/config.html.twig:7
+msgid "Access settings"
+msgstr "Paramètres d'accès"
+
+#: src/Incident.php:465
 msgid "Integrity & evidence"
 msgstr "Intégrité & preuves"
 
-#: src/Incident.php:512
+#: src/Incident.php:514
 msgid "(free text, not in the reference list)"
 msgstr "(saisie libre, hors référentiel)"
 
-#: src/Incident.php:549
+#: src/Incident.php:551
 msgid "read GDPR / NIS2 tab"
 msgstr "lecture onglet RGPD / NIS2"
 
-#: src/Incident.php:552 src/Incident.php:457 src/Incident.php:1227
+#: src/Incident.php:554 src/Incident.php:459 src/Incident.php:1229
 msgid "GDPR / NIS2"
 msgstr "RGPD / NIS2"
 
-#: src/Incident.php:568
+#: src/Incident.php:570
 msgid "read integrity tab"
 msgstr "lecture onglet intégrité"
 
-#: src/Incident.php:571
+#: src/Incident.php:573
 msgid "integrity & evidence"
 msgstr "intégrité & preuves"
 
-#: src/Incident.php:640
+#: src/Incident.php:642
 msgid "CNIL notification"
 msgstr "Notification CNIL"
 
-#: src/Incident.php:643
+#: src/Incident.php:645
 msgid "72 h after awareness (GDPR art. 33)"
 msgstr "72 h après la prise de connaissance (RGPD art. 33)"
 
-#: src/Incident.php:648
+#: src/Incident.php:650
 msgid "Informing the people affected"
 msgstr "Information des personnes concernées"
 
-#: src/Incident.php:651
+#: src/Incident.php:653
 msgid "Without undue delay (GDPR art. 34)"
 msgstr "Dans les meilleurs délais (RGPD art. 34)"
 
-#: src/Incident.php:658
+#: src/Incident.php:660
 msgid "ANSSI early warning"
 msgstr "Alerte précoce ANSSI"
 
-#: src/Incident.php:661
+#: src/Incident.php:663
 msgid "24 h after awareness (NIS2 art. 23)"
 msgstr "24 h après la prise de connaissance (NIS2 art. 23)"
 
-#: src/Incident.php:665
+#: src/Incident.php:667
 msgid "ANSSI incident notification"
 msgstr "Notification d'incident ANSSI"
 
-#: src/Incident.php:668
+#: src/Incident.php:670
 msgid "72 h after awareness (NIS2 art. 23)"
 msgstr "72 h après la prise de connaissance (NIS2 art. 23)"
 
-#: src/Incident.php:672
+#: src/Incident.php:674
 msgid "ANSSI final report"
 msgstr "Rapport final ANSSI"
 
-#: src/Incident.php:675
+#: src/Incident.php:677
 msgid "1 month after notification (NIS2 art. 23)"
 msgstr "1 mois après la notification (NIS2 art. 23)"
 
@@ -1142,16 +1232,16 @@ msgstr "Voir ses incidents"
 msgid "View and manage all incidents"
 msgstr "Voir et gérer tous les incidents"
 
-#: src/Incident.php:741
+#: src/Incident.php:743
 #, php-format
 msgid "Cannot close: %d mandatory step(s) of the remediation plan are still to do (or to mark as “not applicable”)."
 msgstr "Clôture impossible : %d étape(s) obligatoire(s) du plan de remédiation restent à faire (ou à marquer « non applicable »)."
 
-#: src/Incident.php:747
+#: src/Incident.php:749
 msgid "closure with pending mandatory steps"
 msgstr "clôture avec étapes obligatoires en attente"
 
-#: src/Incident.php:773
+#: src/Incident.php:775
 msgid "Invalid status"
 msgstr "Statut invalide"
 
@@ -1163,36 +1253,36 @@ msgstr "Gérer les procédures"
 msgid "Manage categories"
 msgstr "Gérer les catégories"
 
-#: src/Incident.php:860
+#: src/Incident.php:862
 msgid "Incident created"
 msgstr "Création de l'incident"
 
-#: src/Incident.php:914
+#: src/Incident.php:916
 #, php-format
 msgid "Status: %1$s → %2$s"
 msgstr "Statut : %1$s → %2$s"
 
-#: src/Incident.php:922
+#: src/Incident.php:924
 msgid "CNIL notification made"
 msgstr "Notification CNIL effectuée"
 
-#: src/Incident.php:923
+#: src/Incident.php:925
 msgid "People affected informed"
 msgstr "Personnes concernées informées"
 
-#: src/Incident.php:924
+#: src/Incident.php:926
 msgid "ANSSI early warning sent"
 msgstr "Alerte précoce ANSSI envoyée"
 
-#: src/Incident.php:925
+#: src/Incident.php:927
 msgid "ANSSI notification sent"
 msgstr "Notification ANSSI envoyée"
 
-#: src/Incident.php:926
+#: src/Incident.php:928
 msgid "ANSSI final report submitted"
 msgstr "Rapport final ANSSI transmis"
 
-#: src/Incident.php:978
+#: src/Incident.php:980
 msgid "Ticket created from the security incident"
 msgstr "Ticket créé depuis l'incident de sécurité"
 
@@ -2314,6 +2404,42 @@ msgstr "Rapport final transmis le (1 mois)"
 #: templates/compliance.html.twig:98
 msgid "ANSSI / CERT-FR reference"
 msgstr "Référence ANSSI / CERT-FR"
+
+#: templates/config.html.twig:10
+msgid "Access to the plugin is granted per profile (Administration > Profiles > \"Security incidents\" tab). No profile has access after installation, not even Super-Admin."
+msgstr "L'accès au plugin s'attribue par profil (Administration > Profils > onglet « Incidents de sécurité »). Après installation, aucun profil n'a accès, pas même Super-Admin."
+
+#: templates/config.html.twig:11
+msgid "A GLPI administrator always keeps the ability to grant themselves access. These settings make sure it can never go unnoticed: every access grant is recorded in the audit log and reported by e-mail."
+msgstr "Un administrateur GLPI garde toujours la possibilité de se donner l'accès. Ces réglages garantissent que cela ne passe jamais inaperçu : toute ouverture d'accès est inscrite au journal d'audit et signalée par mail."
+
+#: templates/config.html.twig:16
+msgid "E-mail notifications are disabled in GLPI (Setup > Notifications): alerts are recorded in the audit log but will not be sent."
+msgstr "Les notifications par mail sont désactivées dans GLPI (Configuration > Notifications) : les alertes sont inscrites au journal d'audit mais ne seront pas envoyées."
+
+#: templates/config.html.twig:23
+msgid "Security group"
+msgstr "Groupe sécurité"
+
+#: templates/config.html.twig:26
+msgid "No restriction (profile rights only)"
+msgstr "Pas de restriction (droits du profil uniquement)"
+
+#: templates/config.html.twig:27
+msgid "If set, only members of this group can use the plugin, even if their profile grants rights. Removing someone from the group cuts off their access immediately."
+msgstr "Si renseigné, seuls les membres de ce groupe peuvent utiliser le plugin, même si leur profil leur donne des droits. Retirer quelqu'un du groupe lui coupe l'accès immédiatement."
+
+#: templates/config.html.twig:29
+msgid "Alert e-mail addresses"
+msgstr "Adresses mail d'alerte"
+
+#: templates/config.html.twig:32
+msgid "One or more addresses (CISO, management), separated by commas. Notified when: plugin rights are extended on a profile, a profile with access is assigned to someone, someone is added to the security group, these settings change, the plugin is deactivated."
+msgstr "Une ou plusieurs adresses (RSSI, direction), séparées par des virgules. Prévenues quand : les droits du plugin sont étendus sur un profil, un profil donnant accès est attribué à quelqu'un, quelqu'un est ajouté au groupe sécurité, ces paramètres changent, le plugin est désactivé."
+
+#: templates/config.html.twig:37
+msgid "Manage profiles"
+msgstr "Gérer les profils"
 
 #: templates/dashboard.html.twig:100
 msgid "By source"

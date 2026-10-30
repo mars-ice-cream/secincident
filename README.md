@@ -1,4 +1,4 @@
-# SecIncident — incidents de sécurité pour GLPI 11 (v1.9.1)
+# SecIncident — incidents de sécurité pour GLPI 11 (v1.10.0)
 
 Plugin GLPI (11.0.x) pour déclarer, qualifier et tracer les incidents de sécurité, avec import des exports CSV de votre EDR / XDR. Interface en français et en anglais, ouverte à d'autres langues.
 
@@ -64,7 +64,21 @@ Le cloisonnement est appliqué partout : liste et recherche, exports de la liste
 
 Un technicien sans « tous les incidents » devient automatiquement responsable des incidents qu'il crée. Le rédacteur est toujours l'utilisateur connecté et ne peut pas être modifié.
 
-À l'installation, seuls les profils administrant la configuration (Super-Admin) reçoivent tous les droits. Conseil : Technicien = Voir ses incidents + Créer + Modifier ; RSSI = tous les droits. Sans « Gérer les procédures » / « Gérer les catégories », un profil voit les listes en lecture seule ; toute tentative de création ou de modification (même par requête forgée) est refusée et tracée dans le journal d'audit.
+**À l'installation, aucun profil n'a accès, pas même Super-Admin** : tous les administrateurs GLPI n'ont pas à voir les incidents de sécurité. Conseil : créer un profil dédié « Sécurité » / « RSSI » avec tous les droits et l'attribuer aux seules personnes concernées (en plus de leur profil habituel) ; Technicien = Voir ses incidents + Créer + Modifier. Sans « Gérer les procédures » / « Gérer les catégories », un profil voit les listes en lecture seule ; toute tentative de création ou de modification (même par requête forgée) est refusée et tracée dans le journal d'audit.
+
+### Accès réservé et alertes
+
+Menu Incidents de sécurité > **Paramètres d'accès** (droit « Journal d'audit ») :
+
+- **Groupe sécurité** (facultatif) : seuls ses membres peuvent utiliser le plugin, même si leur profil leur donne des droits. Retirer quelqu'un du groupe lui coupe l'accès immédiatement, sans reconnexion. On ne peut pas activer la restriction sans être soi-même membre du groupe.
+- **Adresses d'alerte** (RSSI, direction) : prévenues par mail, via la file de notifications de GLPI, dès que :
+  - les droits du plugin sont étendus sur un profil ;
+  - un profil donnant accès est attribué à quelqu'un ;
+  - quelqu'un est ajouté au groupe sécurité ;
+  - ces paramètres changent (anciennes et nouvelles adresses prévenues) ;
+  - le plugin est désactivé ou désinstallé.
+
+Chaque événement est aussi inscrit au journal d'audit (auteur, date, IP, avant / après). Un administrateur GLPI peut toujours se donner l'accès — aucun plugin ne peut l'empêcher — mais plus jamais discrètement. Les notifications par mail de GLPI doivent être activées (Configuration > Notifications) et l'action automatique « queuednotification » doit tourner.
 
 ### Catégories d'incident
 
@@ -236,6 +250,7 @@ src/Incident_Item.php          liens avec tickets / matériels / utilisateurs
 src/CsvImporter.php            lecture, mapping, regroupement, import
 src/Dashboard.php              indicateurs du tableau de bord
 src/Profile.php                onglet de droits
+src/AccessGuard.php            restriction par groupe, alertes d'ouverture d'accès
 src/I18n.php                   traductions (langue de l'utilisateur / de l'instance)
 locales/                       catalogues gettext (.pot, .po, .mo)
 tools/i18n.py                  extraction et compilation des traductions

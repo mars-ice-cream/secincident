@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.10.0 — 2026-10-30
+- Installation neuve : aucun profil n'a accès au plugin, pas même Super-Admin ; les profils créés ensuite non plus (les mises à jour ne donnent plus de droits automatiquement).
+- Paramètres d'accès : restriction optionnelle à un groupe GLPI « sécurité » (appliquée immédiatement, sans reconnexion).
+- Alertes par mail au RSSI et traces d'audit pour toute ouverture d'accès : droits étendus sur un profil, attribution d'un profil donnant accès, ajout au groupe sécurité, changement des paramètres, désactivation / désinstallation du plugin.
+
 ## 1.9.1 — 2026-10-21
 - Journal d'audit : verrou de chaînage via l'API GLPI (`getLock` / `releaseLock`) au lieu de SQL brut (exigence Marketplace).
 - Logo du plugin et fiche catalogue complétée.

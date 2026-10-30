@@ -430,6 +430,8 @@ class Incident extends CommonDBTM
         if (static::canAudit()) {
             $links["<i class='ti ti-file-certificate'></i>" . __s('Audit log', 'secincident')]
                 = '/plugins/secincident/front/audit.php';
+            $links["<i class='ti ti-lock-access'></i>" . __s('Access settings', 'secincident')]
+                = '/plugins/secincident/front/config.form.php';
         }
         return $links;
     }
