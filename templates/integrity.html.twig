@@ -33,7 +33,7 @@
             <button type="submit" name="verify_integrity" value="1" class="btn btn-primary btn-sm">
                <i class="ti ti-shield-search me-1"></i>{{ __('Verify now (including files)', 'secincident') }}
             </button>
-            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+            {% include "@secincident/parts/csrf.html.twig" %}
          </form>
       {% endif %}
    </div>

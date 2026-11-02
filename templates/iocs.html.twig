@@ -24,7 +24,7 @@
                   <i class="ti ti-plus me-1"></i>{{ _x('button', 'Add') }}
                </button>
             </div>
-            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+            {% include "@secincident/parts/csrf.html.twig" %}
          </form>
       </div>
    </details>

@@ -299,6 +299,18 @@ class AccessGuard
     }
 
     /**
+     * Exige une ré-authentification récente (« sudo mode » de GLPI 12) avant d'afficher
+     * ou d'enregistrer les paramètres d'accès. Sans effet sur GLPI 11, qui n'a pas ce mécanisme.
+     */
+    public static function requireReauthentication(): void
+    {
+        $manager = '\\Glpi\\Security\\ReAuth\\ReAuthManager';
+        if (class_exists($manager)) {
+            $manager::getInstance()->checkReAuthenticationOrRedirect();
+        }
+    }
+
+    /**
      * @param array<string, mixed> $input
      */
     public static function saveConfig(array $input): void

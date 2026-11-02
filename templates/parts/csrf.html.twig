@@ -1,0 +1,3 @@
+{# Jeton CSRF — GLPI 11 l'exige dans chaque formulaire. La branche GLPI 12 (2.x) laisse ce fichier vide :
+   la protection y repose sur les en-têtes Origin / Sec-Fetch-Site. #}
+<input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">

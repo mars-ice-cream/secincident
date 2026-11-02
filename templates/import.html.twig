@@ -35,7 +35,7 @@
                <button type="submit" name="upload" value="1" class="btn btn-primary">
                   <i class="ti ti-upload me-1"></i>{{ __('Analyse the file', 'secincident') }}
                </button>
-               <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+               {% include "@secincident/parts/csrf.html.twig" %}
             </form>
          </div>
       </div>
@@ -178,7 +178,7 @@
                <i class="ti ti-database-import me-1"></i>{{ __('Import', 'secincident') }}
             </button>
          </div>
-         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+         {% include "@secincident/parts/csrf.html.twig" %}
       </form>
 
    {# ------------------------------------------------------------------ #}

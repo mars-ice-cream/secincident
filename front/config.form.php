@@ -10,6 +10,7 @@ use GlpiPlugin\Secincident\I18n;
 use GlpiPlugin\Secincident\Incident;
 
 AuditLog::checkPageAccess([Incident::AUDIT], I18n::instance('access settings'));
+AccessGuard::requireReauthentication();
 
 if (isset($_POST['save'])) {
     AccessGuard::saveConfig($_POST);

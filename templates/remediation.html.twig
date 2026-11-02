@@ -47,7 +47,7 @@
                            {% endfor %}
                         </select>
                         <button type="submit" name="apply_playbook" value="1" class="btn btn-primary"><i class="ti ti-copy me-1"></i>{{ __('Apply', 'secincident') }}</button>
-                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                        {% include "@secincident/parts/csrf.html.twig" %}
                      </form>
                      <div class="text-muted small mt-2">{{ __('★ = playbook intended for the incident\'s category. The steps are copied into the plan.', 'secincident') }}{% if can_add_task %} {{ __('You can then adapt them.', 'secincident') }}{% endif %}</div>
                   {% endif %}
@@ -75,7 +75,7 @@
                      <div class="text-end">
                         <button type="submit" name="add" value="1" class="btn btn-primary"><i class="ti ti-plus me-1"></i>{{ _x('button', 'Add') }}</button>
                      </div>
-                     <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                     {% include "@secincident/parts/csrf.html.twig" %}
                   </form>
                </div>
             </details>
@@ -138,7 +138,7 @@
                                     <i class="ti ti-device-floppy me-1"></i>{{ _x('button', 'Save') }}
                                  </button>
                               </div>
-                              <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                              {% include "@secincident/parts/csrf.html.twig" %}
                            </form>
                         {% elseif t.comment %}
                            <div class="small">{{ t.comment }}</div>

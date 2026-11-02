@@ -37,7 +37,7 @@
                   </select>
                </div>
                <button type="submit" name="add" value="1" class="btn btn-primary"><i class="ti ti-user-plus me-1"></i>{{ _x('button', 'Add') }}</button>
-               <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+               {% include "@secincident/parts/csrf.html.twig" %}
             </form>
             <div class="text-muted small mt-2">
                {{ __('Contributors see the incident and can act (timeline, IOCs, evidence, remediation tasks). Observers have read-only access. Every action remains logged under each person\'s name.', 'secincident') }}
@@ -75,7 +75,7 @@
                                  {% endfor %}
                               </select>
                               <button type="submit" name="update" value="1" class="btn btn-sm btn-outline-primary" title="{{ _x('button', 'Save') }}"><i class="ti ti-device-floppy"></i></button>
-                              <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                              {% include "@secincident/parts/csrf.html.twig" %}
                            </form>
                         {% else %}
                            <span class="badge {{ m.role == 'observer' ? 'bg-secondary-lt' : 'bg-blue-lt' }}">{{ m.role_label }}</span>
@@ -89,7 +89,7 @@
                                  onsubmit="return confirm('{{ __('Remove this person from the team? They will lose access to the incident (unless they have access another way).', 'secincident')|e('js') }}');">
                               {{ fields.hiddenField('id', m.id) }}
                               <button type="submit" name="purge" value="1" class="btn btn-sm btn-outline-danger"><i class="ti ti-user-minus me-1"></i>{{ __('Remove', 'secincident') }}</button>
-                              <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                              {% include "@secincident/parts/csrf.html.twig" %}
                            </form>
                         </td>
                      {% endif %}

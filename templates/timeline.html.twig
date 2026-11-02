@@ -41,7 +41,7 @@
                            <i class="ti ti-device-floppy me-1"></i>{{ __('Log', 'secincident') }}
                         </button>
                      </div>
-                     <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                     {% include "@secincident/parts/csrf.html.twig" %}
                   </form>
                </div>
             </div>
@@ -67,7 +67,7 @@
                            <i class="ti ti-plus me-1"></i>{{ _x('button', 'Add') }}
                         </button>
                      </div>
-                     <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                     {% include "@secincident/parts/csrf.html.twig" %}
                   </form>
                </div>
             </details>
