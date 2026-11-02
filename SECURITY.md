@@ -9,7 +9,7 @@ Ce plugin manipule des données sensibles (incidents, preuves, journal d'audit).
 
 Joignez une description et, si possible, les étapes pour reproduire. Une réponse est donnée sous 7 jours.
 
-Versions maintenues : la dernière version mineure (1.5.x) pour GLPI 11.0.x.
+Versions maintenues : la dernière version 2.x (GLPI 12.0.x, branche `main`) et la dernière version 1.x (GLPI 11.0.x, branche `glpi-11`).
 
 Recommandations de déploiement :
 - garder GLPI et ses plugins à jour (suivre les avis CERT-FR) ;
