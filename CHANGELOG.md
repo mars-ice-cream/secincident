@@ -1,5 +1,12 @@
 # Changelog
 
+Deux branches maintenues en parallèle, avec les mêmes fonctionnalités : 1.x pour GLPI 11 (`glpi-11`), 2.x pour GLPI 12 (`main`).
+
+## 1.10.1 — 2026-11-02
+- Branche de maintenance GLPI 11 ; la 2.0.0 apporte les mêmes fonctionnalités pour GLPI 12.
+- Code commun aux deux branches : jeton CSRF des formulaires centralisé, ré-authentification sur les Paramètres d'accès quand GLPI la propose (GLPI 12).
+- Documentation : versions et branches, passation et récupération de l'accès, guide de contribution.
+
 ## 1.10.0 — 2026-10-30
 - Installation neuve : aucun profil n'a accès au plugin, pas même Super-Admin ; les profils créés ensuite non plus (les mises à jour ne donnent plus de droits automatiquement).
 - Paramètres d'accès : restriction optionnelle à un groupe GLPI « sécurité » (appliquée immédiatement, sans reconnexion).

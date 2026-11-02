@@ -2,7 +2,7 @@
 
 /**
  * -------------------------------------------------------------------------
- * SecIncident — Suivi des incidents de sécurité pour GLPI 11
+ * SecIncident — Suivi des incidents de sécurité pour GLPI 11 (branche glpi-11, 1.x ; GLPI 12 : branche main, 2.x)
  * -------------------------------------------------------------------------
  * @license   GPLv3 https://www.gnu.org/licenses/gpl-3.0.html
  * -------------------------------------------------------------------------
@@ -15,7 +15,7 @@ use GlpiPlugin\Secincident\Incident;
 use GlpiPlugin\Secincident\Incident_Item;
 use GlpiPlugin\Secincident\Profile;
 
-define('PLUGIN_SECINCIDENT_VERSION', '1.10.0');
+define('PLUGIN_SECINCIDENT_VERSION', '1.10.1');
 // Version minimale de GLPI (incluse)
 define('PLUGIN_SECINCIDENT_MIN_GLPI', '11.0.0');
 // Version maximale de GLPI (exclue)
