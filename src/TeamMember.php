@@ -34,10 +34,10 @@ class TeamMember extends CommonDBChild
         post_purgeItem as private traitPostPurge;
     }
 
-    public static $itemtype = Incident::class;
-    public static $items_id = 'plugin_secincident_incidents_id';
+    public static string $itemtype = Incident::class;
+    public static string $items_id = 'plugin_secincident_incidents_id';
 
-    public static $rightname = 'plugin_secincident_incident';
+    public static string $rightname = 'plugin_secincident_incident';
 
     public const ROLE_CONTRIBUTOR = 'contributor';
     public const ROLE_OBSERVER    = 'observer';

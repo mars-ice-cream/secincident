@@ -24,7 +24,7 @@ use Throwable;
  */
 class Evidence extends CommonDBTM
 {
-    public static $rightname = 'plugin_secincident_incident';
+    public static string $rightname = 'plugin_secincident_incident';
 
     public const CHECK_OK                = 'ok';
     public const CHECK_MODIFIED          = 'modified';

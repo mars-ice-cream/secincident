@@ -25,10 +25,10 @@ class RemediationTask extends CommonDBChild
         post_updateItem as private childPostUpdateItem;
     }
 
-    public static $itemtype = Incident::class;
-    public static $items_id = 'plugin_secincident_incidents_id';
+    public static string $itemtype = Incident::class;
+    public static string $items_id = 'plugin_secincident_incidents_id';
 
-    public static $rightname = 'plugin_secincident_incident';
+    public static string $rightname = 'plugin_secincident_incident';
 
     public const STATUS_TODO        = 'todo';
     public const STATUS_IN_PROGRESS = 'in_progress';

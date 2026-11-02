@@ -29,7 +29,7 @@ use Throwable;
  */
 class AuditLog extends CommonDBTM
 {
-    public static $rightname = 'plugin_secincident_incident';
+    public static string $rightname = 'plugin_secincident_incident';
 
     public const RESULT_OK     = 'ok';
     public const RESULT_DENIED = 'denied';

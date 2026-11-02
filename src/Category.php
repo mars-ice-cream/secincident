@@ -24,9 +24,9 @@ use Toolbox;
 class Category extends CommonDropdown
 {
     use IntegerInputTrait;
-    public $dohistory = true;
+    public bool $dohistory = true;
 
-    public static $rightname = 'plugin_secincident_incident';
+    public static string $rightname = 'plugin_secincident_incident';
 
     /** Catégorie de repli, non supprimable */
     public const FALLBACK = 'other';

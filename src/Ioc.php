@@ -23,10 +23,10 @@ class Ioc extends CommonDBChild
     use IntegerInputTrait;
     use IncidentChildTrait;
 
-    public static $itemtype = Incident::class;
-    public static $items_id = 'plugin_secincident_incidents_id';
+    public static string $itemtype = Incident::class;
+    public static string $items_id = 'plugin_secincident_incidents_id';
 
-    public static $rightname = 'plugin_secincident_incident';
+    public static string $rightname = 'plugin_secincident_incident';
 
     public const VERDICT_UNKNOWN    = 0;
     public const VERDICT_MALICIOUS  = 1;

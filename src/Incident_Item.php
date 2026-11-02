@@ -33,17 +33,17 @@ class Incident_Item extends CommonDBRelation
         return $operation === 'add' ? 'link' : 'unlink';
     }
 
-    public static $itemtype_1         = Incident::class;
-    public static $items_id_1         = 'plugin_secincident_incidents_id';
-    public static $take_entity_1      = true;
+    public static ?string $itemtype_1         = Incident::class;
+    public static ?string $items_id_1         = 'plugin_secincident_incidents_id';
+    public static bool $take_entity_1      = true;
 
-    public static $itemtype_2         = 'itemtype';
-    public static $items_id_2         = 'items_id';
-    public static $take_entity_2      = false;
+    public static ?string $itemtype_2         = 'itemtype';
+    public static ?string $items_id_2         = 'items_id';
+    public static bool $take_entity_2      = false;
     // Lier un incident à un ticket ne doit pas exiger le droit de modifier le ticket
-    public static $checkItem_2_Rights = self::HAVE_VIEW_RIGHT_ON_ITEM;
+    public static int $checkItem_2_Rights = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
-    public static $rightname = 'plugin_secincident_incident';
+    public static string $rightname = 'plugin_secincident_incident';
 
     public static function getTypeName($nb = 0)
     {

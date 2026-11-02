@@ -20,10 +20,10 @@ use Glpi\Application\View\TemplateRenderer;
 class PlaybookStep extends CommonDBChild
 {
     use IntegerInputTrait;
-    public static $itemtype = Playbook::class;
-    public static $items_id = 'plugin_secincident_playbooks_id';
+    public static string $itemtype = Playbook::class;
+    public static string $items_id = 'plugin_secincident_playbooks_id';
 
-    public static $rightname = 'plugin_secincident_incident';
+    public static string $rightname = 'plugin_secincident_incident';
 
     public static function getTypeName($nb = 0)
     {
