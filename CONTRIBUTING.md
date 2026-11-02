@@ -12,7 +12,6 @@ Les deux branches gardent les mêmes fonctionnalités. Le code est identique, sa
 - `setup.php` : numéro de version, bornes GLPI (`PLUGIN_SECINCIDENT_MIN_GLPI` / `MAX_GLPI`), PHP minimal ;
 - `src/*.php` : types des propriétés héritées de GLPI (`public static string $rightname`, `public bool $dohistory`… sur `main`, sans type sur `glpi-11`) — GLPI 12 les exige, GLPI 11 les refuse ;
 - `templates/parts/csrf.html.twig` : vide sur `main`, champ `_glpi_csrf_token` sur `glpi-11` ;
-- `CHANGELOG.md` et `secincident.xml` (numéros de version).
 
 Tout ce qui dépend d'une version de GLPI passe par un test d'existence (`class_exists`, `method_exists`) plutôt que par une divergence de code, comme `AccessGuard::requireReauthentication()`.
 
@@ -21,7 +20,7 @@ Tout ce qui dépend d'une version de GLPI passe par un test d'existence (`class_
 1. Développer et tester sur `main` (GLPI 12), dans des commits qui ne touchent pas aux fichiers ci-dessus.
 2. Reporter sur `glpi-11` : `git checkout glpi-11 && git cherry-pick <commits>`.
 3. Lancer les tests sur GLPI 12 et sur GLPI 11.
-4. Publier ensemble : `1.N.x` depuis `glpi-11`, `2.N.x` depuis `main` ; `secincident.xml` (sur `main`) liste les deux.
+4. Publier ensemble : `1.N.x` depuis `glpi-11`, `2.N.x` depuis `main`. `CHANGELOG.md`, `secincident.xml` et la documentation sont identiques sur les deux branches et listent les deux versions.
 
 Nouvelle propriété qui redéfinit une propriété de GLPI : typée sur `main`, sans type sur `glpi-11`.
 
