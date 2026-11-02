@@ -1,8 +1,8 @@
-# SecIncident — incidents de sécurité pour GLPI 11 (v1.10.0)
+# SecIncident — incidents de sécurité pour GLPI 11 et 12
 
-Plugin GLPI (11.0.x) pour déclarer, qualifier et tracer les incidents de sécurité, avec import des exports CSV de votre EDR / XDR. Interface en français et en anglais, ouverte à d'autres langues.
+Plugin GLPI pour déclarer, qualifier et tracer les incidents de sécurité, avec import des exports CSV de votre EDR / XDR. Interface en français et en anglais, ouverte à d'autres langues.
 
-> **English** — GLPI 11 plugin to report, qualify and track security incidents: structured timeline and investigation actions, IOCs, remediation playbooks, response team, SHA-256 sealed evidence and data, tamper-evident audit trail, GDPR / NIS2 deadlines, MITRE ATT&CK, EDR / XDR CSV import. Available in English and French; see [Translations](#langues--translations).
+> **English** — GLPI 11 / 12 plugin to report, qualify and track security incidents: structured timeline and investigation actions, IOCs, remediation playbooks, response team, SHA-256 sealed evidence and data, tamper-evident audit trail, GDPR / NIS2 deadlines, MITRE ATT&CK, EDR / XDR CSV import. Available in English and French; see [Translations](#langues--translations).
 
 ![Tableau de bord](misc/screenshots/01_tableau_de_bord.jpg)
 
@@ -43,9 +43,18 @@ Plugin GLPI (11.0.x) pour déclarer, qualifier et tracer les incidents de sécur
    php bin/console plugin:activate secincident
    ```
 3. Administration > Profils > onglet « Incidents de sécurité » pour donner les droits.
-   À l'installation, seuls les profils ayant le droit de modifier la configuration (Super-Admin) reçoivent tous les droits.
+   À l'installation, aucun profil n'a accès (voir [Droits et cloisonnement](#droits-et-cloisonnement)).
 
-Prérequis : GLPI 11.0.x, PHP 8.2+.
+### Versions et branches
+
+| GLPI | Version du plugin | Branche | PHP |
+|---|---|---|---|
+| 12.0.x | 2.x | `main` | 8.3+ |
+| 11.0.x | 1.x | `glpi-11` | 8.2+ |
+
+Les deux branches ont les mêmes fonctionnalités et reçoivent les mêmes correctifs : chaque nouveauté sort en même temps en 1.x et en 2.x. Elles ne diffèrent que par ce qu'impose GLPI : types PHP des propriétés héritées de GLPI, jeton CSRF dans les formulaires (GLPI 11 uniquement) et bornes de version. Sous GLPI 12, la page « Paramètres d'accès » demande en plus de retaper son mot de passe (ré-authentification de GLPI 12).
+
+Passer de GLPI 11 à GLPI 12 : mettre à jour GLPI, remplacer le dossier du plugin par la version 2.x, puis Configuration > Plugins > mettre à jour et réactiver. Les données, droits, paramètres et le journal d'audit sont conservés.
 
 ## Droits et cloisonnement
 
@@ -79,6 +88,26 @@ Menu Incidents de sécurité > **Paramètres d'accès** (droit « Journal d'audi
   - le plugin est désactivé ou désinstallé.
 
 Chaque événement est aussi inscrit au journal d'audit (auteur, date, IP, avant / après). Un administrateur GLPI peut toujours se donner l'accès — aucun plugin ne peut l'empêcher — mais plus jamais discrètement. Les notifications par mail de GLPI doivent être activées (Configuration > Notifications) et l'action automatique « queuednotification » doit tourner.
+
+### Passation et récupération de l'accès
+
+Installer le plugin demande un administrateur GLPI ; accéder aux incidents demande un profil qui en a les droits. Un Super-Admin (droit de modifier les profils) peut toujours donner l'accès à quelqu'un d'autre, donc personne ne reste enfermé dehors :
+
+1. Administration > Utilisateurs > la personne > Habilitations : lui attribuer le profil « Sécurité ».
+2. Si la restriction par groupe est active : Administration > Groupes > groupe sécurité > l'ajouter.
+3. Elle peut ensuite reprendre les Paramètres d'accès (adresses d'alerte, etc.).
+
+Chaque étape est tracée et alertée. Gardez au moins **deux personnes** dans le profil « Sécurité » et dans le groupe.
+
+Si plus aucun administrateur ne peut se connecter, l'administrateur du serveur peut rétablir l'accès en ligne de commande :
+
+```
+cd /var/www/glpi
+# attribuer un profil (identifiant du profil « Sécurité ») à un utilisateur
+sudo -u www-data php bin/console user:grant jdupont --profile=<id du profil> --recursive
+# dernier recours : lever la restriction par groupe (non tracé par le plugin)
+sudo -u www-data php bin/console config:set --context=plugin:secincident restrict_groups_id 0
+```
 
 ### Catégories d'incident
 
@@ -289,4 +318,4 @@ GPL v3 ou ultérieure — voir [LICENSE](LICENSE). Auteur : Gerome Le Duff — g
 
 ## Contribuer / signaler un problème
 
-Issues et pull requests bienvenues sur GitHub. Pour une faille de sécurité, voir [SECURITY.md](SECURITY.md).
+Issues et pull requests bienvenues sur GitHub ; voir [CONTRIBUTING.md](CONTRIBUTING.md) pour les deux branches (GLPI 11 / GLPI 12). Pour une faille de sécurité, voir [SECURITY.md](SECURITY.md).
