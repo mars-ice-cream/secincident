@@ -2,13 +2,18 @@
 
 Deux branches maintenues en parallèle, avec les mêmes fonctionnalités : 2.x pour GLPI 12 (`main`), 1.x pour GLPI 11 (`glpi-11`).
 
-## 2.0.0 — 2026-11-02
+## 2.0.0 — 2026-11-02 (GLPI 12, branche `main`)
 - Compatibilité GLPI 12.0.x (PHP 8.3+). Mêmes fonctionnalités que la 1.10.x pour GLPI 11.
 - Propriétés héritées de GLPI typées (exigence de GLPI 12).
 - Plus de jeton CSRF dans les formulaires : GLPI 12 vérifie l'origine des requêtes.
 - Paramètres d'accès : ré-authentification exigée (mot de passe redemandé) avant de les afficher ou de les modifier.
 - Mise à jour depuis la 1.10.x sous GLPI 11 : données, droits, paramètres et journal d'audit conservés.
 - Documentation : passation et récupération de l'accès.
+
+## 1.10.1 — 2026-11-02 (GLPI 11, branche `glpi-11`)
+- Branche de maintenance GLPI 11 ; mêmes fonctionnalités que la 2.0.0.
+- Code commun aux deux branches : jeton CSRF des formulaires centralisé, ré-authentification sur les Paramètres d'accès quand GLPI la propose.
+- Documentation : versions et branches, passation et récupération de l'accès, guide de contribution.
 
 ## 1.10.0 — 2026-10-30
 - Installation neuve : aucun profil n'a accès au plugin, pas même Super-Admin ; les profils créés ensuite non plus (les mises à jour ne donnent plus de droits automatiquement).
