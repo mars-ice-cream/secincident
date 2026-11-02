@@ -35,7 +35,7 @@ Plugin GLPI pour déclarer, qualifier et tracer les incidents de sécurité, ave
 
 ## Installation
 
-1. Copier le dossier `secincident` dans `glpi/plugins/` (ou `marketplace/`).
+1. Télécharger l'archive qui correspond à votre GLPI dans les [releases](https://github.com/mars-ice-cream/secincident/releases) (2.x pour GLPI 12, 1.x pour GLPI 11, voir [Versions et branches](#versions-et-branches)) et la décompresser dans `glpi/plugins/` : on doit obtenir `glpi/plugins/secincident/`.
 2. Configuration > Plugins > installer puis activer « Incidents de sécurité ».
    En ligne de commande :
    ```
@@ -54,7 +54,20 @@ Plugin GLPI pour déclarer, qualifier et tracer les incidents de sécurité, ave
 
 Les deux branches ont les mêmes fonctionnalités et reçoivent les mêmes correctifs : chaque nouveauté sort en même temps en 1.x et en 2.x. Elles ne diffèrent que par ce qu'impose GLPI : types PHP des propriétés héritées de GLPI, jeton CSRF dans les formulaires (GLPI 11 uniquement) et bornes de version. Sous GLPI 12, la page « Paramètres d'accès » demande en plus de retaper son mot de passe (ré-authentification de GLPI 12).
 
-Passer de GLPI 11 à GLPI 12 : mettre à jour GLPI, remplacer le dossier du plugin par la version 2.x, puis Configuration > Plugins > mettre à jour et réactiver. Les données, droits, paramètres et le journal d'audit sont conservés.
+Passer de GLPI 11 à GLPI 12 :
+
+1. mettre à jour GLPI en 12.0.x (GLPI suspend alors les plugins) ;
+2. remplacer le dossier `plugins/secincident` par l'archive 2.x ;
+3. Configuration > Plugins > mettre à jour puis activer SecIncident.
+
+En ligne de commande, après la mise à jour de GLPI :
+```
+php bin/console plugin:resume_execution
+php bin/console plugin:install secincident --username=glpi --force
+php bin/console plugin:activate secincident
+```
+
+Les données, droits, paramètres et le journal d'audit sont conservés ; les empreintes et la chaîne d'audit restent valides.
 
 ## Droits et cloisonnement
 
@@ -252,7 +265,7 @@ Ajouter une langue :
 
 1. copier `locales/secincident.pot` en `locales/<code>.po` (par ex. `de_DE.po`, `es_ES.po`) et traduire les `msgstr` (Poedit, Weblate, Transifex…) ;
 2. lancer `python3 tools/i18n.py` (prérequis : `gettext` et `pip install polib`) : met à jour le modèle à partir des sources, fusionne dans chaque `.po` et compile les `.mo` ;
-3. proposer une pull request.
+3. proposer une pull request sur `main` (elle sera reportée sur `glpi-11`).
 
 `python3 tools/i18n.py --check` échoue si une chaîne a été ajoutée dans le code sans mise à jour du modèle (utile en intégration continue).
 
@@ -279,22 +292,29 @@ src/Incident_Item.php          liens avec tickets / matériels / utilisateurs
 src/CsvImporter.php            lecture, mapping, regroupement, import
 src/Dashboard.php              indicateurs du tableau de bord
 src/Profile.php                onglet de droits
+src/Category.php               catégories d'incident paramétrables
+src/MitreAttack.php            référentiel MITRE ATT&CK (tactiques, techniques)
+src/IntegerInputTrait.php      champs numériques vides → 0 / NULL
 src/AccessGuard.php            restriction par groupe, alertes d'ouverture d'accès
 src/I18n.php                   traductions (langue de l'utilisateur / de l'instance)
+data/mitre_attack.json         référentiel ATT&CK Enterprise embarqué
 locales/                       catalogues gettext (.pot, .po, .mo)
 tools/i18n.py                  extraction et compilation des traductions
 front/                         pages (liste, formulaires, import, tableau de bord)
 templates/                     vues Twig
+templates/parts/csrf.html.twig jeton CSRF (GLPI 11) / vide (GLPI 12)
 public/css/secincident.css     styles
 ```
 
 ## Tables
 
-`glpi_plugin_secincident_incidents`, `glpi_plugin_secincident_timelineevents`, `glpi_plugin_secincident_iocs`, `glpi_plugin_secincident_incidents_items`, `glpi_plugin_secincident_categories`, procédures et tâches : supprimées à la désinstallation, ainsi que les droits, préférences d'affichage et la configuration.
+`glpi_plugin_secincident_incidents`, `_timelineevents`, `_iocs`, `_incidents_items`, `_teammembers`, `_categories`, `_playbooks`, `_playbooksteps`, `_remediationtasks` : supprimées à la désinstallation, ainsi que les droits, préférences d'affichage et la configuration.
 
 `glpi_plugin_secincident_auditlogs` et `glpi_plugin_secincident_evidences` : conservées.
 
-## Mise à jour depuis 1.0.0 / 1.1.0
+## Mises à jour du plugin
+
+Remplacer le dossier puis Configuration > Plugins > mettre à jour et réactiver. Chaque mise à jour est tracée dans le journal d'audit. Points d'attention selon la version de départ :
 
 À la mise à jour vers 1.2.0, toutes les données existantes sont scellées et les documents déjà joints sont inscrits au registre des preuves (empreinte calculée à ce moment-là).
 
@@ -303,6 +323,12 @@ La 1.3.0 crée la bibliothèque de procédures avec les 5 procédures par défau
 La 1.5.0 ajoute les champs d'action à la chronologie. Avant de modifier le schéma, la mise à jour vérifie l'intégrité de toutes les données au format d'empreinte précédent et trace le résultat dans le journal. Elle rescelle ensuite au nouveau format, où une colonne vide n'entre plus dans l'empreinte. Les futures évolutions du schéma ne casseront donc plus les empreintes.
 
 La 1.6.0 crée la table des catégories avec les 13 catégories d'origine (mêmes codes : les incidents existants ne changent pas) et donne le droit « Gérer les catégories » aux profils qui ont déjà « Gérer les procédures ».
+
+La 1.8.0 renomme des clés internes liées à un éditeur d'EDR (source, outil) : l'intégrité des incidents concernés est vérifiée avant, seules les lignes intactes sont rescellées (une ligne déjà altérée reste signalée), le tout est tracé.
+
+Depuis la 1.10.0, une mise à jour ne donne plus de droits automatiquement : les droits existants sont conservés, et les profils créés ensuite n'ont pas accès.
+
+La 2.0.0 n'est que le passage à GLPI 12 : pas de changement de données (voir [Versions et branches](#versions-et-branches)).
 
 ### Depuis 1.0.0
 
