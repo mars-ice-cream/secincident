@@ -57,12 +57,13 @@ Les deux branches ont les mêmes fonctionnalités et reçoivent les mêmes corre
 Passer de GLPI 11 à GLPI 12 :
 
 1. mettre à jour GLPI en 12.0.x (GLPI suspend alors les plugins) ;
-2. remplacer le dossier `plugins/secincident` par l'archive 2.x ;
+2. remplacer le dossier `plugins/secincident` par l'archive 2.x, puis `php bin/console cache:clear` ;
 3. Configuration > Plugins > mettre à jour puis activer SecIncident.
 
 En ligne de commande, après la mise à jour de GLPI :
 ```
 php bin/console plugin:resume_execution
+php bin/console cache:clear
 php bin/console plugin:install secincident --username=glpi --force
 php bin/console plugin:activate secincident
 ```
@@ -363,7 +364,7 @@ public/css/secincident.css     styles
 
 ## Mises à jour du plugin
 
-Remplacer le dossier puis Configuration > Plugins > mettre à jour et réactiver. Chaque mise à jour est tracée dans le journal d'audit. Points d'attention selon la version de départ :
+Remplacer le dossier, vider le cache de GLPI (`php bin/console cache:clear` : sans cela, GLPI 11.0.4 continue d'afficher les gabarits de l'ancienne version), puis Configuration > Plugins > mettre à jour et réactiver. Chaque mise à jour est tracée dans le journal d'audit. Points d'attention selon la version de départ :
 
 À la mise à jour vers 1.2.0, toutes les données existantes sont scellées et les documents déjà joints sont inscrits au registre des preuves (empreinte calculée à ce moment-là).
 
