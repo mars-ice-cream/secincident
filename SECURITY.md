@@ -15,4 +15,4 @@ Recommandations de déploiement :
 - garder GLPI et ses plugins à jour (suivre les avis CERT-FR) ;
 - ne pas exposer GLPI directement sur Internet ;
 - sauvegarder la base et le dossier `files/` (preuves) ;
-- exporter régulièrement le journal d'audit vers un stockage externe en écriture seule.
+- exporter régulièrement un point de contrôle du journal d'audit (`php bin/console plugins:secincident:audit-checkpoint`) vers un stockage externe en ajout seul, et le vérifier ; surveiller `files/_log/secincident-audit-failures.log`.

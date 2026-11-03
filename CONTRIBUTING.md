@@ -24,6 +24,10 @@ Tout ce qui dépend d'une version de GLPI passe par un test d'existence (`class_
 
 Nouvelle propriété qui redéfinit une propriété de GLPI : typée sur `main`, sans type sur `glpi-11`.
 
+## Tests
+
+Tests d'intégration contre une instance GLPI réelle : voir [tests/README.md](tests/README.md). Ils tournent en intégration continue sur chaque branche (GLPI 12 sur `main`, GLPI 11.0.4 et 11.0.11 sur `glpi-11`), avec en plus, sur `main`, une migration GLPI 11 → 12 avec données.
+
 ## Traductions
 
 Chaînes source en anglais, domaine `secincident`. Après toute modification de texte : `python3 tools/i18n.py` (vérification : `--check`).
