@@ -9,8 +9,8 @@
          <en>Security incident tracking: timeline, investigation actions, SHA-256 sealed evidence, audit trail, GDPR/NIS2 deadlines, remediation playbooks, MITRE ATT&amp;CK, EDR CSV import.</en>
       </short>
       <long>
-         <fr>Gère les incidents de sécurité dans GLPI, liés aux postes, utilisateurs et tickets. Chronologie et actions d'investigation structurées, indicateurs de compromission, registre des preuves avec SHA-256, journal d'audit chaîné infalsifiable (qui, quoi, sur quoi, avec quel privilège), cloisonnement par technicien et équipe d'intervention, échéances CNIL (72 h) et ANSSI/NIS2 (24 h / 72 h / 1 mois), procédures de remédiation, tableau de bord, MITRE ATT&amp;CK, import des exports CSV d'EDR / XDR.</fr>
-         <en>Manages security incidents in GLPI, linked to assets, users and tickets. Structured timeline and investigation actions, IOCs, SHA-256 evidence register, tamper-evident hash-chained audit trail (who, what, on what, with which privilege), per-technician isolation and response team, GDPR (72 h) and NIS2 (24 h / 72 h / 1 month) deadlines, remediation playbooks, dashboard, MITRE ATT&amp;CK, EDR / XDR CSV import. Interface in English and French.</en>
+         <fr>Gère les incidents de sécurité dans GLPI, liés aux postes, utilisateurs et tickets. Chronologie et actions d'investigation structurées, indicateurs de compromission, registre des preuves avec SHA-256, journal d'audit chaîné avec détection d'altérations et point de contrôle externe (qui, quoi, sur quoi, avec quel privilège), cloisonnement par technicien et équipe d'intervention, échéances CNIL (72 h) et ANSSI/NIS2 (24 h / 72 h / 1 mois), procédures de remédiation, tableau de bord, MITRE ATT&amp;CK, import des exports CSV d'EDR / XDR.</fr>
+         <en>Manages security incidents in GLPI, linked to assets, users and tickets. Structured timeline and investigation actions, IOCs, SHA-256 evidence register, hash-chained audit trail with tamper detection and external checkpoints (who, what, on what, with which privilege), per-technician isolation and response team, GDPR (72 h) and NIS2 (24 h / 72 h / 1 month) deadlines, remediation playbooks, dashboard, MITRE ATT&amp;CK, EDR / XDR CSV import. Interface in English and French.</en>
       </long>
    </description>
    <homepage>https://github.com/mars-ice-cream/secincident</homepage>
@@ -21,6 +21,16 @@
       <author>Gerome Le Duff</author>
    </authors>
    <versions>
+      <version>
+         <num>2.1.0</num>
+         <compatibility>~12.0.0</compatibility>
+         <download_url>https://github.com/mars-ice-cream/secincident/releases/download/2.1.0/glpi-secincident-2.1.0.tar.bz2</download_url>
+      </version>
+      <version>
+         <num>1.11.0</num>
+         <compatibility>~11.0.0</compatibility>
+         <download_url>https://github.com/mars-ice-cream/secincident/releases/download/1.11.0/glpi-secincident-1.11.0.tar.bz2</download_url>
+      </version>
       <version>
          <num>2.0.0</num>
          <compatibility>~12.0.0</compatibility>

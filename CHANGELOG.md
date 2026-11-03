@@ -2,6 +2,17 @@
 
 Deux branches maintenues en parallèle, avec les mêmes fonctionnalités : 2.x pour GLPI 12 (`main`), 1.x pour GLPI 11 (`glpi-11`).
 
+## 2.1.0 (GLPI 12) et 1.11.0 (GLPI 11) — 2026-11-03
+Mêmes corrections sur les deux branches.
+
+- **Journal d'audit — écritures concurrentes** : si le verrou de chaînage n'est pas obtenu dans le délai, plus aucune entrée n'est écrite (auparavant l'écriture continuait sans verrou et pouvait rompre la chaîne). Le résultat de l'insertion est vérifié. Tout échec est visible : message à l'utilisateur, bandeau sur la page du journal jusqu'à acquittement (journalisé), entrée complète consignée dans `files/_log/secincident-audit-failures.log`. Délai réglable (`audit_lock_timeout`).
+- **Intégrité — faux positifs** : un élément sans ancre dans le journal (inséré hors application, empreinte effacée, ou dont la journalisation a échoué) est « non scellé » et empêche de conclure à l'intégrité. Trois verdicts : intact, anomalies, intégrité non établie. Les preuves absentes du journal sont signalées de la même façon.
+- **Intégrité — pas de rescellement automatique** : les mises à jour du plugin ne scellent plus les lignes sans empreinte (seules les données antérieures à 1.2.0 reçoivent le scellement initial) ; la migration 1.5.0 ne rescelle plus que les lignes vérifiées intactes. Après mise à jour, des éléments « non scellés » auparavant comptés à tort comme intacts peuvent apparaître.
+- **Point de contrôle externe du journal** : export (page du journal ou `php bin/console plugins:secincident:audit-checkpoint`) et vérification d'un point de contrôle (instance, dernière entrée, empreinte, nombre d'entrées) conservé hors de la base. Détecte la suppression des dernières entrées et la réécriture de la chaîne ; affiche la dernière entrée couverte et distingue les entrées plus récentes, vérifiées par chaînage seul.
+- **Groupe sécurité** : retirer quelqu'un du groupe retire aussi l'entrée de menu de sa session ouverte ; lever la restriction rend l'accès du profil aux sessions ouvertes sans reconnexion.
+- **Documentation** : « journal d'audit chaîné avec détection d'altérations » ; ce que détecte le chaînage, ce que couvre le point de contrôle, comment repérer un échec de journalisation.
+- **Tests** : tests d'intégration (`tests/`) et intégration continue GitHub Actions : verrou expiré, concurrence, échec d'écriture, altération, troncature avec et sans point de contrôle, éléments non scellés, cloisonnement (techniciens, entités, recherche, accès directs, exports), révocation du groupe sécurité en cours de session, migration GLPI 11 → 12 avec données.
+
 ## 2.0.0 — 2026-11-02 (GLPI 12, branche `main`)
 - Compatibilité GLPI 12.0.x (PHP 8.3+). Mêmes fonctionnalités que la 1.10.x pour GLPI 11.
 - Propriétés héritées de GLPI typées (exigence de GLPI 12).

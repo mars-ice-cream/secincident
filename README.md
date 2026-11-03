@@ -2,7 +2,7 @@
 
 Plugin GLPI pour déclarer, qualifier et tracer les incidents de sécurité, avec import des exports CSV de votre EDR / XDR. Interface en français et en anglais, ouverte à d'autres langues.
 
-> **English** — GLPI 11 / 12 plugin to report, qualify and track security incidents: structured timeline and investigation actions, IOCs, remediation playbooks, response team, SHA-256 sealed evidence and data, tamper-evident audit trail, GDPR / NIS2 deadlines, MITRE ATT&CK, EDR / XDR CSV import. Available in English and French; see [Translations](#langues--translations).
+> **English** — GLPI 11 / 12 plugin to report, qualify and track security incidents: structured timeline and investigation actions, IOCs, remediation playbooks, response team, SHA-256 sealed evidence and data, hash-chained audit trail with tamper detection, GDPR / NIS2 deadlines, MITRE ATT&CK, EDR / XDR CSV import. Available in English and French; see [Translations](#langues--translations).
 
 ![Tableau de bord](misc/screenshots/01_tableau_de_bord.jpg)
 
@@ -30,7 +30,7 @@ Plugin GLPI pour déclarer, qualifier et tracer les incidents de sécurité, ave
 - **Procédures de remédiation** : bibliothèque de procédures types, appliquées à un incident sous forme de plan de tâches à suivre (voir plus bas).
 - **Équipe d'intervention** : plusieurs techniciens par incident, avec répartition des tâches (voir plus bas).
 - **Cloisonnement** : un technicien ne voit et ne modifie que ses incidents (voir plus bas).
-- **Journal d'audit infalsifiable** : qui, quoi, sur quoi, avec quel privilège, depuis quelle IP (voir plus bas).
+- **Journal d'audit chaîné avec détection d'altérations** : qui, quoi, sur quoi, avec quel privilège, depuis quelle IP ; point de contrôle externe pour détecter la suppression des dernières entrées (voir plus bas).
 - **Intégrité des preuves et des données** : SHA-256 sur chaque fichier de preuve et chaque enregistrement, vérifiable à tout moment (voir plus bas).
 
 ## Installation
@@ -148,14 +148,51 @@ Chaque entrée contient :
 - **sur quoi** : type et identifiant de l'objet, incident concerné ;
 - **d'où** : adresse IP, date UTC.
 
-Intégrité : les entrées sont chaînées (SHA-256 de l'entrée précédente + contenu). Le bouton « Vérifier l'intégrité » rejoue la chaîne et signale la première entrée modifiée ou supprimée directement en base. Aucune interface ne permet de modifier le journal. Filtres (date, utilisateur, action, résultat, incident, IP) et export CSV, eux-mêmes tracés.
+Filtres (date, utilisateur, action, résultat, incident, IP) et export CSV, eux-mêmes tracés. Aucune interface ne permet de modifier ou supprimer une entrée. Le journal est **conservé à la désinstallation** (valeur probante). Pour le supprimer volontairement : `DROP TABLE glpi_plugin_secincident_auditlogs;`.
 
-Le journal est **conservé à la désinstallation** (valeur probante). Pour le supprimer volontairement : `DROP TABLE glpi_plugin_secincident_auditlogs;`.
+### Ce que garantit le chaînage
 
-Limites à connaître :
-- un administrateur base de données peut toujours modifier la table : il ne peut pas le faire **sans que ce soit détecté**, sauf à recalculer toute la chaîne. Pour une preuve opposable, exporter régulièrement le journal (ou sa dernière empreinte) vers un stockage externe en écriture seule ;
-- si l'écriture d'une entrée échoue (base indisponible), l'action n'est pas bloquée ; l'échec est consigné dans `files/_log/php-errors.log` ;
-- les actions faites directement en SQL ou via d'autres plugins ne passent pas par le journal.
+Chaque entrée contient le SHA-256 de l'entrée précédente et de son propre contenu. **« Vérifier le journal »** rejoue toute la chaîne et signale la première entrée en cause. Le chaînage seul détecte :
+- la **modification** d'une entrée (contenu ou empreinte) ;
+- la **suppression** ou l'**insertion** d'une entrée **au milieu** du journal ;
+- deux écritures qui se seraient chaînées sur la même entrée précédente.
+
+Il ne détecte **pas** :
+- la **suppression des dernières entrées** (la chaîne restante reste cohérente) ;
+- une **réécriture complète** de la chaîne par quelqu'un qui a accès à la base et recalcule toutes les empreintes ;
+- les actions **jamais journalisées** (voir « Échecs de journalisation ») et celles faites directement en SQL ou par d'autres plugins.
+
+C'est un journal chaîné avec détection d'altérations, pas un journal infalsifiable : un administrateur de la base peut le modifier ; il ne peut pas le faire sans que ce soit détecté par la chaîne, sauf dans les deux cas ci-dessus, que couvre le point de contrôle externe.
+
+### Point de contrôle externe
+
+Un point de contrôle est une ligne JSON : identifiant de l'instance, identifiant et empreinte de la dernière entrée, nombre d'entrées, date. Conservé **hors de la base GLPI, sur un stockage où GLPI n'a pas le droit d'écrire**, il prouve que les entrées qu'il couvre sont toujours là, inchangées.
+
+- **Exporter** : bouton « Exporter un point de contrôle » sur la page du journal, ou en ligne de commande, typiquement dans une tâche planifiée qui envoie la ligne vers un stockage en ajout seul (autre serveur, compte distinct, `chattr +a`, stockage objet avec verrouillage) :
+  ```
+  php bin/console plugins:secincident:audit-checkpoint | ssh checkpoint@coffre 'cat >> secincident.jsonl'
+  php bin/console plugins:secincident:audit-checkpoint --output=/mnt/coffre/secincident.jsonl
+  ```
+- **Vérifier** : déposer le fichier (ou coller la ligne) dans le cadre « Point de contrôle externe » de la page du journal, ou :
+  ```
+  ssh checkpoint@coffre 'tail -n 1 secincident.jsonl' | php bin/console plugins:secincident:audit-checkpoint --verify=-
+  ```
+  Code de sortie : 0 cohérent, 1 anomalie, 2 point de contrôle illisible. Un fichier JSON Lines est accepté : la dernière ligne est utilisée.
+
+Anomalies signalées : entrée référencée disparue, journal tronqué (il s'arrête avant l'entrée référencée), empreinte de l'entrée référencée différente (entrée ou chaîne réécrite), nombre d'entrées différent, point de contrôle d'une autre instance (ou identifiant d'instance modifié), chaîne rompue.
+
+Le résultat affiche **la dernière entrée couverte** par le point de contrôle et, à part, **les entrées plus récentes, vérifiées uniquement par chaînage** : leur suppression ne sera détectée qu'au point de contrôle suivant. Dans la liste, un cadenas marque les entrées couvertes, un maillon les autres. La fréquence d'export fixe donc la fenêtre d'exposition (par exemple toutes les heures). Exports et vérifications sont eux-mêmes journalisés.
+
+### Échecs de journalisation
+
+Une entrée n'est écrite que sous le verrou de chaînage. Si le verrou n'est pas obtenu dans le délai (10 s par défaut, réglable par la clé de configuration `audit_lock_timeout`, contexte `plugin:secincident`) ou si la base refuse l'écriture, **rien n'est écrit dans la chaîne** (elle reste cohérente) et l'action de l'utilisateur n'est pas bloquée. L'échec est rendu visible :
+- **message** à l'utilisateur : son action n'a pas été journalisée ;
+- **bandeau** sur la page du journal (nombre d'échecs, dernier motif, action, utilisateur), jusqu'à « Marquer comme traité » (acquittement journalisé) ;
+- **fichier** `files/_log/secincident-audit-failures.log` : une ligne JSON par échec avec l'entrée complète qui n'a pas pu être écrite, pour rapprochement ;
+- avertissement dans `files/_log/php-errors.log` ;
+- les données modifiées par l'action apparaissent **« non scellées »** dans l'onglet Intégrité & preuves (empreinte jamais ancrée dans le journal).
+
+Sous un verrou très disputé (imports massifs simultanés), augmenter `audit_lock_timeout` (60 s maximum).
 
 ## Actions d'investigation et d'intervention
 
@@ -226,10 +263,18 @@ Onglet **« Intégrité & preuves »** de chaque incident.
 
 **Données** : chaque fiche incident, événement de chronologie, IOC et lien porte une empreinte SHA-256 de son contenu, recalculée à chaque modification faite par l'application et ancrée dans le journal d'audit.
 
-Le bouton **« Vérifier maintenant »** recalcule tout et détecte :
-- un fichier de preuve modifié, supprimé ou remplacé ;
-- une empreinte de référence modifiée dans le registre (comparée au journal) ;
-- un enregistrement modifié ou supprimé directement en base, même si l'auteur a recalculé l'empreinte (comparée au journal).
+Le bouton **« Vérifier maintenant »** recalcule tout. Chaque élément reçoit un état :
+
+| État | Signification |
+|---|---|
+| Intact | contenu = empreinte stockée = dernière empreinte ancrée dans le journal |
+| Altéré | contenu ou empreinte différent de l'ancre du journal (modification directe en base, même si l'auteur a recalculé l'empreinte) |
+| Manquant | ancré dans le journal mais absent de la base (suppression directe) |
+| Non scellé | aucune ancre dans le journal : ligne insérée hors application, empreinte effacée, ou écriture dont la journalisation a échoué |
+
+Pour les preuves : fichier modifié, supprimé ou remplacé, empreinte de référence modifiée dans le registre, ou inscription absente du journal (non scellée).
+
+Verdict : **intact** seulement si tout est intact ; **anomalies** dès qu'un élément est altéré ou manquant ; **intégrité non établie** s'il reste des éléments non scellés. Un seul élément non scellé empêche donc de conclure que tout est intact. La vérification ne scelle ni ne rescelle jamais rien : une anomalie reste visible tant que la donnée n'est pas corrigée par l'application. Les mises à jour du plugin ne rescellent pas non plus les lignes sans empreinte (le scellement initial ne concerne que les données antérieures à l'apparition des empreintes, en 1.2.0).
 
 Un document retiré ou remplacé reste dans le registre avec son empreinte d'origine. Chaque vérification est tracée avec son résultat. Le journal d'audit propose aussi **« Tout vérifier »** (journal + toutes les données + tous les fichiers).
 
@@ -279,6 +324,8 @@ Les références réglementaires (CNIL, ANSSI, délais RGPD / NIS2) sont celles 
 setup.php / hook.php           déclaration, installation, désinstallation
 src/Incident.php               objet principal, droits/cloisonnement, échéances RGPD/NIS2, recherche
 src/AuditLog.php               journal d'audit chaîné
+src/AuditCheckpoint.php        point de contrôle externe du journal (export, vérification)
+src/Console/                   commande plugins:secincident:audit-checkpoint
 src/Integrity.php              empreintes SHA-256 des données, vérification
 src/Evidence.php               registre des preuves (fichiers)
 src/Playbook.php               procédures de remédiation types (+ procédures par défaut)
@@ -303,6 +350,8 @@ tools/i18n.py                  extraction et compilation des traductions
 front/                         pages (liste, formulaires, import, tableau de bord)
 templates/                     vues Twig
 templates/parts/csrf.html.twig jeton CSRF (GLPI 11) / vide (GLPI 12)
+tests/                         tests d'intégration (instance GLPI réelle), voir tests/README.md
+.github/workflows/tests.yml    intégration continue (GLPI 11 ou 12 selon la branche, migration 11 → 12)
 public/css/secincident.css     styles
 ```
 
@@ -327,6 +376,8 @@ La 1.6.0 crée la table des catégories avec les 13 catégories d'origine (même
 La 1.8.0 renomme des clés internes liées à un éditeur d'EDR (source, outil) : l'intégrité des incidents concernés est vérifiée avant, seules les lignes intactes sont rescellées (une ligne déjà altérée reste signalée), le tout est tracé.
 
 Depuis la 1.10.0, une mise à jour ne donne plus de droits automatiquement : les droits existants sont conservés, et les profils créés ensuite n'ont pas accès.
+
+Depuis la 1.11.0 / 2.1.0, une mise à jour ne scelle plus les lignes sans empreinte : seules les tables qui reçoivent la colonne d'empreinte (données antérieures à 1.2.0) ont un scellement initial. La migration 1.5.0 ne rescelle que les lignes vérifiées intactes juste avant. Après la mise à jour, des éléments « non scellés » peuvent apparaître : ce sont des lignes qui n'ont jamais été ancrées dans le journal, auparavant comptées à tort comme intactes.
 
 La 2.0.0 n'est que le passage à GLPI 12 : pas de changement de données (voir [Versions et branches](#versions-et-branches)).
 

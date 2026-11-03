@@ -15,7 +15,7 @@ use GlpiPlugin\Secincident\Incident;
 use GlpiPlugin\Secincident\Incident_Item;
 use GlpiPlugin\Secincident\Profile;
 
-define('PLUGIN_SECINCIDENT_VERSION', '2.0.0');
+define('PLUGIN_SECINCIDENT_VERSION', '2.1.0');
 // Version minimale de GLPI (incluse)
 define('PLUGIN_SECINCIDENT_MIN_GLPI', '12.0.0');
 // Version maximale de GLPI (exclue)
