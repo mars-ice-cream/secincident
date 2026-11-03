@@ -1,0 +1,149 @@
+name: Tests
+
+# Même fichier sur les deux branches : la version de GLPI testée est déduite de setup.php
+# (main → GLPI 12, glpi-11 → GLPI 11). La migration 11 → 12 tourne sur main.
+
+on:
+  push:
+    branches: [main, glpi-11]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  versions:
+    runs-on: ubuntu-24.04
+    outputs:
+      glpi: ${{ steps.v.outputs.glpi }}
+      php: ${{ steps.v.outputs.php }}
+      major: ${{ steps.v.outputs.major }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: v
+        run: |
+          major=$(grep -oP "PLUGIN_SECINCIDENT_MIN_GLPI', '\K[0-9]+" setup.php)
+          if [ "$major" = "12" ]; then
+            echo 'glpi=["12.0.1"]' >> "$GITHUB_OUTPUT"; echo 'php=["8.3", "8.4"]' >> "$GITHUB_OUTPUT"
+          else
+            echo 'glpi=["11.0.4", "11.0.11"]' >> "$GITHUB_OUTPUT"; echo 'php=["8.2", "8.3", "8.4"]' >> "$GITHUB_OUTPUT"
+          fi
+          echo "major=$major" >> "$GITHUB_OUTPUT"
+
+  lint:
+    needs: versions
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        php: ${{ fromJSON(needs.versions.outputs.php) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+      - name: Syntaxe PHP
+        run: find . -name '*.php' -not -path './vendor/*' -print0 | xargs -0 -n1 php -l > /dev/null
+      - name: Traductions à jour
+        if: matrix.php == '8.3'
+        run: |
+          sudo apt-get install -y -qq gettext > /dev/null
+          pip install --quiet polib
+          python3 tools/i18n.py --check
+
+  integration:
+    needs: versions
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        glpi: ${{ fromJSON(needs.versions.outputs.glpi) }}
+    services:
+      mariadb:
+        image: mariadb:10.11
+        env:
+          MARIADB_ROOT_PASSWORD: root
+        ports: ['3306:3306']
+        options: --health-cmd="healthcheck.sh --connect --innodb_initialized" --health-interval=5s --health-timeout=5s --health-retries=20
+    env:
+      SI_BASE: http://127.0.0.1:8080
+      SI_DB: glpi
+      SI_GLPI_DIR: ${{ github.workspace }}/glpi
+      SI_MYSQL: mysql -h 127.0.0.1 -uroot -proot
+      SI_TMP: ${{ runner.temp }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: plugin
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ needs.versions.outputs.major == '12' && '8.3' || '8.2' }}
+          extensions: mysqli, gd, intl, curl, zip, bz2, mbstring, xml, sodium, exif, ldap, bcmath, opcache
+          coverage: none
+      - name: Installer GLPI ${{ matrix.glpi }}
+        run: plugin/tests/ci/install_glpi.sh "${{ matrix.glpi }}" glpi glpi
+      - name: Installer SecIncident
+        run: plugin/tests/ci/install_plugin.sh glpi plugin
+      - name: Démarrer GLPI
+        run: plugin/tests/ci/start_server.sh glpi 8080
+      - name: Tests d'intégration
+        working-directory: plugin/tests
+        run: python3 run.py
+      - name: Aucune erreur PHP
+        if: always()
+        run: |
+          for f in glpi/files/_log/php-errors.log glpi/files/_log/secincident-audit-failures.log; do
+            [ -f "$f" ] && { echo "== $f"; tail -n 50 "$f"; }
+          done
+          ! grep -v "SecIncident audit failure" glpi/files/_log/php-errors.log 2>/dev/null | grep -q .
+
+  migration:
+    needs: versions
+    if: needs.versions.outputs.major == '12'
+    runs-on: ubuntu-24.04
+    services:
+      mariadb:
+        image: mariadb:10.11
+        env:
+          MARIADB_ROOT_PASSWORD: root
+        ports: ['3306:3306']
+        options: --health-cmd="healthcheck.sh --connect --innodb_initialized" --health-interval=5s --health-timeout=5s --health-retries=20
+    env:
+      SI_BASE: http://127.0.0.1:8080
+      SI_DB: glpi
+      SI_MYSQL: mysql -h 127.0.0.1 -uroot -proot
+      GLPI11: '11.0.11'
+      GLPI12: '12.0.1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: plugin
+      - uses: actions/checkout@v4
+        with:
+          ref: glpi-11
+          path: plugin11
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mysqli, gd, intl, curl, zip, bz2, mbstring, xml, sodium, exif, ldap, bcmath, opcache
+          coverage: none
+      - name: GLPI 11 + SecIncident 1.x, données de départ
+        run: |
+          plugin/tests/ci/install_glpi.sh "$GLPI11" glpi11 glpi
+          plugin/tests/ci/install_plugin.sh glpi11 plugin11
+          plugin/tests/ci/start_server.sh glpi11 8080
+          (cd plugin11/tests && python3 migration_seed.py "$RUNNER_TEMP/snapshot.json")
+          kill "$(cat glpi11/files/_log/php-server.pid)"
+      - name: Mise à jour vers GLPI 12 + SecIncident 2.x (même base)
+        run: |
+          mkdir glpi12
+          curl -fsSL "https://github.com/glpi-project/glpi/releases/download/${GLPI12}/glpi-${GLPI12}.tgz" | tar xz -C glpi12 --strip-components=1
+          cp glpi11/config/config_db.php glpi11/config/glpicrypt.key glpi12/config/
+          php glpi12/bin/console --no-interaction database:update
+          php glpi12/bin/console --no-interaction plugin:resume_execution
+          plugin/tests/ci/install_plugin.sh glpi12 plugin
+          plugin/tests/ci/start_server.sh glpi12 8080
+      - name: Vérifier la conservation des droits, du journal et des empreintes
+        working-directory: plugin/tests
+        run: python3 migration_check.py "$RUNNER_TEMP/snapshot.json"
