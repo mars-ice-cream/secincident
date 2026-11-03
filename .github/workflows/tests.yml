@@ -90,13 +90,11 @@ jobs:
       - name: Tests d'intégration
         working-directory: plugin/tests
         run: python3 run.py
-      - name: Aucune erreur PHP
+      - name: Aucune erreur PHP venant de SecIncident
         if: always()
         run: |
-          for f in glpi/files/_log/php-errors.log glpi/files/_log/secincident-audit-failures.log; do
-            [ -f "$f" ] && { echo "== $f"; tail -n 50 "$f"; }
-          done
-          ! grep -v "SecIncident audit failure" glpi/files/_log/php-errors.log 2>/dev/null | grep -q .
+          [ -f glpi/files/_log/secincident-audit-failures.log ] && tail -n 20 glpi/files/_log/secincident-audit-failures.log
+          python3 plugin/tests/ci/check_php_errors.py glpi/files/_log/php-errors.log
 
   migration:
     needs: versions
@@ -147,3 +145,8 @@ jobs:
       - name: Vérifier la conservation des droits, du journal et des empreintes
         working-directory: plugin/tests
         run: python3 migration_check.py "$RUNNER_TEMP/snapshot.json"
+      - name: Aucune erreur PHP venant de SecIncident
+        if: always()
+        run: |
+          python3 plugin/tests/ci/check_php_errors.py glpi11/files/_log/php-errors.log
+          python3 plugin/tests/ci/check_php_errors.py glpi12/files/_log/php-errors.log
