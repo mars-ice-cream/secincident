@@ -8,6 +8,7 @@ use Glpi\Exception\Http\BadRequestHttpException;
 use GlpiPlugin\Secincident\AuditLog;
 use GlpiPlugin\Secincident\I18n;
 use GlpiPlugin\Secincident\Incident;
+use GlpiPlugin\Secincident\Integrity;
 
 AuditLog::checkPageAccess([READ, Incident::READALL], I18n::instance('incident form'));
 
@@ -39,23 +40,35 @@ if (isset($_POST['add'])) {
     $incident->redirectToList();
 } elseif (isset($_POST['verify_integrity'])) {
     AuditLog::guard($incident, $id, READ, null, I18n::instance('integrity check'));
-    $result = GlpiPlugin\Secincident\Integrity::verifyIncident($id, true);
+    $result = Integrity::verifyIncident($id, true);
+    $verdict_labels = [
+        Integrity::VERDICT_INTACT       => I18n::instance('intact'),
+        Integrity::VERDICT_ALTERED      => I18n::instance('anomalies'),
+        Integrity::VERDICT_UNVERIFIABLE => I18n::instance('not established: unsealed items'),
+    ];
     AuditLog::record('verify_integrity', $incident, [
-        'resultat'        => $result['ok'] ? I18n::instance('intact') : I18n::instance('anomalies'),
+        'resultat'        => $verdict_labels[$result['verdict']],
         'donnees'         => $result['summary'],
         'preuves'         => count($result['evidences']),
         'preuves_en_anomalie' => $result['evidence_problems'],
+        'preuves_non_scellees' => $result['evidence_unanchored'],
         'anomalies'       => array_values(array_map(
-            fn ($i) => ['type' => $i['itemtype'], 'id' => $i['id'], 'etat' => $i['status']],
+            fn ($i) => array_filter(['type' => $i['itemtype'], 'id' => $i['id'], 'etat' => $i['status'], 'motif' => $i['reason']]),
             array_filter($result['items'], fn ($i) => $i['status'] !== 'ok')
         )),
     ], $result['ok'] ? AuditLog::RESULT_OK : AuditLog::RESULT_ERROR);
     Session::addMessageAfterRedirect(
-        $result['ok']
-            ? __s('Check completed: data and evidence are intact.', 'secincident')
-            : __s('Check completed: anomalies detected, see the Integrity & evidence tab.', 'secincident'),
+        match ($result['verdict']) {
+            Integrity::VERDICT_INTACT  => __s('Check completed: data and evidence are intact.', 'secincident'),
+            Integrity::VERDICT_ALTERED => __s('Check completed: anomalies detected, see the Integrity & evidence tab.', 'secincident'),
+            default                    => __s('Check completed: integrity cannot be established, some items are not sealed (see the Integrity & evidence tab).', 'secincident'),
+        },
         false,
-        $result['ok'] ? INFO : ERROR
+        match ($result['verdict']) {
+            Integrity::VERDICT_INTACT  => INFO,
+            Integrity::VERDICT_ALTERED => ERROR,
+            default                    => WARNING,
+        }
     );
     Html::back();
 } elseif (isset($_POST['create_ticket'])) {

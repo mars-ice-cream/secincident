@@ -11,14 +11,39 @@
          <a href="{{ verify_url }}" class="btn btn-sm btn-outline-secondary"><i class="ti ti-shield-check me-1"></i>{{ __('Verify the log', 'secincident') }}</a>
          <a href="{{ verify_all_url }}" class="btn btn-sm btn-outline-primary"><i class="ti ti-shield-search me-1"></i>{{ __('Verify everything (log, data, evidence)', 'secincident') }}</a>
          <a href="{{ export_url }}" class="btn btn-sm btn-outline-secondary"><i class="ti ti-download me-1"></i>{{ __('Export (CSV)', 'secincident') }}</a>
+         <a href="{{ checkpoint_export_url }}" class="btn btn-sm btn-outline-secondary"><i class="ti ti-file-export me-1"></i>{{ __('Export a checkpoint', 'secincident') }}</a>
       </div>
    </div>
+
+   {% if failures.count > 0 %}
+      <div class="alert alert-warning" data-secincident-audit-failures="{{ failures.count }}">
+         <div class="d-flex flex-wrap align-items-start gap-2">
+            <div>
+               <i class="ti ti-alert-triangle me-1"></i>
+               <strong>{{ __('%d action(s) could not be written to the audit log.', 'secincident')|format(failures.count) }}</strong>
+               {% if failures.last %}
+                  {{ __('Last one:', 'secincident') }} {{ failures.last.date_utc }} UTC —
+                  {{ failure_reasons[failures.last.reason] ?? failures.last.reason }} —
+                  {{ failures.last.action }}{% if failures.last.user_name %} ({{ failures.last.user_name }}){% endif %}.
+               {% endif %}
+               <div class="small mt-1">
+                  {{ __('These actions are not in the chain. Each unwritten entry is kept in %s (one JSON line per failure) for reconciliation; the items they modified appear as “not sealed” in the integrity check.', 'secincident')|format(failure_log) }}
+               </div>
+            </div>
+            <form method="post" action="{{ base_url }}" class="ms-auto">
+               <button type="submit" name="ack_failures" value="1" class="btn btn-sm btn-outline-warning">{{ __('Mark as handled', 'secincident') }}</button>
+               {% include "@secincident/parts/csrf.html.twig" %}
+            </form>
+         </div>
+      </div>
+   {% endif %}
 
    {% if verification is not null %}
       {% if verification.ok %}
          <div class="alert alert-success">
             <i class="ti ti-shield-check me-1"></i>
-            {{ __('Log intact: %d entry(ies) verified, no change or deletion detected.', 'secincident')|format(verification.count) }}
+            {{ __('Chain intact: %d entry(ies) verified, no change, insertion or deletion detected between the first and the last entry.', 'secincident')|format(verification.count) }}
+            <div class="small">{{ __('Deleting the latest entries leaves the chain intact: only a comparison with an external checkpoint detects it.', 'secincident') }}</div>
          </div>
       {% else %}
          <div class="alert alert-danger">
@@ -45,13 +70,72 @@
                      <a href="{{ a.url }}">{{ __('Incident', 'secincident') }} #{{ a.incident }}</a> —
                      {{ a.donnees.altered }} {{ __('modified', 'secincident') }},
                      {{ a.donnees.missing }} {{ __('deleted', 'secincident') }},
-                     {{ a.preuves }} {{ __('evidence item(s) with anomalies', 'secincident') }}
+                     {{ a.donnees.unsealed }} {{ __('not sealed', 'secincident') }},
+                     {{ a.preuves }} {{ __('evidence item(s) with anomalies', 'secincident') }}{% if a.preuves_non_scellees %}, {{ a.preuves_non_scellees }} {{ __('evidence item(s) not sealed', 'secincident') }}{% endif %}
                   </li>
                {% endfor %}
             </ul>
          </div>
       {% endif %}
    {% endif %}
+
+   <div class="card mb-3">
+      <div class="card-header">
+         <h3 class="card-title"><i class="ti ti-file-check me-2"></i>{{ __('External checkpoint', 'secincident') }}</h3>
+         <span class="ms-auto text-muted small">{{ __('Detects the deletion of the latest entries and the rewriting of the chain. Keep exported checkpoints outside the GLPI database, in storage GLPI cannot write to.', 'secincident') }}</span>
+      </div>
+      <div class="card-body">
+         {% if checkpoint_result is not null %}
+            {% if checkpoint_result.ok %}
+               <div class="alert alert-success" data-secincident-checkpoint="ok">
+                  <i class="ti ti-shield-check me-1"></i>
+                  {{ __('Log consistent with the checkpoint.', 'secincident') }}
+               </div>
+            {% else %}
+               <div class="alert alert-danger" data-secincident-checkpoint="anomaly">
+                  <i class="ti ti-alert-octagon me-1"></i><strong>{{ __('Checkpoint anomalies', 'secincident') }}</strong>
+                  <ul class="mb-0">
+                     {% for a in checkpoint_result.anomalies %}<li data-code="{{ a.code }}">{{ a.message }}</li>{% endfor %}
+                  </ul>
+               </div>
+            {% endif %}
+            {% if checkpoint_result.covered %}
+               <dl class="row small mb-3">
+                  <dt class="col-md-4">{{ __('Covered by the checkpoint', 'secincident') }}</dt>
+                  <dd class="col-md-8">
+                     {{ __('entries up to #%d', 'secincident')|format(checkpoint_result.covered.until_id) }}
+                     ({{ checkpoint_result.covered.until_date_utc ?: '—' }} UTC, {{ checkpoint_result.covered.count }} {{ __('entry(ies)', 'secincident') }}) —
+                     {{ __('checkpoint generated on', 'secincident') }} {{ checkpoint_result.checkpoint.generated_at_utc }} UTC
+                  </dd>
+                  <dt class="col-md-4">{{ __('Newer entries, verified by chaining only', 'secincident') }}</dt>
+                  <dd class="col-md-8">
+                     {% if checkpoint_result.newer.count > 0 %}
+                        #{{ checkpoint_result.newer.from_id }} – #{{ checkpoint_result.newer.to_id }}
+                        ({{ checkpoint_result.newer.count }} {{ __('entry(ies)', 'secincident') }}, {{ __('last one', 'secincident') }} {{ checkpoint_result.newer.last_date_utc }} UTC)
+                        <div class="text-muted">{{ __('Their deletion would not be detected until the next checkpoint.', 'secincident') }}</div>
+                     {% else %}
+                        {{ __('none', 'secincident') }}
+                     {% endif %}
+                  </dd>
+               </dl>
+            {% endif %}
+         {% endif %}
+         <form method="post" action="{{ base_url }}" enctype="multipart/form-data" class="row g-2 align-items-end">
+            <div class="col-md-4">
+               <label class="form-label" for="checkpoint-file">{{ __('Checkpoint file (JSON, or JSON Lines: last line used)', 'secincident') }}</label>
+               <input type="file" id="checkpoint-file" name="checkpoint_file" accept=".json,.jsonl,application/json" class="form-control form-control-sm">
+            </div>
+            <div class="col-md-6">
+               <label class="form-label" for="checkpoint-json">{{ __('or paste its content', 'secincident') }}</label>
+               <textarea id="checkpoint-json" name="checkpoint_json" rows="1" class="form-control form-control-sm font-monospace"></textarea>
+            </div>
+            <div class="col-md-2">
+               <button type="submit" name="checkpoint_verify" value="1" class="btn btn-sm btn-primary w-100"><i class="ti ti-shield-search me-1"></i>{{ __('Verify', 'secincident') }}</button>
+            </div>
+            {% include "@secincident/parts/csrf.html.twig" %}
+         </form>
+      </div>
+   </div>
 
    <form method="get" action="{{ base_url }}" class="card mb-3">
       <div class="card-body row g-2 align-items-end">
@@ -119,7 +203,16 @@
             <tbody>
                {% for row in rows %}
                   <tr class="{{ row.result == 'denied' ? 'table-danger' : (row.result == 'error' ? 'table-warning' : '') }}">
-                     <td class="text-muted">{{ row.id }}</td>
+                     <td class="text-muted text-nowrap">
+                        {{ row.id }}
+                        {% if covered_until > 0 %}
+                           {% if row.id <= covered_until %}
+                              <span class="badge bg-green-lt" title="{{ __('Covered by the verified checkpoint', 'secincident') }}"><i class="ti ti-lock"></i></span>
+                           {% else %}
+                              <span class="badge bg-secondary-lt" title="{{ __('Verified by chaining only (newer than the checkpoint)', 'secincident') }}"><i class="ti ti-link"></i></span>
+                           {% endif %}
+                        {% endif %}
+                     </td>
                      <td class="text-nowrap font-monospace small">{{ row.date_utc }}</td>
                      <td>
                         <strong>{{ row.user_name }}</strong>
@@ -170,6 +263,6 @@
 
    <p class="text-muted small mt-2">
       <i class="ti ti-info-circle"></i>
-      {{ __('Each entry is chained to the previous one by a SHA-256 fingerprint: any direct change or deletion in the database is detected by “Verify integrity”. No interface allows the log to be modified.', 'secincident') }}
+      {{ __('Each entry is chained to the previous one by a SHA-256 fingerprint: a change, insertion or deletion inside the log is detected by “Verify the log”. Deleting the latest entries, or rewriting the whole chain with database access, is only detected against an external checkpoint. No interface allows the log to be modified.', 'secincident') }}
    </p>
 </div>

@@ -94,7 +94,7 @@ class AccessGuard
                 return;
             }
             $groups_id = self::getConfig()['restrict_groups_id'];
-            if ($groups_id <= 0) {
+            if ($groups_id <= 0 && empty($_SESSION['plugin_secincident_restricted'])) {
                 return;
             }
             self::$profile_rights = (int) ($DB->request([
@@ -102,9 +102,20 @@ class AccessGuard
                 'FROM'   => 'glpi_profilerights',
                 'WHERE'  => ['profiles_id' => $profiles_id, 'name' => Incident::$rightname],
             ])->current()['rights'] ?? 0);
-            $_SESSION['glpiactiveprofile'][Incident::$rightname] = self::isMember($users_id, $groups_id)
-                ? self::$profile_rights
-                : 0;
+            if ($groups_id <= 0) {
+                // Restriction levée pendant la session : droits du profil rétablis
+                unset($_SESSION['plugin_secincident_restricted'], $_SESSION['glpimenu']);
+                $_SESSION['glpiactiveprofile'][Incident::$rightname] = self::$profile_rights;
+                return;
+            }
+            $_SESSION['plugin_secincident_restricted'] = true;
+            $effective = self::isMember($users_id, $groups_id) ? self::$profile_rights : 0;
+            if ((int) ($_SESSION['glpiactiveprofile'][Incident::$rightname] ?? 0) !== $effective) {
+                // Droits changés en cours de session (ajout / retrait du groupe) :
+                // le menu mis en cache par GLPI est régénéré à la prochaine page
+                unset($_SESSION['glpimenu']);
+            }
+            $_SESSION['glpiactiveprofile'][Incident::$rightname] = $effective;
         } catch (Throwable $e) {
             trigger_error('SecIncident access guard: ' . $e->getMessage(), E_USER_WARNING);
         }

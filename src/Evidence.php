@@ -33,6 +33,7 @@ class Evidence extends CommonDBTM
     public const CHECK_REFERENCE_ALTERED = 'reference_altered';
     public const CHECK_UNCHECKED         = 'unchecked';
     public const CHECK_DETACHED          = 'detached';
+    public const CHECK_UNANCHORED        = 'unanchored';
 
     public static function getTypeName($nb = 0)
     {
@@ -70,6 +71,7 @@ class Evidence extends CommonDBTM
             self::CHECK_REFERENCE_ALTERED => __('Reference fingerprint altered', 'secincident'),
             self::CHECK_UNCHECKED         => __('Never checked', 'secincident'),
             self::CHECK_DETACHED          => __('Removed from the incident', 'secincident'),
+            self::CHECK_UNANCHORED        => __('Not sealed: absent from the audit log', 'secincident'),
         ];
     }
 
@@ -80,6 +82,7 @@ class Evidence extends CommonDBTM
             self::CHECK_UNCHECKED => 'secondary',
             self::CHECK_DETACHED  => 'secondary',
             self::CHECK_REPLACED  => 'orange',
+            self::CHECK_UNANCHORED => 'orange',
             default               => 'red',
         };
     }
@@ -277,7 +280,8 @@ class Evidence extends CommonDBTM
     {
         global $DB;
 
-        $out = [];
+        $out      = [];
+        $anchored = self::getAnchoredHashes($incidents_id);
         foreach (
             $DB->request([
                 'FROM'  => self::getTable(),
@@ -288,6 +292,10 @@ class Evidence extends CommonDBTM
             $row['check'] = $row['status'] === 'detached'
                 ? self::CHECK_DETACHED
                 : ($row['status'] === 'superseded' ? self::CHECK_REPLACED : (string) $row['check_status']);
+            // Inscription absente du journal : signalée même sans contrôle des fichiers
+            if ($row['status'] === 'active' && !isset($anchored[(int) $row['id']])) {
+                $row['check'] = self::CHECK_UNANCHORED;
+            }
             $out[] = $row;
         }
         return $out;
@@ -309,6 +317,9 @@ class Evidence extends CommonDBTM
             $anchor = $anchored[(int) $row['id']] ?? null;
             if ($anchor !== null && $anchor !== $row['sha256']) {
                 $row['check'] = self::CHECK_REFERENCE_ALTERED;
+            } elseif ($anchor === null && $row['status'] === 'active') {
+                // Inscription absente du journal : l'empreinte de référence n'est pas garantie
+                $row['check'] = self::CHECK_UNANCHORED;
             } elseif ($row['status'] !== 'active') {
                 // retirée ou remplacée : on garde l'état, pas de recalcul
                 continue;

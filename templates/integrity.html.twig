@@ -9,22 +9,29 @@
    'missing': __('Deleted outside the application', 'secincident'),
    'unsealed': __('Not sealed', 'secincident'),
 } %}
+{% set reason_labels = {
+   'no_fingerprint': __('no fingerprint and no anchor in the audit log (inserted outside the application, or fingerprint erased)', 'secincident'),
+   'not_anchored': __('fingerprint present but never anchored in the audit log (written outside the application, or logging failed)', 'secincident'),
+} %}
 {% set status_colors = {'ok': 'green', 'altered': 'red', 'missing': 'red', 'unsealed': 'orange'} %}
 {% set s = result.summary %}
 {% set problems = result.items|filter(i => i.status != 'ok') %}
 
 <div class="secincident-integrity">
    <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
-      {% if result.ok %}
-         <span class="badge bg-green-lt fs-5"><i class="ti ti-shield-check me-1"></i>{{ __('No anomaly', 'secincident') }}</span>
+      {% if result.verdict == 'intact' %}
+         <span class="badge bg-green-lt fs-5" data-secincident-verdict="intact"><i class="ti ti-shield-check me-1"></i>{{ __('No anomaly', 'secincident') }}</span>
+      {% elseif result.verdict == 'altered' %}
+         <span class="badge bg-red text-white fs-5" data-secincident-verdict="altered"><i class="ti ti-alert-octagon me-1"></i>{{ __('Anomalies detected', 'secincident') }}</span>
       {% else %}
-         <span class="badge bg-red text-white fs-5"><i class="ti ti-alert-octagon me-1"></i>{{ __('Anomalies detected', 'secincident') }}</span>
+         <span class="badge bg-orange text-white fs-5" data-secincident-verdict="unverifiable"><i class="ti ti-shield-question me-1"></i>{{ __('Integrity not established: unsealed items', 'secincident') }}</span>
       {% endif %}
       <span class="text-muted small">
          {{ s.ok }} {{ __('intact record(s)', 'secincident') }}
          {% if s.altered %} · <span class="text-danger">{{ s.altered }} {{ __('modified', 'secincident') }}</span>{% endif %}
          {% if s.missing %} · <span class="text-danger">{{ s.missing }} {{ __('deleted', 'secincident') }}</span>{% endif %}
          {% if s.unsealed %} · <span class="text-warning">{{ s.unsealed }} {{ __('not sealed', 'secincident') }}</span>{% endif %}
+         {% if result.evidence_unanchored %} · <span class="text-warning">{{ result.evidence_unanchored }} {{ __('evidence item(s) not sealed', 'secincident') }}</span>{% endif %}
          · {{ result.evidences|length }} {{ __('evidence item(s)', 'secincident') }}
       </span>
       {% if can_check %}
@@ -95,8 +102,11 @@
                   {% for i in problems %}
                      <tr class="{{ status_colors[i.status] == 'red' ? 'table-danger' : '' }}">
                         <td>{{ i.label }}<div class="text-muted small">{{ i.itemtype|split('\\')|last }} #{{ i.id }}</div></td>
-                        <td><span class="badge bg-{{ status_colors[i.status] }}-lt">{{ status_labels[i.status] }}</span></td>
-                        <td><code class="secincident-hash">{{ i.anchor ?? i.stored ?? '—' }}</code></td>
+                        <td>
+                           <span class="badge bg-{{ status_colors[i.status] }}-lt">{{ status_labels[i.status] }}</span>
+                           {% if i.reason %}<div class="text-muted small">{{ reason_labels[i.reason] }}</div>{% endif %}
+                        </td>
+                        <td><code class="secincident-hash">{{ i.anchor ?? (i.stored ?: '—') }}</code></td>
                      </tr>
                   {% endfor %}
                </tbody>

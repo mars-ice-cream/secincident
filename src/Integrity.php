@@ -23,6 +23,16 @@ use Throwable;
  *  - la vérification recalcule l'empreinte du contenu actuel et la compare à la
  *    fois à la colonne et à la dernière ancre du journal. Une modification
  *    directe en base est donc détectée, même si l'auteur recalcule la colonne.
+ *
+ * Statuts d'un élément :
+ *  - intact     : contenu = colonne = dernière ancre du journal ;
+ *  - altéré     : contenu différent de l'ancre ou de la colonne ;
+ *  - manquant   : ancré dans le journal mais absent de la base ;
+ *  - non scellé : aucune ancre dans le journal (avec ou sans colonne). Son
+ *    intégrité ne peut pas être établie : ligne insérée hors application,
+ *    empreinte effacée, ou écriture dont la journalisation a échoué.
+ * Un seul élément non scellé suffit pour que la vérification ne conclue pas
+ * à l'intégrité. La vérification ne scelle ni ne rescelle jamais rien.
  */
 class Integrity
 {
@@ -30,6 +40,15 @@ class Integrity
     public const STATUS_ALTERED  = 'altered';
     public const STATUS_MISSING  = 'missing';
     public const STATUS_UNSEALED = 'unsealed';
+
+    /** Verdicts d'une vérification */
+    public const VERDICT_INTACT       = 'intact';
+    public const VERDICT_ALTERED      = 'altered';
+    public const VERDICT_UNVERIFIABLE = 'unverifiable';
+
+    /** Motif d'un élément non scellé */
+    public const UNSEALED_NO_FINGERPRINT = 'no_fingerprint';
+    public const UNSEALED_NOT_ANCHORED   = 'not_anchored';
 
     /** Champs exclus de l'empreinte (techniques, mis à jour par GLPI hors de nos hooks) */
     private const EXCLUDED = ['integrity_hash', 'date_mod'];
@@ -184,12 +203,16 @@ class Integrity
             $anchor  = $anchors[$key]['hash'] ?? null;
             unset($anchors[$key]);
 
-            if ($stored === '' && $anchor === null) {
-                $status = self::STATUS_UNSEALED;
-            } elseif ($current !== $stored || ($anchor !== null && $anchor !== $current)) {
+            $reason = null;
+            if ($anchor !== null) {
+                // Ancré : le journal fait foi
+                $status = ($anchor === $current && $stored === $current) ? self::STATUS_OK : self::STATUS_ALTERED;
+            } elseif ($stored !== '' && $stored !== $current) {
                 $status = self::STATUS_ALTERED;
             } else {
-                $status = self::STATUS_OK;
+                // Pas d'ancre : intégrité impossible à établir, quelle que soit la colonne
+                $status = self::STATUS_UNSEALED;
+                $reason = $stored === '' ? self::UNSEALED_NO_FINGERPRINT : self::UNSEALED_NOT_ANCHORED;
             }
             $items[] = [
                 'itemtype' => $itemtype,
@@ -199,6 +222,7 @@ class Integrity
                 'current'  => $current,
                 'stored'   => $stored,
                 'anchor'   => $anchor,
+                'reason'   => $reason,
             ];
         };
 
@@ -229,6 +253,7 @@ class Integrity
                 'current'  => null,
                 'stored'   => null,
                 'anchor'   => $anchor['hash'],
+                'reason'   => null,
             ];
         }
 
@@ -238,14 +263,26 @@ class Integrity
         foreach ($items as $i) {
             $summary[$i['status']]++;
         }
-        $evidence_problems = count(array_filter($evidences, fn ($e) => !in_array($e['check'], [Evidence::CHECK_OK, Evidence::CHECK_UNCHECKED, Evidence::CHECK_DETACHED], true)));
+        $evidence_problems = count(array_filter($evidences, fn ($e) => !in_array($e['check'], [Evidence::CHECK_OK, Evidence::CHECK_UNCHECKED, Evidence::CHECK_DETACHED, Evidence::CHECK_UNANCHORED], true)));
+        $evidence_unanchored = count(array_filter($evidences, fn ($e) => $e['check'] === Evidence::CHECK_UNANCHORED));
+
+        if ($summary[self::STATUS_ALTERED] > 0 || $summary[self::STATUS_MISSING] > 0 || $evidence_problems > 0) {
+            $verdict = self::VERDICT_ALTERED;
+        } elseif ($summary[self::STATUS_UNSEALED] > 0 || $evidence_unanchored > 0) {
+            $verdict = self::VERDICT_UNVERIFIABLE;
+        } else {
+            $verdict = self::VERDICT_INTACT;
+        }
 
         return [
             'items'     => $items,
             'evidences' => $evidences,
             'summary'   => $summary,
-            'ok'        => $summary[self::STATUS_ALTERED] === 0 && $summary[self::STATUS_MISSING] === 0 && $evidence_problems === 0,
-            'evidence_problems' => $evidence_problems,
+            'verdict'   => $verdict,
+            // « ok » n'est vrai que si TOUT est intact : un élément non scellé l'empêche
+            'ok'        => $verdict === self::VERDICT_INTACT,
+            'evidence_problems'   => $evidence_problems,
+            'evidence_unanchored' => $evidence_unanchored,
         ];
     }
 
@@ -266,10 +303,14 @@ class Integrity
     }
 
     /**
-     * Rescelle tous les enregistrements au format courant et ancre les empreintes.
-     * À n'appeler qu'après une vérification tracée (migration de format).
+     * Rescelle au format courant les enregistrements vérifiés intacts juste avant
+     * (migration de format d'empreinte) et ancre les nouvelles empreintes.
+     * Une ligne altérée, manquante ou non scellée lors de la vérification
+     * préalable n'est pas rescellée : l'anomalie reste visible.
+     *
+     * @param array<string, true> $intact clés "Classe#id" vérifiées intactes
      */
-    public static function resealAll(string $reason): void
+    public static function resealAll(string $reason, array $intact): void
     {
         global $DB;
 
@@ -279,6 +320,9 @@ class Integrity
                 continue;
             }
             foreach ($DB->request(['FROM' => $class::getTable()]) as $row) {
+                if (!isset($intact[$class . '#' . $row['id']])) {
+                    continue;
+                }
                 $item = new $class();
                 $item->fields = $row;
                 $hash = self::seal($item);
@@ -292,15 +336,21 @@ class Integrity
     }
 
     /**
-     * Scelle et ancre tous les enregistrements non scellés (installation / mise à jour).
+     * Scellement initial : scelle et ancre les enregistrements des classes dont
+     * la colonne d'empreinte vient d'être créée (données antérieures au
+     * scellement, mise à jour depuis 1.0 / 1.1). N'est jamais appelé sur des
+     * tables déjà scellées : une ligne sans empreinte y reste « non scellée »
+     * au lieu d'être légitimée par une mise à jour du plugin.
+     *
+     * @param array<int, class-string<CommonDBTM>> $classes
      */
-    public static function sealAll(): int
+    public static function sealAll(array $classes): int
     {
         global $DB;
 
         $count = 0;
         $fk    = Incident::getForeignKeyField();
-        foreach (self::getSealedClasses() as $class) {
+        foreach (array_intersect(self::getSealedClasses(), $classes) as $class) {
             foreach ($DB->request(['FROM' => $class::getTable(), 'WHERE' => ['integrity_hash' => null]]) as $row) {
                 $item = new $class();
                 $item->fields = $row;

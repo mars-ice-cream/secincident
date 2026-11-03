@@ -5,6 +5,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use GlpiPlugin\Secincident\AuditCheckpoint;
 use GlpiPlugin\Secincident\AuditLog;
 use GlpiPlugin\Secincident\I18n;
 use GlpiPlugin\Secincident\Incident;
@@ -24,6 +25,46 @@ $filters = [
     'ip'           => filter_var($_GET['ip'] ?? '', FILTER_VALIDATE_IP) ?: '',
 ];
 $where = AuditLog::buildCriteria($filters);
+$as_json = ($_REQUEST['format'] ?? '') === 'json';
+$json = static fn (array $payload): Response => new Response(
+    (string) json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+    200,
+    ['Content-Type' => 'application/json; charset=UTF-8', 'Cache-Control' => 'no-store']
+);
+
+// Acquittement des échecs de journalisation (tracé)
+if (isset($_POST['ack_failures'])) {
+    AuditLog::acknowledgeFailures()
+        ? Session::addMessageAfterRedirect(__s('Logging failures acknowledged.', 'secincident'), false, INFO)
+        : Session::addMessageAfterRedirect(__s('The acknowledgement could not be logged: failures remain displayed.', 'secincident'), false, ERROR);
+    Html::back();
+}
+
+// Point de contrôle externe : export (téléchargement JSON, tracé)
+if (($_GET['checkpoint'] ?? '') === 'export') {
+    $checkpoint = AuditCheckpoint::export('web');
+    return new Response(AuditCheckpoint::encode($checkpoint) . "\n", 200, [
+        'Content-Type'        => 'application/json; charset=UTF-8',
+        'Content-Disposition' => 'attachment; filename="secincident_checkpoint_' . gmdate('Ymd_His') . '_' . $checkpoint['last_id'] . '.json"',
+        'Cache-Control'       => 'no-store',
+    ]);
+}
+
+// Point de contrôle externe : vérification (fichier envoyé ou JSON collé)
+$checkpoint_result = null;
+if (isset($_POST['checkpoint_verify'])) {
+    $raw = '';
+    if (!empty($_FILES['checkpoint_file']['tmp_name']) && is_uploaded_file($_FILES['checkpoint_file']['tmp_name'])) {
+        $raw = (string) file_get_contents($_FILES['checkpoint_file']['tmp_name'], false, null, 0, 1048576);
+    } elseif (isset($_POST['checkpoint_json'])) {
+        $raw = (string) $_POST['checkpoint_json'];
+    }
+    $checkpoint_result = AuditCheckpoint::verify(AuditCheckpoint::parse($raw));
+    $_SESSION['plugin_secincident_checkpoint'] = $checkpoint_result['ok'] ? ($checkpoint_result['covered']['until_id'] ?? 0) : 0;
+    if ($as_json) {
+        return $json($checkpoint_result);
+    }
+}
 
 // Export CSV (tracé)
 if (($_GET['export'] ?? '') === 'csv') {
@@ -75,8 +116,10 @@ if (!empty($_GET['verify_all'])) {
         } else {
             $data_check['anomalies'][] = [
                 'incident'  => $incidents_id,
+                'verdict'   => $r['verdict'],
                 'donnees'   => $r['summary'],
                 'preuves'   => $r['evidence_problems'],
+                'preuves_non_scellees' => $r['evidence_unanchored'],
                 'url'       => Incident::getFormURLWithID($incidents_id),
             ];
         }
@@ -86,11 +129,18 @@ if (!empty($_GET['verify_all'])) {
         'journal'  => $verification,
         'incidents_verifies' => $data_check['incidents'],
         'incidents_en_anomalie' => array_column($data_check['anomalies'], 'incident'),
+        'verdicts'              => array_count_values(array_column($data_check['anomalies'], 'verdict')),
     ], ($verification['ok'] && $data_check['anomalies'] === []) ? AuditLog::RESULT_OK : AuditLog::RESULT_ERROR);
+    if ($as_json) {
+        return $json(['chain' => $verification, 'data' => $data_check, 'failures' => AuditLog::getFailureStatus()]);
+    }
 } elseif (!empty($_GET['verify'])) {
     $verification = AuditLog::verifyChain();
     AuditLog::record('verify_audit', null, $verification, $verification['ok'] ? AuditLog::RESULT_OK : AuditLog::RESULT_ERROR);
-} else {
+    if ($as_json) {
+        return $json(['chain' => $verification, 'failures' => AuditLog::getFailureStatus()]);
+    }
+} elseif ($checkpoint_result === null) {
     AuditLog::record('view_audit', null, ['filtres' => array_filter($filters)]);
 }
 
@@ -135,6 +185,16 @@ TemplateRenderer::getInstance()->display('@secincident/audit.html.twig', [
     'verify_all_url' => $base . '?' . http_build_query($query + ['verify_all' => 1]),
     'data_check'   => $data_check,
     'verification' => $verification,
+    'checkpoint_result' => $checkpoint_result,
+    'checkpoint_export_url' => $base . '?checkpoint=export',
+    'covered_until' => (int) ($_SESSION['plugin_secincident_checkpoint'] ?? 0),
+    'failures'     => AuditLog::getFailureStatus(),
+    'failure_reasons' => [
+        AuditLog::FAILURE_LOCK   => AuditLog::failureReasonLabel(AuditLog::FAILURE_LOCK),
+        AuditLog::FAILURE_INSERT => AuditLog::failureReasonLabel(AuditLog::FAILURE_INSERT),
+        AuditLog::FAILURE_ERROR  => AuditLog::failureReasonLabel(AuditLog::FAILURE_ERROR),
+    ],
+    'failure_log'  => 'files/_log/' . AuditLog::FAILURE_LOG . '.log',
 ]);
 
 Html::footer();
