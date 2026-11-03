@@ -28,6 +28,14 @@ msgstr "Étape obligatoire"
 msgid "action log"
 msgstr "journal des actions"
 
+#: front/audit.php:38
+msgid "Logging failures acknowledged."
+msgstr "Échecs de journalisation acquittés."
+
+#: front/audit.php:39
+msgid "The acknowledgement could not be logged: failures remain displayed."
+msgstr "L'acquittement n'a pas pu être journalisé : les échecs restent affichés."
+
 #: front/category.form.php:13
 msgid "incident category"
 msgstr "catégorie d'incident"
@@ -89,39 +97,43 @@ msgstr "Fichier trop volumineux."
 msgid "Unable to save the temporary file."
 msgstr "Impossible d'enregistrer le fichier temporaire."
 
-#: front/incident.form.php:12
+#: front/incident.form.php:13
 msgid "incident form"
 msgstr "fiche incident"
 
-#: front/incident.form.php:41
+#: front/incident.form.php:42
 msgid "integrity check"
 msgstr "vérification d'intégrité"
 
-#: front/incident.form.php:44
+#: front/incident.form.php:45
 msgid "intact"
 msgstr "intègre"
 
-#: front/incident.form.php:44
-msgid "anomalies"
-msgstr "anomalies"
+#: front/incident.form.php:47
+msgid "not established: unsealed items"
+msgstr "non établie : éléments non scellés"
 
-#: front/incident.form.php:55
+#: front/incident.form.php:62
 msgid "Check completed: data and evidence are intact."
 msgstr "Vérification terminée : données et preuves intègres."
 
-#: front/incident.form.php:56
+#: front/incident.form.php:63
 msgid "Check completed: anomalies detected, see the Integrity & evidence tab."
 msgstr "Vérification terminée : anomalies détectées, voir l'onglet Intégrité & preuves."
 
-#: front/incident.form.php:62
+#: front/incident.form.php:64
+msgid "Check completed: integrity cannot be established, some items are not sealed (see the Integrity & evidence tab)."
+msgstr "Vérification terminée : l'intégrité ne peut pas être établie, des éléments ne sont pas scellés (voir l'onglet Intégrité & preuves)."
+
+#: front/incident.form.php:75
 msgid "linked ticket creation"
 msgstr "création de ticket lié"
 
-#: front/incident.form.php:64
+#: front/incident.form.php:77
 msgid "linked ticket creation (ticket right)"
 msgstr "création de ticket lié (droit ticket)"
 
-#: front/incident.form.php:70
+#: front/incident.form.php:83
 #, php-format
 msgid "Ticket %d created and linked to the incident"
 msgstr "Ticket %d créé et lié à l'incident"
@@ -285,361 +297,431 @@ msgstr "suppression d'événement"
 msgid "event consultation"
 msgstr "consultation d'événement"
 
-#: hook.php:308
+#: hook.php:309
 msgid "Integrity check before migration"
 msgstr "Vérification d'intégrité avant migration"
 
-#: hook.php:322
+#: hook.php:329
 msgid "global, before schema migration (1.5.0)"
 msgstr "globale, avant migration du schéma (1.5.0)"
 
-#: hook.php:472
-msgid "No profile has access to the plugin yet: grant it in Administration > Profiles > \"Security incidents\" tab."
-msgstr "Aucun profil n'a encore accès au plugin : attribuez l'accès dans Administration > Profils > onglet « Incidents de sécurité »."
-
-#: hook.php:48 hook.php:120 hook.php:152 hook.php:181 hook.php:199 hook.php:222 hook.php:247 hook.php:267 hook.php:348 hook.php:380 hook.php:414
+#: hook.php:48 hook.php:120 hook.php:152 hook.php:181 hook.php:199 hook.php:222 hook.php:247 hook.php:267 hook.php:355 hook.php:393 hook.php:427
 #, php-format
 msgid "Creating table %s"
 msgstr "Création de la table %s"
 
-#: hook.php:530
+#: hook.php:485
+msgid "No profile has access to the plugin yet: grant it in Administration > Profiles > \"Security incidents\" tab."
+msgstr "Aucun profil n'a encore accès au plugin : attribuez l'accès dans Administration > Profils > onglet « Incidents de sécurité »."
+
+#: hook.php:543
 #, php-format
 msgid "%d remediation playbooks installed"
 msgstr "%d procédures de remédiation installées"
 
-#: hook.php:535
+#: hook.php:548
 #, php-format
 msgid "%d incident categories installed"
 msgstr "%d catégories d'incident installées"
 
-#: hook.php:550
+#: hook.php:563
 msgid "migration 1.5.0: new fingerprint format, prior check logged"
 msgstr "migration 1.5.0 : nouveau format d'empreinte, vérification préalable tracée"
 
-#: hook.php:573
+#: hook.php:586
 msgid "Renaming former vendor keys to generic EDR"
 msgstr "Renommage des anciennes clés éditeur en EDR générique"
 
-#: hook.php:593
+#: hook.php:606
 msgid "affected incidents, before renaming EDR keys (1.8.0)"
 msgstr "incidents concernés, avant renommage des clés EDR (1.8.0)"
 
-#: hook.php:611
+#: hook.php:624
 msgid "migration 1.8.0: keys “crowdstrike” / “falcon_rtr” renamed to “edr” / “edr_console”"
 msgstr "migration 1.8.0 : clés « crowdstrike » / « falcon_rtr » renommées en « edr » / « edr_console »"
 
-#: hook.php:637
+#: hook.php:654
 msgid "plugin update"
 msgstr "mise à jour du plugin"
 
-#: hook.php:637
+#: hook.php:654
 msgid "plugin installation / audit activation"
 msgstr "installation du plugin / activation de l'audit"
 
-#: hook.php:652
+#: hook.php:669
 msgid "SecIncident plugin deactivated"
 msgstr "Plugin SecIncident désactivé"
 
-#: hook.php:653
+#: hook.php:670
 msgid "plugin deactivated: security incidents are no longer accessible or logged"
 msgstr "plugin désactivé : les incidents de sécurité ne sont plus accessibles ni tracés"
 
-#: hook.php:680
+#: hook.php:697
 msgid "SecIncident plugin uninstalled"
 msgstr "Plugin SecIncident désinstallé"
 
-#: hook.php:680
+#: hook.php:697
 msgid "plugin uninstallation (data deleted, log kept)"
 msgstr "désinstallation du plugin (données supprimées, journal conservé)"
 
-#: src/AccessGuard.php:153
+#: src/AccessGuard.php:164
 #, php-format
 msgid "By: %s"
 msgstr "Par : %s"
 
-#: src/AccessGuard.php:154
+#: src/AccessGuard.php:165
 #, php-format
 msgid "Date: %s"
 msgstr "Date : %s"
 
-#: src/AccessGuard.php:155
+#: src/AccessGuard.php:166
 #, php-format
 msgid "IP address: %s"
 msgstr "Adresse IP : %s"
 
-#: src/AccessGuard.php:162
+#: src/AccessGuard.php:173
 msgid "This event is recorded in the SecIncident audit log."
 msgstr "Cet événement est inscrit dans le journal d'audit SecIncident."
 
-#: src/AccessGuard.php:224
+#: src/AccessGuard.php:235
 #, php-format
 msgid "Profile with access to security incidents assigned to %s"
 msgstr "Profil donnant accès aux incidents de sécurité attribué à %s"
 
-#: src/AccessGuard.php:255
+#: src/AccessGuard.php:266
 #, php-format
 msgid "%s added to the security group"
 msgstr "%s ajouté(e) au groupe sécurité"
 
-#: src/AccessGuard.php:283
+#: src/AccessGuard.php:294
 #, php-format
 msgid "Security incident rights extended on profile %s"
 msgstr "Droits sur les incidents de sécurité étendus sur le profil %s"
 
-#: src/AccessGuard.php:313
+#: src/AccessGuard.php:336
 msgid "You must be a member of the security group yourself before enabling the restriction."
 msgstr "Vous devez vous-même faire partie du groupe sécurité avant d'activer la restriction."
 
-#: src/AccessGuard.php:328 src/AccessGuard.php:329 src/AuditLog.php:443
+#: src/AccessGuard.php:351 src/AccessGuard.php:352 src/AuditLog.php:682 templates/audit.html.twig:117
 msgid "none"
 msgstr "aucun"
 
-#: src/AccessGuard.php:342
+#: src/AccessGuard.php:365
 msgid "SecIncident access settings changed"
 msgstr "Paramètres d'accès SecIncident modifiés"
 
-#: src/AccessGuard.php:346
+#: src/AccessGuard.php:369
 msgid "Settings saved"
 msgstr "Paramètres enregistrés"
 
-#: src/AuditLog.php:100
+#: src/AuditCheckpoint.php:161
+msgid "invalid or unreadable checkpoint"
+msgstr "point de contrôle invalide ou illisible"
+
+#: src/AuditCheckpoint.php:176
+msgid "the checkpoint belongs to another instance, or the instance identifier was changed"
+msgstr "le point de contrôle appartient à une autre instance, ou l'identifiant d'instance a été modifié"
+
+#: src/AuditCheckpoint.php:184
+#, php-format
+msgid "chain broken at entry #%d: %s"
+msgstr "chaîne rompue à l'entrée n° %d : %s"
+
+#: src/AuditCheckpoint.php:197
+#, php-format
+msgid "log truncated: the checkpoint covers up to entry #%d, the log now ends at #%d"
+msgstr "journal tronqué : le point de contrôle couvre jusqu'à l'entrée n° %d, le journal s'arrête désormais à la n° %d"
+
+#: src/AuditCheckpoint.php:198
+#, php-format
+msgid "entry #%d referenced by the checkpoint has disappeared"
+msgstr "l'entrée n° %d référencée par le point de contrôle a disparu"
+
+#: src/AuditCheckpoint.php:200
+#, php-format
+msgid "fingerprint of entry #%d differs from the checkpoint (entry or chain rewritten)"
+msgstr "l'empreinte de l'entrée n° %d diffère du point de contrôle (entrée ou chaîne réécrite)"
+
+#: src/AuditCheckpoint.php:206
+#, php-format
+msgid "%d entries up to #%d, the checkpoint records %d"
+msgstr "%d entrées jusqu'à la n° %d, le point de contrôle en indique %d"
+
+#: src/AuditCheckpoint.php:245
+msgid "consistent"
+msgstr "cohérent"
+
+#: src/AuditCheckpoint.php:245 front/incident.form.php:46
+msgid "anomalies"
+msgstr "anomalies"
+
+#: src/AuditLog.php:115
+msgid "Consultation"
+msgstr "Consultation"
+
+#: src/AuditLog.php:116
+msgid "List / search"
+msgstr "Liste / recherche"
+
+#: src/AuditLog.php:117 src/Incident.php:427
+msgid "Dashboard"
+msgstr "Tableau de bord"
+
+#: src/AuditLog.php:118
+msgid "Creation"
+msgstr "Création"
+
+#: src/AuditLog.php:119
+msgid "Update"
+msgstr "Modification"
+
+#: src/AuditLog.php:120
+msgid "Moved to trash"
+msgstr "Mise à la corbeille"
+
+#: src/AuditLog.php:121
+msgid "Restoration"
+msgstr "Restauration"
+
+#: src/AuditLog.php:122
 msgid "Permanent deletion"
 msgstr "Suppression définitive"
 
-#: src/AuditLog.php:101
+#: src/AuditLog.php:123
 msgid "Link"
 msgstr "Liaison"
 
-#: src/AuditLog.php:102
+#: src/AuditLog.php:124
 msgid "Unlink"
 msgstr "Déliaison"
 
-#: src/AuditLog.php:103 templates/dashboard.html.twig:45
+#: src/AuditLog.php:125 templates/dashboard.html.twig:45
 msgid "CSV import"
 msgstr "Import CSV"
 
-#: src/AuditLog.php:104
+#: src/AuditLog.php:126
 msgid "File upload"
 msgstr "Dépôt de fichier"
 
-#: src/AuditLog.php:105
+#: src/AuditLog.php:127
 msgid "Ticket creation"
 msgstr "Création de ticket"
 
-#: src/AuditLog.php:106
+#: src/AuditLog.php:128
 msgid "Access denied"
 msgstr "Accès refusé"
 
-#: src/AuditLog.php:107
+#: src/AuditLog.php:129
 msgid "Rights change"
 msgstr "Changement de droits"
 
-#: src/AuditLog.php:108
+#: src/AuditLog.php:130
 msgid "Log consultation"
 msgstr "Consultation du journal"
 
-#: src/AuditLog.php:109
+#: src/AuditLog.php:131
 msgid "Log export"
 msgstr "Export du journal"
 
-#: src/AuditLog.php:110
+#: src/AuditLog.php:132
 msgid "Log verification"
 msgstr "Vérification du journal"
 
-#: src/AuditLog.php:111
+#: src/AuditLog.php:133
 msgid "Integrity check"
 msgstr "Vérification d'intégrité"
 
-#: src/AuditLog.php:112
+#: src/AuditLog.php:134
 msgid "Fingerprint anchoring"
 msgstr "Ancrage d'empreintes"
 
-#: src/AuditLog.php:113
+#: src/AuditLog.php:135
 msgid "Evidence added"
 msgstr "Ajout de preuve"
 
-#: src/AuditLog.php:114
+#: src/AuditLog.php:136
 msgid "Playbook applied"
 msgstr "Application de procédure"
 
-#: src/AuditLog.php:115
+#: src/AuditLog.php:137
 msgid "Added to the team"
 msgstr "Ajout à l'équipe"
 
-#: src/AuditLog.php:116
+#: src/AuditLog.php:138
 msgid "Removed from the team"
 msgstr "Retrait de l'équipe"
 
-#: src/AuditLog.php:117
+#: src/AuditLog.php:139
 msgid "Print"
 msgstr "Impression"
 
-#: src/AuditLog.php:118
+#: src/AuditLog.php:140
 msgid "Evidence removed"
 msgstr "Retrait de preuve"
 
-#: src/AuditLog.php:119
+#: src/AuditLog.php:141
 msgid "Evidence file replaced"
 msgstr "Fichier de preuve remplacé"
 
-#: src/AuditLog.php:120
+#: src/AuditLog.php:142
 msgid "Access granted"
 msgstr "Accès accordé"
 
-#: src/AuditLog.php:121
+#: src/AuditLog.php:143
 msgid "Access removed"
 msgstr "Accès retiré"
 
-#: src/AuditLog.php:122
+#: src/AuditLog.php:144
 msgid "Settings change"
 msgstr "Modification des paramètres"
 
-#: src/AuditLog.php:123
+#: src/AuditLog.php:145
 msgid "Plugin deactivated"
 msgstr "Plugin désactivé"
 
-#: src/AuditLog.php:257
+#: src/AuditLog.php:146
+msgid "Checkpoint export"
+msgstr "Export d'un point de contrôle"
+
+#: src/AuditLog.php:147
+msgid "Checkpoint verification"
+msgstr "Vérification d'un point de contrôle"
+
+#: src/AuditLog.php:148
+msgid "Logging failures acknowledged"
+msgstr "Échecs de journalisation acquittés"
+
+#: src/AuditLog.php:360
+#, php-format
+msgid "SecIncident: this action could not be written to the audit log (%s). It was recorded in files/_log/%s.log; inform the administrator."
+msgstr "SecIncident : cette action n'a pas pu être inscrite au journal d'audit (%s). Elle a été consignée dans files/_log/%s.log ; prévenez l'administrateur."
+
+#: src/AuditLog.php:376
+msgid "chaining lock not obtained in time"
+msgstr "verrou de chaînage non obtenu à temps"
+
+#: src/AuditLog.php:377
+msgid "write refused by the database"
+msgstr "écriture refusée par la base"
+
+#: src/AuditLog.php:378
+msgid "unexpected error"
+msgstr "erreur inattendue"
+
+#: src/AuditLog.php:496
 msgid "grouped writes"
 msgstr "écritures groupées"
 
-#: src/AuditLog.php:350
+#: src/AuditLog.php:589
 msgid "page access"
 msgstr "accès page"
 
-#: src/AuditLog.php:379
+#: src/AuditLog.php:618
 msgid "scope: all incidents"
 msgstr "périmètre : tous les incidents"
 
-#: src/AuditLog.php:383
+#: src/AuditLog.php:622
 #, php-format
 msgid "scope: own incidents (%s)"
 msgstr "périmètre : ses incidents (%s)"
 
-#: src/AuditLog.php:384
+#: src/AuditLog.php:623
 msgid "scope: outside own incidents"
 msgstr "périmètre : hors de ses incidents"
 
-#: src/AuditLog.php:388
+#: src/AuditLog.php:627
 msgid "no plugin right"
 msgstr "aucun droit plugin"
 
-#: src/AuditLog.php:393
+#: src/AuditLog.php:632
 msgid "impersonated identity"
 msgstr "identité empruntée"
 
-#: src/AuditLog.php:396
+#: src/AuditLog.php:635
 #, php-format
 msgid "interface %s"
 msgstr "interface %s"
 
-#: src/AuditLog.php:410
+#: src/AuditLog.php:649
 msgid "read (own incidents)"
 msgstr "lecture (ses incidents)"
 
-#: src/AuditLog.php:411
+#: src/AuditLog.php:650
 msgid "all incidents"
 msgstr "tous les incidents"
 
-#: src/AuditLog.php:412 src/AuditLog.php:426 front/incident.form.php:18
+#: src/AuditLog.php:651 src/AuditLog.php:665 front/incident.form.php:19
 msgid "creation"
 msgstr "création"
 
-#: src/AuditLog.php:413 src/AuditLog.php:427
+#: src/AuditLog.php:652 src/AuditLog.php:666
 msgid "update"
 msgstr "modification"
 
-#: src/AuditLog.php:414
+#: src/AuditLog.php:653
 msgid "trash"
 msgstr "corbeille"
 
-#: src/AuditLog.php:415 src/AuditLog.php:429 front/incident.form.php:37
+#: src/AuditLog.php:654 src/AuditLog.php:668 front/incident.form.php:38
 msgid "permanent deletion"
 msgstr "suppression définitive"
 
-#: src/AuditLog.php:416 front/audit.php:15
+#: src/AuditLog.php:655 front/audit.php:16
 msgid "audit log"
 msgstr "journal d'audit"
 
-#: src/AuditLog.php:417
+#: src/AuditLog.php:656
 msgid "playbook management"
 msgstr "gestion des procédures"
 
-#: src/AuditLog.php:418
+#: src/AuditLog.php:657
 msgid "category management"
 msgstr "gestion des catégories"
 
-#: src/AuditLog.php:425
+#: src/AuditLog.php:664
 msgid "read"
 msgstr "lecture"
 
-#: src/AuditLog.php:428 front/incident.form.php:29
+#: src/AuditLog.php:667 front/incident.form.php:30
 msgid "move to trash"
 msgstr "mise à la corbeille"
 
-#: src/AuditLog.php:430
+#: src/AuditLog.php:669
 #, php-format
 msgid "right %d"
 msgstr "droit %d"
 
-#: src/AuditLog.php:450 src/TeamMember.php:109
+#: src/AuditLog.php:689 src/TeamMember.php:109
 msgid "owner"
 msgstr "responsable"
 
-#: src/AuditLog.php:451
+#: src/AuditLog.php:690
 msgid "author"
 msgstr "rédacteur"
 
-#: src/AuditLog.php:452
+#: src/AuditLog.php:691
 msgid "assigned group"
 msgstr "groupe en charge"
 
-#: src/AuditLog.php:453
+#: src/AuditLog.php:692
 msgid "contributor"
 msgstr "intervenant"
 
-#: src/AuditLog.php:454
+#: src/AuditLog.php:693
 msgid "observer"
 msgstr "observateur"
 
-#: src/AuditLog.php:56 src/Incident.php:79 src/Incident.php:431 front/audit.php:120 templates/audit.html.twig:8
+#: src/AuditLog.php:78 src/Incident.php:79 src/Incident.php:431 front/audit.php:170 templates/audit.html.twig:8
 msgid "Audit log"
 msgstr "Journal d'audit"
 
-#: src/AuditLog.php:564
+#: src/AuditLog.php:803
 msgid "broken chain (row deleted or inserted)"
 msgstr "chaînage rompu (ligne supprimée ou insérée)"
 
-#: src/AuditLog.php:567
+#: src/AuditLog.php:806
 msgid "content modified"
 msgstr "contenu modifié"
-
-#: src/AuditLog.php:93
-msgid "Consultation"
-msgstr "Consultation"
-
-#: src/AuditLog.php:94
-msgid "List / search"
-msgstr "Liste / recherche"
-
-#: src/AuditLog.php:95 src/Incident.php:427
-msgid "Dashboard"
-msgstr "Tableau de bord"
-
-#: src/AuditLog.php:96
-msgid "Creation"
-msgstr "Création"
-
-#: src/AuditLog.php:97
-msgid "Update"
-msgstr "Modification"
-
-#: src/AuditLog.php:98
-msgid "Moved to trash"
-msgstr "Mise à la corbeille"
-
-#: src/AuditLog.php:99
-msgid "Restoration"
-msgstr "Restauration"
 
 #: src/Category.php:103
 msgid "Code (internal identifier, cannot be changed)"
@@ -887,55 +969,59 @@ msgstr "12 derniers mois"
 msgid "Since the beginning"
 msgstr "Depuis le début"
 
-#: src/Evidence.php:170
+#: src/Evidence.php:173
 msgid "document removed from the incident"
 msgstr "document retiré de l'incident"
 
-#: src/Evidence.php:178
+#: src/Evidence.php:181
 msgid "document deleted from GLPI"
 msgstr "document supprimé de GLPI"
 
-#: src/Evidence.php:215
+#: src/Evidence.php:218
 msgid "new version of the file"
 msgstr "nouvelle version du fichier"
 
-#: src/Evidence.php:366
+#: src/Evidence.php:377
 msgid "initial registration (document already attached)"
 msgstr "inscription initiale (document déjà joint)"
 
-#: src/Evidence.php:39
+#: src/Evidence.php:40
 msgid "Evidence"
 msgid_plural "Evidence"
 msgstr[0] "Preuve"
 msgstr[1] "Preuves"
 
-#: src/Evidence.php:66 templates/integrity.html.twig:7
+#: src/Evidence.php:67 templates/integrity.html.twig:7
 msgid "Intact"
 msgstr "Intègre"
 
-#: src/Evidence.php:67
+#: src/Evidence.php:68
 msgid "File modified"
 msgstr "Fichier modifié"
 
-#: src/Evidence.php:68
+#: src/Evidence.php:69
 msgid "File not found"
 msgstr "Fichier introuvable"
 
-#: src/Evidence.php:69
+#: src/Evidence.php:70
 msgid "File replaced in GLPI"
 msgstr "Fichier remplacé dans GLPI"
 
-#: src/Evidence.php:70
+#: src/Evidence.php:71
 msgid "Reference fingerprint altered"
 msgstr "Empreinte de référence altérée"
 
-#: src/Evidence.php:71
+#: src/Evidence.php:72
 msgid "Never checked"
 msgstr "Jamais vérifié"
 
-#: src/Evidence.php:72
+#: src/Evidence.php:73
 msgid "Removed from the incident"
 msgstr "Retiré de l'incident"
+
+#: src/Evidence.php:74
+msgid "Not sealed: absent from the audit log"
+msgstr "Non scellée : absente du journal d'audit"
 
 #: src/Incident.php:1017
 #, php-format
@@ -1156,7 +1242,7 @@ msgstr "Procédures"
 msgid "Categories"
 msgstr "Catégories"
 
-#: src/Incident.php:433 front/config.form.php:19 templates/config.html.twig:7
+#: src/Incident.php:433 front/config.form.php:20 templates/config.html.twig:7
 msgid "Access settings"
 msgstr "Paramètres d'accès"
 
@@ -1312,15 +1398,15 @@ msgid_plural "Linked items"
 msgstr[0] "Élément lié"
 msgstr[1] "Éléments liés"
 
-#: src/Integrity.php:262 src/RemediationTask.php:119 templates/actions_print.html.twig:58
+#: src/Integrity.php:299 src/RemediationTask.php:119 templates/actions_print.html.twig:58
 msgid "Remediation"
 msgstr "Remédiation"
 
-#: src/Integrity.php:263
+#: src/Integrity.php:300
 msgid "Team"
 msgstr "Équipe"
 
-#: src/Integrity.php:315
+#: src/Integrity.php:365
 msgid "initial sealing"
 msgstr "scellement initial"
 
@@ -2129,11 +2215,11 @@ msgstr "Par"
 msgid "Target / phase"
 msgstr "Cible / phase"
 
-#: templates/actions_print.html.twig:47 templates/actions_print.html.twig:58 templates/audit.html.twig:72 templates/playbook_steps.html.twig:18 templates/playbook_steps.html.twig:41 templates/playbookstep_form.html.twig:17 templates/remediation.html.twig:72 templates/remediation_print.html.twig:26 templates/remediationtask_form.html.twig:22 templates/remediationtask_form.html.twig:25
+#: templates/actions_print.html.twig:47 templates/actions_print.html.twig:58 templates/audit.html.twig:156 templates/playbook_steps.html.twig:18 templates/playbook_steps.html.twig:41 templates/playbookstep_form.html.twig:17 templates/remediation.html.twig:72 templates/remediation_print.html.twig:26 templates/remediationtask_form.html.twig:22 templates/remediationtask_form.html.twig:25
 msgid "Action"
 msgstr "Action"
 
-#: templates/actions_print.html.twig:48 templates/audit.html.twig:81 templates/event_form.html.twig:28 templates/import.html.twig:12 templates/timeline.html.twig:27
+#: templates/actions_print.html.twig:48 templates/audit.html.twig:165 templates/event_form.html.twig:28 templates/import.html.twig:12 templates/timeline.html.twig:27
 msgid "Result"
 msgstr "Résultat"
 
@@ -2162,128 +2248,223 @@ msgstr "Chaque action et chaque tâche est scellée (SHA-256) et tracée dans le
 msgid "Action and remediation log"
 msgstr "Journal des actions et de la remédiation"
 
+#: templates/audit.html.twig:104
+msgid "Covered by the checkpoint"
+msgstr "Couvert par le point de contrôle"
+
+#: templates/audit.html.twig:106
+#, php-format
+msgid "entries up to #%d"
+msgstr "entrées jusqu'à la n° %d"
+
+#: templates/audit.html.twig:108
+msgid "checkpoint generated on"
+msgstr "point de contrôle généré le"
+
 #: templates/audit.html.twig:11
 msgid "Verify the log"
 msgstr "Vérifier le journal"
 
 #: templates/audit.html.twig:110
-msgid "Date (UTC)"
-msgstr "Date (UTC)"
-
-#: templates/audit.html.twig:111
-msgid "Who"
-msgstr "Qui"
-
-#: templates/audit.html.twig:112
-msgid "Privilege"
-msgstr "Privilège"
-
-#: templates/audit.html.twig:113
-msgid "What"
-msgstr "Quoi"
+msgid "Newer entries, verified by chaining only"
+msgstr "Entrées plus récentes, vérifiées par chaînage seulement"
 
 #: templates/audit.html.twig:114
-msgid "On what"
-msgstr "Sur quoi"
+msgid "last one"
+msgstr "dernière"
 
-#: templates/audit.html.twig:116
-msgid "Details"
-msgstr "Détails"
+#: templates/audit.html.twig:115
+msgid "Their deletion would not be detected until the next checkpoint."
+msgstr "Leur suppression ne serait détectée qu'au prochain point de contrôle."
 
 #: templates/audit.html.twig:12
 msgid "Verify everything (log, data, evidence)"
 msgstr "Tout vérifier (journal, données, preuves)"
 
-#: templates/audit.html.twig:127
-msgid "via"
-msgstr "via"
+#: templates/audit.html.twig:125
+msgid "Checkpoint file (JSON, or JSON Lines: last line used)"
+msgstr "Fichier de point de contrôle (JSON, ou JSON Lines : dernière ligne utilisée)"
+
+#: templates/audit.html.twig:129
+msgid "or paste its content"
+msgstr "ou collez son contenu"
 
 #: templates/audit.html.twig:13
 msgid "Export (CSV)"
 msgstr "Exporter (CSV)"
 
-#: templates/audit.html.twig:148
+#: templates/audit.html.twig:133
+msgid "Verify"
+msgstr "Vérifier"
+
+#: templates/audit.html.twig:14
+msgid "Export a checkpoint"
+msgstr "Exporter un point de contrôle"
+
+#: templates/audit.html.twig:143
+msgid "From"
+msgstr "Du"
+
+#: templates/audit.html.twig:147
+msgid "To"
+msgstr "Au"
+
+#: templates/audit.html.twig:169 templates/audit.html.twig:229
+msgid "Denied"
+msgstr "Refusé"
+
+#: templates/audit.html.twig:170 templates/audit.html.twig:229
+msgid "Error"
+msgstr "Erreur"
+
+#: templates/audit.html.twig:174
+msgid "Incident #"
+msgstr "Incident n°"
+
+#: templates/audit.html.twig:183
+msgid "Reset"
+msgstr "Réinitialiser"
+
+#: templates/audit.html.twig:194
+msgid "Date (UTC)"
+msgstr "Date (UTC)"
+
+#: templates/audit.html.twig:195
+msgid "Who"
+msgstr "Qui"
+
+#: templates/audit.html.twig:196
+msgid "Privilege"
+msgstr "Privilège"
+
+#: templates/audit.html.twig:197
+msgid "What"
+msgstr "Quoi"
+
+#: templates/audit.html.twig:198
+msgid "On what"
+msgstr "Sur quoi"
+
+#: templates/audit.html.twig:200
+msgid "Details"
+msgstr "Détails"
+
+#: templates/audit.html.twig:210
+msgid "Covered by the verified checkpoint"
+msgstr "Couverte par le point de contrôle vérifié"
+
+#: templates/audit.html.twig:212
+msgid "Verified by chaining only (newer than the checkpoint)"
+msgstr "Vérifiée par chaînage seulement (plus récente que le point de contrôle)"
+
+#: templates/audit.html.twig:220
+msgid "via"
+msgstr "via"
+
+#: templates/audit.html.twig:23
+#, php-format
+msgid "%d action(s) could not be written to the audit log."
+msgstr "%d action(s) n'ont pas pu être inscrites au journal d'audit."
+
+#: templates/audit.html.twig:241
 msgid "view"
 msgstr "voir"
 
-#: templates/audit.html.twig:155
+#: templates/audit.html.twig:248
 msgid "No entry"
 msgstr "Aucune entrée"
 
-#: templates/audit.html.twig:173
-msgid "Each entry is chained to the previous one by a SHA-256 fingerprint: any direct change or deletion in the database is detected by “Verify integrity”. No interface allows the log to be modified."
-msgstr "Chaque entrée est chaînée à la précédente par une empreinte SHA-256 : toute modification ou suppression directe en base est détectée par « Vérifier l'intégrité ». Aucune interface ne permet de modifier le journal."
+#: templates/audit.html.twig:25
+msgid "Last one:"
+msgstr "Dernière :"
 
-#: templates/audit.html.twig:21
+#: templates/audit.html.twig:266
+msgid "Each entry is chained to the previous one by a SHA-256 fingerprint: a change, insertion or deletion inside the log is detected by “Verify the log”. Deleting the latest entries, or rewriting the whole chain with database access, is only detected against an external checkpoint. No interface allows the log to be modified."
+msgstr "Chaque entrée est chaînée à la précédente par une empreinte SHA-256 : une modification, une insertion ou une suppression à l'intérieur du journal est détectée par « Vérifier le journal ». La suppression des dernières entrées, ou la réécriture de toute la chaîne avec un accès à la base, n'est détectée qu'avec un point de contrôle externe. Aucune interface ne permet de modifier le journal."
+
+#: templates/audit.html.twig:30
 #, php-format
-msgid "Log intact: %d entry(ies) verified, no change or deletion detected."
-msgstr "Journal intègre : %d entrée(s) vérifiée(s), aucune modification ni suppression détectée."
+msgid "These actions are not in the chain. Each unwritten entry is kept in %s (one JSON line per failure) for reconciliation; the items they modified appear as “not sealed” in the integrity check."
+msgstr "Ces actions ne sont pas dans la chaîne. Chaque entrée non écrite est conservée dans %s (une ligne JSON par échec) pour rapprochement ; les éléments qu'elles ont modifiés apparaissent « non scellés » à la vérification d'intégrité."
 
-#: templates/audit.html.twig:26
+#: templates/audit.html.twig:34
+msgid "Mark as handled"
+msgstr "Marquer comme traité"
+
+#: templates/audit.html.twig:45
+#, php-format
+msgid "Chain intact: %d entry(ies) verified, no change, insertion or deletion detected between the first and the last entry."
+msgstr "Chaîne intacte : %d entrée(s) vérifiée(s), aucune modification, insertion ou suppression détectée entre la première et la dernière entrée."
+
+#: templates/audit.html.twig:46
+msgid "Deleting the latest entries leaves the chain intact: only a comparison with an external checkpoint detects it."
+msgstr "La suppression des dernières entrées laisse la chaîne intacte : seule la comparaison avec un point de contrôle externe la détecte."
+
+#: templates/audit.html.twig:51
 msgid "Tampering detected"
 msgstr "Altération détectée"
 
-#: templates/audit.html.twig:27
+#: templates/audit.html.twig:52
 msgid "entry #"
 msgstr "entrée n°"
 
-#: templates/audit.html.twig:28
+#: templates/audit.html.twig:53
 msgid "Earlier entries remain reliable."
 msgstr "Les entrées antérieures restent fiables."
 
-#: templates/audit.html.twig:37
+#: templates/audit.html.twig:62
 #, php-format
 msgid "Data and evidence intact for the %d incident(s) checked."
 msgstr "Données et preuves intègres pour les %d incident(s) vérifié(s)."
 
-#: templates/audit.html.twig:41
+#: templates/audit.html.twig:66
 #, php-format
 msgid "Anomalies on %d incident(s):"
 msgstr "Anomalies sur %d incident(s) :"
 
-#: templates/audit.html.twig:45 templates/audit.html.twig:141
+#: templates/audit.html.twig:70 templates/audit.html.twig:234
 msgid "Incident"
 msgstr "Incident"
 
-#: templates/audit.html.twig:46 templates/integrity.html.twig:25
+#: templates/audit.html.twig:71 templates/integrity.html.twig:31
 msgid "modified"
 msgstr "modifié(s)"
 
-#: templates/audit.html.twig:47 templates/integrity.html.twig:26
+#: templates/audit.html.twig:72 templates/integrity.html.twig:32
 msgid "deleted"
 msgstr "supprimé(s)"
 
-#: templates/audit.html.twig:48
+#: templates/audit.html.twig:73 templates/integrity.html.twig:33
+msgid "not sealed"
+msgstr "non scellé(s)"
+
+#: templates/audit.html.twig:74
 msgid "evidence item(s) with anomalies"
 msgstr "preuve(s) en anomalie"
 
-#: templates/audit.html.twig:59
-msgid "From"
-msgstr "Du"
+#: templates/audit.html.twig:74 templates/integrity.html.twig:34
+msgid "evidence item(s) not sealed"
+msgstr "preuve(s) non scellée(s)"
 
-#: templates/audit.html.twig:63
-msgid "To"
-msgstr "Au"
+#: templates/audit.html.twig:84
+msgid "External checkpoint"
+msgstr "Point de contrôle externe"
 
-#: templates/audit.html.twig:85 templates/audit.html.twig:136
-msgid "Denied"
-msgstr "Refusé"
+#: templates/audit.html.twig:85
+msgid "Detects the deletion of the latest entries and the rewriting of the chain. Keep exported checkpoints outside the GLPI database, in storage GLPI cannot write to."
+msgstr "Détecte la suppression des dernières entrées et la réécriture de la chaîne. Conservez les points de contrôle exportés hors de la base GLPI, sur un stockage où GLPI ne peut pas écrire."
 
-#: templates/audit.html.twig:86 templates/audit.html.twig:136
-msgid "Error"
-msgstr "Erreur"
-
-#: templates/audit.html.twig:9
+#: templates/audit.html.twig:9 templates/audit.html.twig:107 templates/audit.html.twig:114
 msgid "entry(ies)"
 msgstr "entrée(s)"
 
-#: templates/audit.html.twig:90
-msgid "Incident #"
-msgstr "Incident n°"
+#: templates/audit.html.twig:92
+msgid "Log consistent with the checkpoint."
+msgstr "Journal cohérent avec le point de contrôle."
 
-#: templates/audit.html.twig:99
-msgid "Reset"
-msgstr "Réinitialiser"
+#: templates/audit.html.twig:96
+msgid "Checkpoint anomalies"
+msgstr "Anomalies du point de contrôle"
 
 #: templates/compliance.html.twig:10 templates/dashboard.html.twig:170
 msgid "Overdue"
@@ -2313,7 +2494,7 @@ msgstr "Échéance"
 msgid "Done on"
 msgstr "Réalisé le"
 
-#: templates/compliance.html.twig:29 templates/integrity.html.twig:93
+#: templates/compliance.html.twig:29 templates/integrity.html.twig:100
 msgid "State"
 msgstr "État"
 
@@ -2565,7 +2746,7 @@ msgstr "Pour la tâche de remédiation"
 msgid "Imported raw data (read-only)"
 msgstr "Données brutes importées (non modifiables)"
 
-#: templates/import.html.twig:10 templates/integrity.html.twig:50
+#: templates/import.html.twig:10 templates/integrity.html.twig:57
 msgid "File"
 msgstr "Fichier"
 
@@ -2826,90 +3007,98 @@ msgstr "Tapez un identifiant (T1566) ou un mot-clé (phishing). Liste filtrée s
 msgid "Not sealed"
 msgstr "Non scellé"
 
-#: templates/integrity.html.twig:107
+#: templates/integrity.html.twig:100
+msgid "Item"
+msgstr "Élément"
+
+#: templates/integrity.html.twig:100
+msgid "Expected fingerprint"
+msgstr "Empreinte attendue"
+
+#: templates/integrity.html.twig:117
 #, php-format
 msgid "Details of the %d records"
 msgstr "Détail des %d enregistrements"
 
-#: templates/integrity.html.twig:19
+#: templates/integrity.html.twig:13
+msgid "no fingerprint and no anchor in the audit log (inserted outside the application, or fingerprint erased)"
+msgstr "ni empreinte ni ancre dans le journal d'audit (insérée hors application, ou empreinte effacée)"
+
+#: templates/integrity.html.twig:14
+msgid "fingerprint present but never anchored in the audit log (written outside the application, or logging failed)"
+msgstr "empreinte présente mais jamais ancrée dans le journal d'audit (écrite hors application, ou journalisation échouée)"
+
+#: templates/integrity.html.twig:23
 msgid "No anomaly"
 msgstr "Aucune anomalie"
 
-#: templates/integrity.html.twig:21
+#: templates/integrity.html.twig:25
 msgid "Anomalies detected"
 msgstr "Anomalies détectées"
 
-#: templates/integrity.html.twig:24
+#: templates/integrity.html.twig:27
+msgid "Integrity not established: unsealed items"
+msgstr "Intégrité non établie : éléments non scellés"
+
+#: templates/integrity.html.twig:30
 msgid "intact record(s)"
 msgstr "enregistrement(s) intègre(s)"
 
-#: templates/integrity.html.twig:27
-msgid "not sealed"
-msgstr "non scellé(s)"
-
-#: templates/integrity.html.twig:28
+#: templates/integrity.html.twig:35
 msgid "evidence item(s)"
 msgstr "preuve(s)"
 
-#: templates/integrity.html.twig:34
+#: templates/integrity.html.twig:41
 msgid "Verify now (including files)"
 msgstr "Vérifier maintenant (fichiers compris)"
 
-#: templates/integrity.html.twig:43
+#: templates/integrity.html.twig:50
 msgid "Evidence register"
 msgstr "Registre des preuves"
 
-#: templates/integrity.html.twig:44
+#: templates/integrity.html.twig:51
 msgid "Every document added in the Documents tab is registered automatically with its SHA-256."
 msgstr "Tout document ajouté dans l'onglet Documents est inscrit automatiquement avec son SHA-256."
 
-#: templates/integrity.html.twig:51
+#: templates/integrity.html.twig:58
 msgid "Size"
 msgstr "Taille"
 
-#: templates/integrity.html.twig:52
+#: templates/integrity.html.twig:59
 msgid "Reference SHA-256"
 msgstr "SHA-256 de référence"
 
-#: templates/integrity.html.twig:53 templates/team.html.twig:60
+#: templates/integrity.html.twig:60 templates/team.html.twig:60
 msgid "Added"
 msgstr "Ajouté"
 
-#: templates/integrity.html.twig:54
+#: templates/integrity.html.twig:61
 msgid "Last check"
 msgstr "Dernier contrôle"
 
-#: templates/integrity.html.twig:68
+#: templates/integrity.html.twig:75
 msgid "current:"
 msgstr "actuel :"
-
-#: templates/integrity.html.twig:78
-msgid "No evidence attached. Add your files (screenshots, logs, EDR exports…) in the Documents tab."
-msgstr "Aucune preuve jointe. Ajoutez vos fichiers (captures, journaux, exports EDR…) dans l'onglet Documents."
 
 #: templates/integrity.html.twig:8
 msgid "Modified outside the application"
 msgstr "Modifié hors application"
 
-#: templates/integrity.html.twig:87
-msgid "Data integrity"
-msgstr "Intégrité des données"
-
-#: templates/integrity.html.twig:88
-msgid "Form, timeline, IOCs and links: fingerprint recomputed at each display and compared with the audit log."
-msgstr "Fiche, chronologie, IOC et liens : empreinte recalculée à chaque affichage et comparée au journal d'audit."
+#: templates/integrity.html.twig:85
+msgid "No evidence attached. Add your files (screenshots, logs, EDR exports…) in the Documents tab."
+msgstr "Aucune preuve jointe. Ajoutez vos fichiers (captures, journaux, exports EDR…) dans l'onglet Documents."
 
 #: templates/integrity.html.twig:9
 msgid "Deleted outside the application"
 msgstr "Supprimé hors application"
 
-#: templates/integrity.html.twig:93
-msgid "Item"
-msgstr "Élément"
+#: templates/integrity.html.twig:94
+msgid "Data integrity"
+msgstr "Intégrité des données"
 
-#: templates/integrity.html.twig:93
-msgid "Expected fingerprint"
-msgstr "Empreinte attendue"
+#: templates/integrity.html.twig:95
+msgid "Form, timeline, IOCs and links: fingerprint recomputed at each display and compared with the audit log."
+msgstr "Fiche, chronologie, IOC et liens : empreinte recalculée à chaque affichage et comparée au journal d'audit."
 
 #: templates/ioc_form.html.twig:18 templates/iocs.html.twig:18 templates/iocs.html.twig:40
 msgid "Verdict"
@@ -3202,3 +3391,10 @@ msgstr "Aucun événement pour le moment."
 #: templates/timeline.html.twig:88
 msgid "All"
 msgstr "Tous"
+
+#~ msgid "Each entry is chained to the previous one by a SHA-256 fingerprint: any direct change or deletion in the database is detected by “Verify integrity”. No interface allows the log to be modified."
+#~ msgstr "Chaque entrée est chaînée à la précédente par une empreinte SHA-256 : toute modification ou suppression directe en base est détectée par « Vérifier l'intégrité ». Aucune interface ne permet de modifier le journal."
+
+#, php-format
+#~ msgid "Log intact: %d entry(ies) verified, no change or deletion detected."
+#~ msgstr "Journal intègre : %d entrée(s) vérifiée(s), aucune modification ni suppression détectée."

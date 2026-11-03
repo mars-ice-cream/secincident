@@ -303,7 +303,8 @@ function plugin_secincident_install(): bool
         && !$DB->fieldExists($events_table, 'tool')
         && $DB->tableExists(AuditLog::getTable());
     if ($DB->tableExists($events_table) && !$DB->fieldExists($events_table, 'tool')) {
-        $pre_verified = false;
+        $pre_verified      = false;
+        $intact_before_150 = [];
         if ($needs_format_migration) {
             $migration->displayMessage(__('Integrity check before migration', 'secincident'));
             // Vérification au format historique (valeurs NULL incluses) avant ALTER
@@ -316,6 +317,12 @@ function plugin_secincident_install(): bool
                 $r = Integrity::verifyIncident($incidents_id, false, true);
                 if (!$r['ok']) {
                     $anomalies[$incidents_id] = $r['summary'];
+                }
+                // Seules les lignes intactes au format historique seront rescellées
+                foreach ($r['items'] as $checked) {
+                    if ($checked['status'] === Integrity::STATUS_OK) {
+                        $intact_before_150[$checked['itemtype'] . '#' . $checked['id']] = true;
+                    }
                 }
             }
             AuditLog::record('verify_integrity', null, [
@@ -365,10 +372,16 @@ function plugin_secincident_install(): bool
     // ---------------------------------------------------------------------
     // Empreintes d'intégrité sur toutes les tables de données
     // ---------------------------------------------------------------------
-    foreach ([Incident::getTable(), TimelineEvent::getTable(), Ioc::getTable(), Incident_Item::getTable(), RemediationTask::getTable(), TeamMember::getTable()] as $table) {
+    // Seules les tables dont la colonne est créée maintenant (données antérieures
+    // au scellement) recevront le scellement initial : sur une table déjà scellée,
+    // une ligne sans empreinte reste signalée « non scellée ».
+    $initial_sealing = [];
+    foreach ([Incident::class, TimelineEvent::class, Ioc::class, Incident_Item::class, RemediationTask::class, TeamMember::class] as $sealed_class) {
+        $table = $sealed_class::getTable();
         if (!$DB->fieldExists($table, 'integrity_hash')) {
             $migration->addField($table, 'integrity_hash', 'char(64) DEFAULT NULL', ['nodefault' => true]);
             $migration->migrationOneTable($table);
+            $initial_sealing[] = $sealed_class;
         }
     }
 
@@ -547,7 +560,7 @@ function plugin_secincident_install(): bool
 
     // Rescellement au nouveau format après migration (vérification faite avant)
     if (!empty($reseal_after_migration)) {
-        Integrity::resealAll(I18n::instance('migration 1.5.0: new fingerprint format, prior check logged'));
+        Integrity::resealAll(I18n::instance('migration 1.5.0: new fingerprint format, prior check logged'), $intact_before_150);
     }
 
     // ---------------------------------------------------------------------
@@ -627,8 +640,12 @@ function plugin_secincident_install(): bool
         }
     }
 
-    // Scelle les données existantes et inscrit les documents déjà joints
-    $sealed    = Integrity::sealAll();
+    // Scellement initial des seules données antérieures au scellement ; inscription
+    // des documents joints pendant que le plugin était inactif (tracée)
+    $sealed    = Integrity::sealAll($initial_sealing);
+    // Identifiant d'instance des points de contrôle externes du journal
+    \GlpiPlugin\Secincident\AuditCheckpoint::getInstanceId();
+    AuditLog::initFailureCounters();
     $evidences = Evidence::registerExisting();
 
     AuditLog::record('update', null, [

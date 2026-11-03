@@ -15,7 +15,7 @@ use Session;
 use Throwable;
 
 /**
- * Journal d'audit infalsifiable du plugin.
+ * Journal d'audit chaîné du plugin, avec détection d'altérations.
  *
  * Chaque entrée enregistre qui (utilisateur, éventuel usurpateur via
  * "Prendre l'identité"), avec quel privilège (profil actif, droits du plugin,
@@ -23,9 +23,18 @@ use Throwable;
  * incident) et d'où (IP).
  *
  * Les entrées sont chaînées : hash = SHA-256(hash précédent + contenu).
- * Toute modification ou suppression d'une ligne casse la chaîne et est
- * détectée par verifyChain(). Aucune interface ne permet de modifier
- * ou supprimer une entrée.
+ * La modification, l'insertion ou la suppression d'une ligne au milieu du
+ * journal casse la chaîne et est détectée par verifyChain(). La suppression
+ * des dernières entrées ne casse pas la chaîne : elle n'est détectée qu'en
+ * comparant le journal à un point de contrôle conservé hors de la base
+ * (AuditCheckpoint). Aucune interface ne permet de modifier ou supprimer une
+ * entrée.
+ *
+ * Une entrée n'est écrite que sous le verrou de chaînage. Si le verrou n'est
+ * pas obtenu à temps ou si l'insertion échoue, rien n'est écrit dans la
+ * chaîne : l'échec est consigné (files/_log/secincident-audit-failures.log,
+ * compteur dans la configuration, message à l'utilisateur) et record()
+ * renvoie false.
  */
 class AuditLog extends CommonDBTM
 {
@@ -35,8 +44,21 @@ class AuditLog extends CommonDBTM
     public const RESULT_DENIED = 'denied';
     public const RESULT_ERROR  = 'error';
 
-    private const GENESIS = '0000000000000000000000000000000000000000000000000000000000000000';
+    public const GENESIS = '0000000000000000000000000000000000000000000000000000000000000000';
     private const LOCK    = 'plugin_secincident_audit';
+
+    /** Délai d'attente du verrou de chaînage, en secondes (configurable : audit_lock_timeout) */
+    public const LOCK_TIMEOUT_DEFAULT = 10;
+
+    /** Fichier de GLPI (files/_log/) où sont consignées les entrées non écrites */
+    public const FAILURE_LOG = 'secincident-audit-failures';
+
+    public const FAILURE_LOCK   = 'lock_timeout';
+    public const FAILURE_INSERT = 'insert_failed';
+    public const FAILURE_ERROR  = 'exception';
+
+    /** Échecs survenus pendant la requête courante */
+    private static int $request_failures = 0;
 
     /** Évite d'auditer deux fois la même consultation dans une requête */
     private static array $viewed = [];
@@ -121,6 +143,9 @@ class AuditLog extends CommonDBTM
             'access_revoke'    => __('Access removed', 'secincident'),
             'config_change'    => __('Settings change', 'secincident'),
             'plugin_disable'   => __('Plugin deactivated', 'secincident'),
+            'checkpoint_export' => __('Checkpoint export', 'secincident'),
+            'checkpoint_verify' => __('Checkpoint verification', 'secincident'),
+            'audit_failure_ack' => __('Logging failures acknowledged', 'secincident'),
         ];
     }
 
@@ -153,8 +178,12 @@ class AuditLog extends CommonDBTM
     }
 
     /**
-     * Enregistre une entrée. Ne lève jamais d'exception vers l'appelant
-     * (un échec d'audit est tracé dans les logs PHP de GLPI).
+     * Enregistre une entrée chaînée. Ne lève jamais d'exception vers l'appelant.
+     *
+     * Renvoie false si l'entrée n'a pas pu être écrite : verrou de chaînage non
+     * obtenu dans le délai, insertion refusée ou erreur. Dans ce cas aucune
+     * entrée n'est insérée (la chaîne reste cohérente) et l'échec est rendu
+     * visible par reportFailure().
      *
      * @param array<string, mixed> $details
      */
@@ -164,68 +193,278 @@ class AuditLog extends CommonDBTM
         array $details = [],
         string $result = self::RESULT_OK,
         ?int $incidents_id = null
-    ): void {
+    ): bool {
         global $DB;
 
+        $entry = ['action' => mb_substr($action, 0, 40), 'result' => $result];
         try {
-            $incidents_id ??= self::resolveIncidentId($item);
-            $incident_fields = null;
-            if ($item instanceof Incident && array_key_exists('users_id_tech', $item->fields)) {
-                $incident_fields = $item->fields;
-            } elseif ($incidents_id > 0) {
-                $incident = new Incident();
-                // Lecture brute : pas de contrôle de droits ici, on veut tracer
-                $row = $DB->request(['FROM' => Incident::getTable(), 'WHERE' => ['id' => $incidents_id], 'LIMIT' => 1])->current();
-                $incident_fields = $row ?: null;
-            }
+            $entry = self::buildEntry($action, $item, $details, $result, $incidents_id);
+        } catch (Throwable $e) {
+            self::reportFailure(self::FAILURE_ERROR, $entry, $e->getMessage());
+            return false;
+        }
 
-            $privilege = self::getPrivilegeContext($incident_fields);
-
-            $entry = [
-                'date_utc'               => gmdate('Y-m-d H:i:s'),
-                'users_id'               => (int) (Session::getLoginUserID() ?: 0),
-                'user_name'              => (string) ($_SESSION['glpiname'] ?? (PHP_SAPI === 'cli' ? 'cli' : 'anonyme')),
-                'users_id_impersonator'  => Session::isImpersonateActive() ? (int) ($_SESSION['impersonator_id'] ?? 0) : 0,
-                'profiles_id'            => (int) ($_SESSION['glpiactiveprofile']['id'] ?? 0),
-                'profile_name'           => (string) ($_SESSION['glpiactiveprofile']['name'] ?? ''),
-                'rights'                 => $privilege['rights'],
-                'privilege'              => $privilege['label'],
-                'ip'                     => (string) ($_SERVER['REMOTE_ADDR'] ?? (PHP_SAPI === 'cli' ? 'cli' : '')),
-                'action'                 => mb_substr($action, 0, 40),
-                'result'                 => $result,
-                'itemtype'               => $item !== null ? $item::class : '',
-                'items_id'               => $item !== null ? max(0, (int) ($item->fields['id'] ?? 0)) : 0,
-                'incidents_id'           => (int) ($incidents_id ?? 0),
-                'details'                => self::encodeDetails($details),
-            ];
-
-            // Verrou global (API GLPI) : les entrées sont chaînées dans l'ordre, sans course
-            $locked   = false;
-            $deadline = microtime(true) + 10;
+        // Verrou global (API GLPI) : les entrées sont chaînées dans l'ordre, sans course.
+        // Sans verrou, on ne lit pas la dernière empreinte et on n'écrit rien.
+        $locked = false;
+        try {
+            $deadline = microtime(true) + self::getLockTimeout();
             do {
-                $locked = $DB->getLock(self::LOCK);
+                $locked = (bool) $DB->getLock(self::LOCK);
                 if (!$locked) {
                     usleep(20000);
                 }
             } while (!$locked && microtime(true) < $deadline);
-            try {
-                $last = $DB->request([
-                    'SELECT' => ['hash'],
-                    'FROM'   => self::getTable(),
-                    'ORDER'  => 'id DESC',
-                    'LIMIT'  => 1,
-                ])->current();
-                $entry['prev_hash'] = $last['hash'] ?? self::GENESIS;
-                $entry['hash']      = self::computeHash($entry);
-                $entry['date']      = Session::getCurrentTime();
-                $DB->insert(self::getTable(), $entry);
-            } finally {
-                if ($locked) {
-                    $DB->releaseLock(self::LOCK);
-                }
-            }
         } catch (Throwable $e) {
-            trigger_error('SecIncident audit failure: ' . $e->getMessage(), E_USER_WARNING);
+            self::reportFailure(self::FAILURE_ERROR, $entry, $e->getMessage());
+            return false;
+        }
+        if (!$locked) {
+            self::reportFailure(self::FAILURE_LOCK, $entry, sprintf('lock not obtained within %d s', self::getLockTimeout()));
+            return false;
+        }
+
+        try {
+            $last = $DB->request([
+                'SELECT' => ['id', 'hash'],
+                'FROM'   => self::getTable(),
+                'ORDER'  => 'id DESC',
+                'LIMIT'  => 1,
+            ])->current();
+            $entry['prev_hash'] = $last['hash'] ?? self::GENESIS;
+            $entry['hash']      = self::computeHash($entry);
+            $entry['date']      = Session::getCurrentTime();
+
+            $inserted = $DB->insert(self::getTable(), $entry);
+            $id       = $inserted ? (int) $DB->insertId() : 0;
+            if (!$inserted || $id <= (int) ($last['id'] ?? 0)) {
+                self::reportFailure(self::FAILURE_INSERT, $entry, (string) ($DB->error() ?: 'insert returned no row'));
+                return false;
+            }
+            return true;
+        } catch (Throwable $e) {
+            self::reportFailure(self::FAILURE_INSERT, $entry, $e->getMessage());
+            return false;
+        } finally {
+            try {
+                $DB->releaseLock(self::LOCK);
+            } catch (Throwable $e) {
+                trigger_error('SecIncident audit lock release failure: ' . $e->getMessage(), E_USER_WARNING);
+            }
+        }
+    }
+
+    /**
+     * Contenu d'une entrée (hors chaînage).
+     *
+     * @param array<string, mixed> $details
+     * @return array<string, mixed>
+     */
+    private static function buildEntry(string $action, ?CommonDBTM $item, array $details, string $result, ?int $incidents_id): array
+    {
+        global $DB;
+
+        $incidents_id ??= self::resolveIncidentId($item);
+        $incident_fields = null;
+        if ($item instanceof Incident && array_key_exists('users_id_tech', $item->fields)) {
+            $incident_fields = $item->fields;
+        } elseif ($incidents_id > 0) {
+            // Lecture brute : pas de contrôle de droits ici, on veut tracer
+            $row = $DB->request(['FROM' => Incident::getTable(), 'WHERE' => ['id' => $incidents_id], 'LIMIT' => 1])->current();
+            $incident_fields = $row ?: null;
+        }
+
+        $privilege = self::getPrivilegeContext($incident_fields);
+
+        return [
+            'date_utc'               => gmdate('Y-m-d H:i:s'),
+            'users_id'               => (int) (Session::getLoginUserID() ?: 0),
+            'user_name'              => (string) ($_SESSION['glpiname'] ?? (PHP_SAPI === 'cli' ? 'cli' : 'anonyme')),
+            'users_id_impersonator'  => Session::isImpersonateActive() ? (int) ($_SESSION['impersonator_id'] ?? 0) : 0,
+            'profiles_id'            => (int) ($_SESSION['glpiactiveprofile']['id'] ?? 0),
+            'profile_name'           => (string) ($_SESSION['glpiactiveprofile']['name'] ?? ''),
+            'rights'                 => $privilege['rights'],
+            'privilege'              => $privilege['label'],
+            'ip'                     => (string) ($_SERVER['REMOTE_ADDR'] ?? (PHP_SAPI === 'cli' ? 'cli' : '')),
+            'action'                 => mb_substr($action, 0, 40),
+            'result'                 => $result,
+            'itemtype'               => $item !== null ? $item::class : '',
+            'items_id'               => $item !== null ? max(0, (int) ($item->fields['id'] ?? 0)) : 0,
+            'incidents_id'           => (int) ($incidents_id ?? 0),
+            'details'                => self::encodeDetails($details),
+        ];
+    }
+
+    public static function getLockTimeout(): int
+    {
+        static $timeout = null;
+        if ($timeout === null) {
+            $timeout = self::LOCK_TIMEOUT_DEFAULT;
+            try {
+                $conf = \Config::getConfigurationValues('plugin:secincident', ['audit_lock_timeout']);
+                if (isset($conf['audit_lock_timeout']) && (int) $conf['audit_lock_timeout'] > 0) {
+                    $timeout = min(60, max(1, (int) $conf['audit_lock_timeout']));
+                }
+            } catch (Throwable $e) {
+                // valeur par défaut
+            }
+        }
+        return $timeout;
+    }
+
+    /**
+     * Rend visible un échec de journalisation, sans jamais écrire dans la chaîne :
+     *  - l'entrée complète est consignée dans files/_log/secincident-audit-failures.log
+     *    (une ligne JSON par échec, pour rapprochement) ;
+     *  - un compteur et le dernier échec sont conservés dans la configuration du
+     *    plugin (bandeau sur la page du journal d'audit, jusqu'à acquittement) ;
+     *  - l'utilisateur est prévenu que son action n'a pas été journalisée ;
+     *  - un avertissement PHP est émis (php-errors.log).
+     *
+     * @param array<string, mixed> $entry
+     */
+    private static function reportFailure(string $reason, array $entry, string $error): void
+    {
+        self::$request_failures++;
+        unset($entry['prev_hash'], $entry['hash']);
+        $line = [
+            'date_utc' => gmdate('Y-m-d H:i:s'),
+            'reason'   => $reason,
+            'error'    => mb_substr($error, 0, 500),
+            'entry'    => $entry,
+        ];
+        try {
+            \Toolbox::logInFile(self::FAILURE_LOG, json_encode($line, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . "\n", true, false);
+        } catch (Throwable $e) {
+            // on continue : les autres canaux restent disponibles
+        }
+        trigger_error(sprintf('SecIncident audit failure (%s): %s — action %s not logged', $reason, $error, (string) ($entry['action'] ?? '?')), E_USER_WARNING);
+        try {
+            // Incrément atomique : des échecs simultanés sont tous comptés
+            self::incrementConfigCounter('audit_failures');
+            self::setConfigValue('audit_last_failure', (string) json_encode([
+                    'date_utc'  => $line['date_utc'],
+                    'reason'    => $reason,
+                    'action'    => (string) ($entry['action'] ?? ''),
+                    'user_name' => (string) ($entry['user_name'] ?? ''),
+                    'itemtype'  => (string) ($entry['itemtype'] ?? ''),
+                    'items_id'  => (int) ($entry['items_id'] ?? 0),
+                ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        } catch (Throwable $e) {
+            // base indisponible : le fichier de log et le message restent
+        }
+        if (self::$request_failures === 1 && PHP_SAPI !== 'cli' && class_exists(Session::class)) {
+            try {
+                Session::addMessageAfterRedirect(
+                    htmlescape(sprintf(
+                        __('SecIncident: this action could not be written to the audit log (%s). It was recorded in files/_log/%s.log; inform the administrator.', 'secincident'),
+                        self::failureReasonLabel($reason),
+                        self::FAILURE_LOG
+                    )),
+                    false,
+                    WARNING
+                );
+            } catch (Throwable $e) {
+                // pas de session
+            }
+        }
+    }
+
+    public static function failureReasonLabel(string $reason): string
+    {
+        return match ($reason) {
+            self::FAILURE_LOCK   => __('chaining lock not obtained in time', 'secincident'),
+            self::FAILURE_INSERT => __('write refused by the database', 'secincident'),
+            default              => __('unexpected error', 'secincident'),
+        };
+    }
+
+    /** Nombre d'échecs de journalisation pendant la requête courante */
+    public static function getRequestFailures(): int
+    {
+        return self::$request_failures;
+    }
+
+    /**
+     * Échecs de journalisation non acquittés (bandeau de la page d'audit).
+     *
+     * @return array{count: int, total: int, last: array<string, mixed>|null}
+     */
+    public static function getFailureStatus(): array
+    {
+        $total = (int) self::getConfigValue('audit_failures');
+        $acked = (int) self::getConfigValue('audit_failures_acked');
+        $last  = json_decode(self::getConfigValue('audit_last_failure'), true);
+        return ['count' => max(0, $total - $acked), 'total' => $total, 'last' => is_array($last) ? $last : null];
+    }
+
+    /**
+     * Acquitte les échecs signalés (après rapprochement avec le fichier de log).
+     * L'acquittement lui-même est journalisé.
+     */
+    public static function acknowledgeFailures(): bool
+    {
+        $status = self::getFailureStatus();
+        if ($status['count'] === 0) {
+            return true;
+        }
+        $ok = self::record('audit_failure_ack', null, [
+            'echecs_acquittes' => $status['count'],
+            'total_echecs'     => $status['total'],
+            'dernier_echec'    => $status['last'],
+        ]);
+        if ($ok) {
+            self::setConfigValue('audit_failures_acked', (string) $status['total']);
+        }
+        return $ok;
+    }
+
+    // Compteurs d'échecs : lus et écrits directement en base (pas de cache),
+    // l'incrément est atomique.
+    private const CONFIG_CONTEXT = 'plugin:secincident';
+
+    private static function getConfigValue(string $name): string
+    {
+        global $DB;
+        $row = $DB->request(['SELECT' => ['value'], 'FROM' => 'glpi_configs', 'WHERE' => ['context' => self::CONFIG_CONTEXT, 'name' => $name], 'LIMIT' => 1])->current();
+        return (string) ($row['value'] ?? '');
+    }
+
+    private static function setConfigValue(string $name, string $value): void
+    {
+        global $DB;
+        $DB->updateOrInsert('glpi_configs', ['value' => $value], ['context' => self::CONFIG_CONTEXT, 'name' => $name]);
+    }
+
+    private static function incrementConfigCounter(string $name): void
+    {
+        global $DB;
+        $DB->update(
+            'glpi_configs',
+            ['value' => new \Glpi\DBAL\QueryExpression('CAST(COALESCE(' . $DB::quoteName('value') . ', 0) AS UNSIGNED) + 1')],
+            ['context' => self::CONFIG_CONTEXT, 'name' => $name]
+        );
+        if ($DB->affectedRows() === 0) {
+            try {
+                $DB->insert('glpi_configs', ['context' => self::CONFIG_CONTEXT, 'name' => $name, 'value' => '1']);
+            } catch (Throwable $e) {
+                // créée entre-temps par une requête concurrente : on incrémente
+                $DB->update(
+                    'glpi_configs',
+                    ['value' => new \Glpi\DBAL\QueryExpression('CAST(COALESCE(' . $DB::quoteName('value') . ', 0) AS UNSIGNED) + 1')],
+                    ['context' => self::CONFIG_CONTEXT, 'name' => $name]
+                );
+            }
+        }
+    }
+
+    /** Crée les compteurs d'échecs (installation / mise à jour) */
+    public static function initFailureCounters(): void
+    {
+        foreach (['audit_failures', 'audit_failures_acked'] as $name) {
+            if (self::getConfigValue($name) === '') {
+                self::setConfigValue($name, '0');
+            }
         }
     }
 
